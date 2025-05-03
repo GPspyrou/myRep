@@ -1,23 +1,78 @@
-# Settings for Backend (on Cloud Run).
-# See https://firebase.google.com/docs/app-hosting/configure#cloud-run.
-runConfig:
-  minInstances: 0
-  # maxInstances: 100
-  # concurrency: 80
-  # cpu: 1
-  # memoryMiB: 512
-
-# Environment variables and secrets.
+# apphosting.yaml
 env:
-  # Configure environment variables.
-  # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment.
-  - variable: MESSAGE
-    value: Hello world!
+  # Public environment variables (build and runtime)
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: "AIzaSyDEyrJlLxl30UXt7--OIRpQdcuYsKZx2Ik"
     availability:
       - BUILD
       - RUNTIME
 
-  # Configure secrets
-  # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
-  # - variable: API_KEY
-  #   secret: myApiKeySecret
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "propertyhall-31280.firebaseapp.com"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "propertyhall-31280"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "propertyhall-31280.firebasestorage.app"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "359100325328"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:359100325328:web:faf2e4ab9c7d10831d2dd5"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: "G-S9BR0RW3R2"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_APPCHECK_KEY
+    value: "6LeF_gQrAAAAAGbj06gI-zLNP_9asL_yNs0BijR-"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+    value: "AIzaSyDl-KHWFHuiLIr_a4bZ8R1RYDs9aBCdwys"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Non-secret server-side values (runtime only)
+  - variable: FIREBASE_PROJECT_ID
+    value: "propertyhall-31280"
+    availability:
+      - RUNTIME
+
+  - variable: ADMIN_PROJECT_ID
+    value: "propertyhall-31280"
+    availability:
+      - RUNTIME
+
+  # Secret parameters (stored in Cloud Secret Manager, runtime only)
+  - variable: ADMIN_CLIENT_EMAIL
+    secret: "admin-client-email"
+    availability:
+      - RUNTIME
+
+  - variable: ADMIN_PRIVATE_KEY
+    secret: "admin-private-key"
+    availability:
+      - RUNTIME

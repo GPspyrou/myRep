@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { httpsCallable } from 'firebase/functions';
 import { functions, auth } from '@/app/firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
-import HouseGridWrapper from './HouseGridWrapper';
-import ClientMapWrapper from './ClientMapWrapper';
-import { House } from '../types/house';
+import HouseGridWrapper from '@/app/components/ListingsPageComponents/HouseGridWrapper';
+import ClientMapWrapper from '@/app/components/ListingsPageComponents/ClientMapWrapper';
+import { House } from '@/app/types/house';
 
 type Props = {
   initialHouses: House[];

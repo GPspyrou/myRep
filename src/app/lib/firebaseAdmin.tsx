@@ -1,5 +1,5 @@
 // lib/firebaseAdmin.ts
-import { cert, getApps, initializeApp, getApp, App } from 'firebase-admin/app';
+import { cert, getApps, initializeApp, getApp, App, ServiceAccount } from 'firebase-admin/app';
 import { getAuth, Auth } from 'firebase-admin/auth';
 import { getFirestore, Firestore } from 'firebase-admin/firestore';
 
@@ -9,9 +9,9 @@ let firebaseAdminDB: Firestore | null = null;
 function initializeFirebaseAdmin(): App | null {
   if (!getApps().length) {
     const serviceAccount = {
-      projectId: process.env.ADMIN_PROJECT_ID,
-      clientEmail: process.env.ADMIN_CLIENT_EMAIL,
-      privateKey: process.env.ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      project_id: process.env.ADMIN_PROJECT_ID!,
+      client_email: process.env.ADMIN_CLIENT_EMAIL!,
+      private_key: process.env.ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n")!
     };
 
     console.log('Initializing Firebase Admin SDK:', serviceAccount ? '✓ key loaded' : '✗ missing private key');
@@ -22,7 +22,7 @@ function initializeFirebaseAdmin(): App | null {
     }
 
     const app = initializeApp({
-      credential: cert(serviceAccount),
+      credential: cert(serviceAccount as ServiceAccount),
     });
 
     firebaseAdminAuth = getAuth(app);

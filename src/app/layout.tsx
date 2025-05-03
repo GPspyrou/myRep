@@ -1,30 +1,33 @@
+// app/layout.tsx
 import type { Metadata } from "next";
-
+import { Montserrat } from "next/font/google"; // 👈 use Montserrat now
 import "./globals.css";
-import { Header } from "./components";
+import NavBar from "@/app/lib/NavBar"; // import your NavBar
+
+const montserrat = Montserrat({ 
+  subsets: ["latin"],
+  variable: '--font-montserrat',
+  weight: ["400", "700"], // specify the font weights you need
+  display: "swap", // optional but good for performance
+});
 
 export const metadata: Metadata = {
-  title: "Next.js on Firebase App Hosting",
-  description: "",
+  title: "Property Hall",
+  description: "Property Hall - Your Gateway to Real Estate Excellence",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en" className="dark-theme">
-      <head>
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
-        <div className="dots" />
-        <Header />
-        {children}
-        <div className="bottom-gradient" />
+    <html lang="en">
+      <body className={`${montserrat.variable} font-sans`}> 
+        <NavBar /> {/* Render NavBar */}
+        <main className="mt-[100px]">
+          {children}
+        </main>
       </body>
     </html>
   );
