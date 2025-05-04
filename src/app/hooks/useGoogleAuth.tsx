@@ -1,5 +1,5 @@
+//hooks/useGoogleAuth.tsx
 'use client';
-
 import { auth } from '@/app/firebase/firebaseClient';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 

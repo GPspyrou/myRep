@@ -7,8 +7,10 @@ import {
   sendEmailVerification,
   GoogleAuthProvider,
   signInWithPopup,
+  User,
 } from "firebase/auth";
 import { auth } from "@/app/firebase/firebaseClient";
+import { signInWithGoogle } from "@/app/hooks/useGoogleAuth";
 
 export default function SignUp() {
   const router = useRouter();
@@ -18,15 +20,41 @@ export default function SignUp() {
   const [infoMessage, setInfoMessage] = useState<string>("");
   const [polling, setPolling] = useState<boolean>(false);
 
-  // 🔁 Poll for email verification after sign-up
+  // 🔁 Poll until the user clicks the email link, then create session & redirect
   useEffect(() => {
     if (!polling) return;
 
     const interval = setInterval(async () => {
-      if (auth.currentUser) {
-        await auth.currentUser.reload();
-        if (auth.currentUser.emailVerified) {
-          router.push("/home");
+      const user = auth.currentUser;
+      if (user) {
+        await user.reload();
+        if (user.emailVerified) {
+          clearInterval(interval);
+
+          try {
+            // 1) Create session cookie
+            const token = await user.getIdToken();
+            const sess = await fetch("/api/session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token }),
+            });
+            if (!sess.ok) throw new Error("Session creation failed");
+
+            // 2) Set default role
+            const roleRes = await fetch("/api/session/set-default-role", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ uid: user.uid }),
+            });
+            if (!roleRes.ok) throw new Error("Setting default role failed");
+
+            // 3) Redirect
+            router.push("/home");
+          } catch (err: any) {
+            console.error("Post-verification error:", err);
+            setError("❌ Something went wrong finalizing your account.");
+          }
         }
       }
     }, 3000);
@@ -40,50 +68,48 @@ export default function SignUp() {
     setInfoMessage("");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(user);
-      setInfoMessage("A verification email has been sent. Please check your inbox.");
-      setPolling(true); // ✅ start watching for email verification
 
-      const response = await fetch("/api/session/set-default-role", {
+      // we can set default-role now (even before they verify)
+      const roleRes = await fetch("/api/session/set-default-role", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to set default role");
+      if (!roleRes.ok) {
+        console.warn("Default-role responded", await roleRes.text());
       }
 
-    } catch (err) {
+      setInfoMessage("✅ Verification email sent. Check your inbox!");
+      setPolling(true);
+    } catch (err: any) {
       console.error("Signup error:", err);
-      setError("❌ Sign up failed. Please try again.");
+      setError("❌ Sign-up failed. Please try again.");
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignUp = async () => {
     setError(null);
     setInfoMessage("");
 
-    const provider = new GoogleAuthProvider();
     try {
-      const userCredential = await signInWithPopup(auth, provider);
-      const user = userCredential.user;
+      // This helper calls signInWithPopup + /api/session POST under the hood
+      const uid = await signInWithGoogle();
 
-      const response = await fetch("/api/set-default-role", {
+      // Now set default role
+      const roleRes = await fetch("/api/session/set-default-role", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: user.uid }),
+        body: JSON.stringify({ uid }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to set default role for Google sign in");
-      }
+      if (!roleRes.ok) throw new Error("Failed to set default role");
 
-      router.push("/login");
-    } catch (err) {
-      console.error("Google sign in error:", err);
-      setError("❌ Google sign in failed. Please try again.");
+      // Redirect straight to home
+      router.push("/home");
+    } catch (err: any) {
+      console.error("Google sign-up error:", err);
+      setError("❌ Google sign-up failed. Please try again.");
     }
   };
 
@@ -125,7 +151,7 @@ export default function SignUp() {
         <hr className="my-4" />
 
         <button
-          onClick={handleGoogleSignIn}
+          onClick={handleGoogleSignUp}
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
           Sign Up with Google
