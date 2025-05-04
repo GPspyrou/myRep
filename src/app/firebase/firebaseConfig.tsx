@@ -52,5 +52,6 @@ export const functions: Functions = getFunctions(app);
 //   connectAuthEmulator(auth, 'http://localhost:9099');
 //   connectFunctionsEmulator(functions, 'localhost', 5001);
 // }
+export const appCheck = appCheckInstance!;
 
 export default app;

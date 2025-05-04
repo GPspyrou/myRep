@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { httpsCallable } from 'firebase/functions';
-import { functions, auth } from '@/app/firebase/firebaseConfig';
+import { functions, auth, appCheck } from '@/app/firebase/firebaseConfig';  // ← pull in appCheck
+import { getToken } from 'firebase/app-check';
 import { onAuthStateChanged } from 'firebase/auth';
 import HouseGridWrapper from '@/app/components/ListingsPageComponents/HouseGridWrapper';
 import ClientMapWrapper from '@/app/components/ListingsPageComponents/ClientMapWrapper';
@@ -39,8 +40,12 @@ export default function ListingsContent({ initialHouses }: Props) {
 
       setLoading(true);
       try {
+        await getToken(appCheck, /* forceRefresh */ false);
+
+        // 2️⃣ now it’s safe to call your function
         const getHousesFunc = httpsCallable(functions, 'getHouses');
         const result = await getHousesFunc();
+
         const additionalHouses = (result.data as House[]).map((house) => ({
           ...house,
           isAdditional: true,
@@ -82,7 +87,7 @@ export default function ListingsContent({ initialHouses }: Props) {
             }
           }}
         />
-        {/* Gradient overlay for softer transition */}
+        {/* Gradient overlay */}
         <div className="pointer-events-none absolute top-0 -right-2 w-5 h-full bg-gradient-to-l from-[rgba(0,0,0,0.15)] to-transparent" />
       </div>
       <div className="flex-1 h-full relative z-10">
