@@ -164,7 +164,7 @@ export default function Filters({ houses }: Props) {
               type="submit"
               className="px-10 py-3 font-medium rounded-md bg-[rgb(184,161,125)] text-white text-lg tracking-wide hover:bg-white hover:text-black hover:border hover:border-black transition-all duration-200"
             >
-              Submit
+              Search
             </button>
           </div>
         </form>

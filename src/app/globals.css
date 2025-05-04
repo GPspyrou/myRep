@@ -1,3 +1,8 @@
+/* --- slick-carousel CSS --- */
+@import 'slick-carousel/slick/slick.css';
+@import 'slick-carousel/slick/slick-theme.css';
+
+/* --- Tailwind layers --- */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -20,7 +25,7 @@
 
 /* Apply global styles */
 body {
-  font-family: 'Montserrat', sans-serif; /* 👈 directly apply the font family */
+  font-family: 'Montserrat', sans-serif;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
     to bottom,
@@ -33,5 +38,13 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari, Opera */
   }
 }

@@ -1,28 +1,41 @@
-'use client'
+'use client';
 
-import { useState, ReactNode } from 'react'
+import { useState, ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 export interface FAQItem {
-  question: string
-  answer: ReactNode
+  question: string;
+  answer: ReactNode;
 }
 
 interface FAQProps {
-  items: FAQItem[]
+  items: FAQItem[];
 }
 
 export default function FAQ({ items }: FAQProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggle = (i: number) => {
-    setOpenIndex(openIndex === i ? null : i)
-  }
+    setOpenIndex(openIndex === i ? null : i);
+  };
 
   return (
-    <section className="max-w-7xl mx-auto my-16 px-4 sm:px-6 lg:px-8">
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      viewport={{ once: true, amount: 0.3 }}
+      className="max-w-7xl mx-auto my-16 px-4 sm:px-6 lg:px-8"
+    >
       <div className="flex flex-col lg:flex-row lg:space-x-12">
         {/* Left column */}
-        <div className="lg:w-1/3 mb-8 lg:mb-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
+          viewport={{ once: true }}
+          className="lg:w-1/3 mb-8 lg:mb-0"
+        >
           <h2 className="text-3xl font-extrabold mb-4">
             The Most Frequently Asked Questions About Property in Ibiza
           </h2>
@@ -32,13 +45,17 @@ export default function FAQ({ items }: FAQProps) {
           <p className="text-gray-700">
             If you don’t see the answer to your question, then feel free to ask us in the chat box.
           </p>
-        </div>
+        </motion.div>
 
         {/* Right column: accordion */}
         <div className="lg:w-2/3 space-y-4">
           {items.map((item, i) => (
-            <div
+            <motion.div
               key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 + i * 0.1 }}
+              viewport={{ once: true }}
               className="border border-gray-200 rounded-lg overflow-hidden"
             >
               <button
@@ -65,10 +82,10 @@ export default function FAQ({ items }: FAQProps) {
               >
                 {item.answer}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
-  )
+    </motion.section>
+  );
 }
