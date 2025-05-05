@@ -20,7 +20,7 @@ export default function HomeHouseGrid({ houses }: HouseGridProps) {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
           viewport={{ once: true, amount: 0.3 }}
-          className="rounded-lg overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-shadow duration-200 bg-[#FAF9F6]"
+          className=" overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-shadow duration-200 bg-[#FAF9F6]"
         >
           <Link href={`/houses/${house.id}`}>
             <div className="relative w-full h-48 cursor-pointer">

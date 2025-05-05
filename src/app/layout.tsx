@@ -1,10 +1,10 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google"; // 👈 use Montserrat now
+import { Montserrat } from 'next/font/google';
 import "./globals.css";
 import NavBar from "@/app/lib/NavBar"; // import your NavBar
 
-const montserrat = Montserrat({ 
+const montserratFont = Montserrat({ 
   subsets: ["latin"],
   variable: '--font-montserrat',
   weight: ["400", "700"], // specify the font weights you need
@@ -22,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${montserrat.variable} font-sans`}> 
+    <html lang="en" className={montserratFont.variable}>
+      <body > 
         <NavBar /> {/* Render NavBar */}
         <main className="mt-[100px]">
           {children}

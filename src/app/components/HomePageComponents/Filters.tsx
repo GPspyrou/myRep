@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
 import { House } from '@/app/types/house';
 
 interface Props {
@@ -10,8 +11,8 @@ interface Props {
 
 export default function Filters({ houses }: Props) {
   const router = useRouter();
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
 
-  // derive unique filter options
   const locations = useMemo(
     () => Array.from(new Set(houses.map(h => h.location))).sort(),
     [houses]
@@ -31,7 +32,6 @@ export default function Filters({ houses }: Props) {
     return Array.from(new Set(nums)).sort((a, b) => a - b);
   }, [houses]);
 
-  // local selection state
   const [mode, setMode] = useState<'sale' | 'rental'>('sale');
   const [category, setCategory] = useState('');
   const [minPrice, setMinPrice] = useState('');
@@ -51,15 +51,20 @@ export default function Filters({ houses }: Props) {
   };
 
   return (
-    <>
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out transform ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      }`}
+    >
       {/* HEADER (transparent) */}
       <div className="px-2 pt-2 w-[36%] mx-auto border-t border-l border-r border-white border-[1.5px] bg-black/50">
-        <h2 className="text-4xl font-serif text-center  mb-2 text-white ">
+        <h2 className="text-4xl font-serif text-center mb-2 text-white">
           Search Property
         </h2>
       </div>
 
-      {/* FILTER SECTION (gray bg) */}
+      {/* FILTER SECTION */}
       <div className="px-6 pb-8 bg-gray-100">
         {/* Tabs */}
         <div className="flex justify-center w-[36.5%] mx-auto mb-6 border-b border-[#c7aebe]">
@@ -85,7 +90,7 @@ export default function Filters({ houses }: Props) {
           </button>
         </div>
 
-        {/* Filters */}
+        {/* Filters Form */}
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -93,7 +98,6 @@ export default function Filters({ houses }: Props) {
           }}
           className="flex flex-wrap justify-center gap-4"
         >
-          {/* Type */}
           <select
             value={category}
             onChange={e => setCategory(e.target.value)}
@@ -101,13 +105,10 @@ export default function Filters({ houses }: Props) {
           >
             <option value="">Type</option>
             {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
+              <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
 
-          {/* Min Price */}
           <select
             value={minPrice}
             onChange={e => setMinPrice(e.target.value)}
@@ -115,13 +116,10 @@ export default function Filters({ houses }: Props) {
           >
             <option value="">Min Price</option>
             {prices.map(p => (
-              <option key={p} value={p}>
-                {p} €
-              </option>
+              <option key={p} value={p}>{p} €</option>
             ))}
           </select>
 
-          {/* Max Price */}
           <select
             value={maxPrice}
             onChange={e => setMaxPrice(e.target.value)}
@@ -129,13 +127,10 @@ export default function Filters({ houses }: Props) {
           >
             <option value="">Max Price</option>
             {prices.map(p => (
-              <option key={p} value={p}>
-                {p} €
-              </option>
+              <option key={p} value={p}>{p} €</option>
             ))}
           </select>
 
-          {/* Ref. or Name */}
           <input
             type="text"
             value={refName}
@@ -144,7 +139,6 @@ export default function Filters({ houses }: Props) {
             className="w-48 border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
           />
 
-          {/* Bedrooms */}
           <select
             value={bedroom}
             onChange={e => setBedroom(e.target.value)}
@@ -152,13 +146,10 @@ export default function Filters({ houses }: Props) {
           >
             <option value="">Bedrooms</option>
             {bedrooms.map(b => (
-              <option key={b} value={b}>
-                {b}
-              </option>
+              <option key={b} value={b}>{b}</option>
             ))}
           </select>
 
-          {/* Submit */}
           <div className="w-full flex justify-center mt-6">
             <button
               type="submit"
@@ -169,6 +160,6 @@ export default function Filters({ houses }: Props) {
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 }
