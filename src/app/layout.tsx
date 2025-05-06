@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className={montserratFont.variable}>
       <body > 
         <NavBar /> {/* Render NavBar */}
-        <main className="mt-[100px]">
+        <main className="">
           {children}
         </main>
       </body>

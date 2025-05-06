@@ -19,7 +19,7 @@ export default function PropertyDescription({ description }: PropertyDescription
   return (
     <div
       ref={containerRef}
-      className="relative pb-8 max-h-[1000px] transition-all"
+      className="relative pb-8 pt-12 max-h-[1000px] transition-all"
     >
       <h2 className="mb-3 text-[1.4rem] font-semibold text-[#111] tracking-wide capitalize">
         Περιγραφή
@@ -31,8 +31,7 @@ export default function PropertyDescription({ description }: PropertyDescription
           className="mb-4 font-normal text-[#444] text-justify whitespace-pre-line"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: index * 0.2, ease: 'easeOut' }}
-        >
+          transition={{ duration: 0.6, delay: index * 0.2, ease: 'easeOut' }}>
           {paragraph}
         </motion.p>
       ))}

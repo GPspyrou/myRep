@@ -1,3 +1,4 @@
+// src/app/components/AdminPageComponents/HouseForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,10 +10,15 @@ interface User {
   displayName?: string;
 }
 
+interface CustomField {
+  fieldName: string;
+  fieldValue: string;
+}
+
 interface HouseFormProps {
   house: House | null;
   users: User[];
-  onSave: (house: House) => void;
+  onSave: (data: Record<string, any>) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -48,6 +54,8 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
     }
   );
 
+  const [customFields, setCustomFields] = useState<CustomField[]>([]);
+
   useEffect(() => {
     setFormData(
       house || {
@@ -79,6 +87,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
         allowedUsers: [],
       }
     );
+    setCustomFields([]);
   }, [house]);
 
   const handleChange = (
@@ -108,75 +117,78 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
 
   const handleImageChange = (index: number, field: 'src' | 'alt', value: string) => {
     setFormData(prev => {
-      const newImages = [...prev.images];
-      newImages[index] = { ...newImages[index], [field]: value };
-      return { ...prev, images: newImages };
+      const images = [...prev.images];
+      images[index] = { ...images[index], [field]: value };
+      return { ...prev, images };
     });
   };
 
   const addImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, { src: '', alt: '' }],
-    }));
+    setFormData(prev => ({ ...prev, images: [...prev.images, { src: '', alt: '' }] }));
   };
 
   const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
+    setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCustomFieldChange = (
+    index: number,
+    field: keyof CustomField,
+    value: string
+  ) => {
+    setCustomFields(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
+  const addCustomField = () => setCustomFields(prev => [...prev, { fieldName: '', fieldValue: '' }]);
+  const removeCustomField = (index: number) => setCustomFields(prev => prev.filter((_, i) => i !== index));
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const dataToSave: House = {
+
+    const customData = customFields.reduce<Record<string, string>>((acc, { fieldName, fieldValue }) => {
+      if (fieldName.trim()) acc[fieldName] = fieldValue;
+      return acc;
+    }, {});
+
+    const payload = {
       ...formData,
+      ...customData,
       location: { latitude: formData.latitude, longitude: formData.longitude },
       allowedUsers: formData.isPublic ? [] : formData.allowedUsers,
     };
-    onSave(dataToSave);
+
+    await onSave(payload);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6 bg-white p-6 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="max-w-full sm:max-w-2xl mx-auto space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow-md">
       {/* Title */}
       <label className="block space-y-1">
         <span className="font-bold">Title:</span>
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <input type="text" name="title" value={formData.title} onChange={handleChange}
+          className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </label>
 
       {/* Description */}
       <label className="block space-y-1">
         <span className="font-bold">Description:</span>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="border rounded p-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <textarea name="description" value={formData.description} onChange={handleChange}
+          className="border rounded p-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </label>
 
       {/* Price */}
       <label className="block space-y-1">
         <span className="font-bold">Price:</span>
-        <input
-          type="text"
-          name="price"
-          value={formData.price}
-          onChange={handleChange}
-          className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <input type="text" name="price" value={formData.price} onChange={handleChange}
+          className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </label>
 
       {/* Bedrooms, Bathrooms, Rooms */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <label className="block space-y-1">
           <span className="font-bold">Bedrooms:</span>
           <input
@@ -286,7 +298,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
       </label>
 
       {/* Latitude and Longitude */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label className="block space-y-1">
           <span className="font-bold">Latitude:</span>
           <input
@@ -382,7 +394,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
       </label>
 
       {/* Featured Listing */}
-      <label className="flex items-center space-x-2">
+      <label className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
         <input
           type="checkbox"
           name="isFeatured"
@@ -393,7 +405,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
       </label>
 
       {/* Is Public */}
-      <label className="flex items-center space-x-2">
+      <label className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
         <input
           type="checkbox"
           name="isPublic"
@@ -463,14 +475,41 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
         Add Image
       </button>
 
-      {/* Form Actions */}
-      <div className="flex justify-end space-x-4 mt-6">
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          Save
-        </button>
-        <button type="button" onClick={onCancel} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-          Cancel
-        </button>
+      <div className="border-t pt-4">
+        <h3 className="text-xl font-bold mb-2">Custom Fields</h3>
+        {customFields.map((cf, idx) => (
+          <div key={idx} className="flex space-x-2 items-center mb-2">
+            <input
+              type="text"
+              placeholder="Field name"
+              value={cf.fieldName}
+              onChange={e => handleCustomFieldChange(idx, 'fieldName', e.target.value)}
+              className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              placeholder="Field value"
+              value={cf.fieldValue}
+              onChange={e => handleCustomFieldChange(idx, 'fieldValue', e.target.value)}
+              className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => removeCustomField(idx)}
+              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+            >Remove</button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addCustomField}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >Add Custom Field</button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 mt-6">
+        <button type="submit" className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save</button>
+        <button type="button" onClick={onCancel} className="w-full sm:w-auto bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
       </div>
     </form>
   );

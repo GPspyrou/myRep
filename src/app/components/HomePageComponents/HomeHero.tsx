@@ -10,7 +10,7 @@ interface Props {
 
 export default function HomeHeroSection({ houses }: Props) {
   return (
-    <div className="relative w-full min-h-[1200px]  bg-[#D6D2C4] shadow-2xl  overflow-hidden">
+    <div className="relative w-full min-h-[1320px]  bg-[#D6D2C4] shadow-2xl  overflow-hidden">
       {/* Carousel */}
       <HomeCarousel houses={houses} />
 

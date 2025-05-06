@@ -5,7 +5,7 @@ import Gallery from '@/app/components/DetailsPageComponents/Gallery';
 import PropertyDetails from '@/app/components/DetailsPageComponents/PropertyDetails';
 import PropertyDescription from '@/app/components/DetailsPageComponents/PropertyDescription';
 import DetailsMap from '@/app/components/DetailsPageComponents/DetailsMap';
-
+import PropertyHeader from '@/app/components/DetailsPageComponents/PropertyHeader';
 export default function DetailsContent({ property }) {
   return (
     <main className="flex flex-col gap-8 min-h-screen bg-[#D6D2C4] pt-0 pb-44 px-4 md:px-44">
@@ -16,7 +16,18 @@ export default function DetailsContent({ property }) {
           alt: image.alt || `Property image ${i + 1}`,
         }))}
       />
-
+       <PropertyHeader
+        title={property.title}
+        locationLabel={`${property.yearBuilt ?? ''} ${property.location.city ?? ''}`.trim()}
+        price={`€${property.price}`}
+        category={property.category}
+        rooms={property.rooms}
+        bedrooms={property.bedrooms}
+        bathrooms={property.bathrooms}
+        size={property.size}
+        yearBuilt={property.yearBuilt}
+        energyClass={property.energyClass}
+      />
       {/* detailsMapContainer */}
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 h-[300px] md:h-[500px] w-full">
         {/* detailsWrapper */}

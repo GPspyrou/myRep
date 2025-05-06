@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { auth } from '@/app/firebase/firebaseClient';
@@ -24,8 +24,14 @@ const defaultAvatar = '/icons/default-avatar.svg'; // Path to your default SVG
 
 const NavBar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  // put all “initially transparent” routes here
+  const transparentRoutes = ['/', '/houses/*'];
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -34,6 +40,28 @@ const NavBar = () => {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // wildcard-aware check
+  const isTransparentRoute = transparentRoutes.some((route) => {
+    if (route.endsWith('/*')) {
+      // strip trailing /* and test prefix
+      const prefix = route.slice(0, -1);
+      return pathname.startsWith(prefix);
+    }
+    return pathname === route;
+  });
+
+  const bgClass =
+    isTransparentRoute && !scrolled
+      ? 'bg-transparent shadow-none'
+      : 'bg-white bg-gradient-to-b from-white/95 to-white/90 shadow-md';
 
   const handleLogout = async (): Promise<void> => {
     try {
@@ -50,7 +78,16 @@ const NavBar = () => {
   };
 
   return (
-    <nav className={`${poppins.className} fixed inset-x-0 top-0 h-[100px] bg-white bg-gradient-to-b from-white/95 to-white/90 shadow-md flex items-center justify-between px-8 text-gray-800 text-lg font-medium z-[9999]`}>
+    <nav
+      className={`
+        ${poppins.className}
+        fixed inset-x-0 top-0 h-[100px]
+        flex items-center justify-between
+        px-8 text-gray-800 text-lg font-medium
+        z-[9999]
+        ${bgClass}
+      `}
+    >
       {/* Left: support email */}
       <div className="flex-none">
         <a href="mailto:support@property-hall.com" className="text-xs underline">
@@ -62,17 +99,26 @@ const NavBar = () => {
       <div className="flex-1 flex justify-center">
         <ul className="list-none flex items-center gap-6 text-base tracking-wide">
           <li>
-            <Link href="/" className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all">
+            <Link
+              href="/"
+              className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all"
+            >
               Home
             </Link>
           </li>
           <li>
-            <Link href="/listings" className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all">
+            <Link
+              href="/listings"
+              className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all"
+            >
               Listings
             </Link>
           </li>
           <li>
-            <Link href="/contact" className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all">
+            <Link
+              href="/contact"
+              className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all"
+            >
               Contact
             </Link>
           </li>
@@ -93,12 +139,18 @@ const NavBar = () => {
               className="rounded-full"
             />
             <span className="mt-1 text-xs text-gray-600">{user.email}</span>
-            <button onClick={handleLogout} className="mt-1 text-xs text-blue-500 hover:underline">
+            <button
+              onClick={handleLogout}
+              className="mt-1 text-xs text-blue-500 hover:underline"
+            >
               Logout
             </button>
           </div>
         ) : (
-          <Link href="/login" className="text-base hover:text-blue-500 hover:drop-shadow-md transition-all">
+          <Link
+            href="/login"
+            className="text-base hover:text-blue-500 hover:drop-shadow-md transition-all"
+          >
             Login
           </Link>
         )}

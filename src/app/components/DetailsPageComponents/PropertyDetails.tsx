@@ -1,101 +1,74 @@
-'use client';
+'use client'; // Ensures this component runs on the client side (Next.js specific)
 
 import React, { useEffect, useRef, useState } from 'react';
 
+// Utility function to format keys into readable labels
+// Example: "yearReleased" => "Year Released"
+const formatLabel = (key: string) =>
+  key
+    .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+    .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
+
+// Props type definition: a property object with flexible field types
 type PropertyDetailsProps = {
-  property: {
-    category?: string;
-    price?: string;
-    size?: string;
-    bedrooms?: number;
-    parking?: string;
-    floor?: string;
-    energyClass?: string;
-    yearBuilt?: string;
-    kitchens?: string;
-    heatingType?: string;
-    specialFeatures?: string;
-    windowType?: string;
-    hasHeating?: string;
-    suitableFor?: string;
-  };
+  property: Record<string, string | number | null | undefined | object>;
 };
 
 export default function PropertyDetails({ property }: PropertyDetailsProps) {
+  // Ref for the container element to observe when it comes into view
   const containerRef = useRef<HTMLUListElement>(null);
+
+  // State to trigger animation once the component is visible in the viewport
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
+    // Create an IntersectionObserver to trigger animation when in view
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect(); // Disconnect after first trigger
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true); // Trigger animation
+          observer.disconnect(); // Stop observing after triggered once
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 } // Trigger when 20% of the element is visible
     );
 
     observer.observe(containerRef.current);
 
+    // Clean up the observer on unmount
     return () => observer.disconnect();
   }, []);
 
-  const propertyInfo = [
-    { icon: '🏠', label: 'Κατηγορία', value: property.category },
-    { icon: '💲', label: 'Τιμή', value: property.price },
-    { icon: '📐', label: 'Εμβαδόν', value: property.size },
-    { icon: '🛏', label: 'Υπνοδωμάτια', value: property.bedrooms },
-    { icon: '🚗', label: 'Parking', value: property.parking },
-    { icon: '🏢', label: 'Όροφος', value: property.floor },
-    { icon: '⚡', label: 'Ενεργ. Κλάση', value: property.energyClass },
-    { icon: '🔨', label: 'Έτος Κατασκευής', value: property.yearBuilt },
-  ];
+  // Fields to exclude from rendering (e.g., location data)
+  const excludedFields = ['location', 'latitude', 'longitude', 'description','isPublic','isFeatured'];
 
-  const additionalCharacteristics = [
-    { label: '■ Κουζίνες', value: property.kitchens },
-    { label: '■ Μέσον Θέρμανσης', value: property.heatingType },
-    { label: '■ Ιδιαίτερα Χαρακτηριστικά', value: property.specialFeatures },
-    { label: '■ Κουφώματα', value: property.windowType },
-    { label: '■ Θέρμανση', value: property.hasHeating },
-    { label: '■ Κατάλληλο για', value: property.suitableFor },
-  ];
+  // Helper to check if a value should be rendered
+  const hasRenderableValue = (v: any) =>
+    v !== null &&
+    v !== undefined &&
+    !(typeof v === 'string' && v.trim() === '') &&
+    typeof v !== 'object'; // Excludes nested objects
+
+  // Filter out excluded and non-renderable fields
+  const visibleEntries = Object.entries(property).filter(
+    ([key, value]) => !excludedFields.includes(key) && hasRenderableValue(value)
+  );
 
   return (
     <ul ref={containerRef} className="list-none p-0 m-0 grid grid-cols-2 gap-2">
-      {propertyInfo.map((item, index) => (
-        <li
-          key={`info-${index}`}
-          className="flex items-center relative py-3 text-base font-medium"
-        >
-          <span className="w-10 h-10 flex items-center justify-center text-lg font-bold bg-black text-white rounded-full mr-4">
-            {item.icon}
-          </span>
-          <span className="flex-1 relative">
-            <strong>{item.label}:</strong> {item.value ?? '—'}
+      {visibleEntries.map(([key, value], idx) => (
+        <li key={idx} className="py-3 text-base font-medium relative">
+          <span className="relative block">
+            {/* Render formatted key and value */}
+            <strong>{formatLabel(key)}:</strong> {value as string | number}
+            {/* Animated underline that expands when visible */}
             <div
-              className={`absolute bottom-[-2px] left-0 h-[2px] bg-black transition-all duration-1000 ${
+              className={`absolute bottom-[-2px] left-0 h-[2px] bg-black transition-all duration-800 ${
                 isVisible ? 'w-full' : 'w-0'
               }`}
-            ></div>
-          </span>
-        </li>
-      ))}
-
-      {additionalCharacteristics.map((item, index) => (
-        <li
-          key={`extra-${index}`}
-          className="flex items-center relative py-3 text-base font-medium"
-        >
-          <span className="flex-1 relative">
-            <strong>{item.label}:</strong> {item.value ?? '—'}
-            <div
-              className={`absolute bottom-[-2px] left-0 h-[2px] bg-black transition-all duration-700 ${
-                isVisible ? 'w-full' : 'w-0'
-              }`}
-            ></div>
+            />
           </span>
         </li>
       ))}
