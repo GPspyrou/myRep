@@ -9,15 +9,26 @@ interface Props {
 }
 
 export default function HomeHeroSection({ houses }: Props) {
-  return (
-    <div className="relative w-full min-h-[1320px]  bg-[#D6D2C4] shadow-2xl  overflow-hidden">
-      {/* Carousel */}
-      <HomeCarousel houses={houses} />
-
-      {/* Filters - Positioned at the bottom center of carousel */}
-      <div className="absolute w-full bottom-6 pb-60 left-1/2 transform -translate-x-1/2 translate-y-1/2 z-10">
-        <Filters houses={houses} />
+    return (
+      <div className="relative w-full bg-[#D6D2C4] shadow-2xl overflow-hidden">
+        {/* Carousel */}
+        <HomeCarousel houses={houses} />
+  
+        {/* Filters */}
+        {/* – on md+ screens, absolutely overlayed; on smaller, static and full width */}
+        <div
+          className={`
+            w-full
+            md:absolute md:bottom-6 md:left-1/2 md:transform md:-translate-x-1/2 md:translate-y-1/2
+            md:pb-60
+            z-10
+          `}
+        >
+          <div className="mx-auto md:w-[36%] px-4 md:px-0">
+            <Filters houses={houses} />
+          </div>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+  
