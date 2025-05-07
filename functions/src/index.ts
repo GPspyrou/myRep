@@ -16,7 +16,7 @@ const billing = google.cloudbilling('v1').projects;
 /**
  * Cloud Function to disable billing when cost exceeds budget.
  */
-export const stopBilling = async (pubsubEvent: PubSubEvent): Promise<string> => {
+export const stopilling = async (pubsubEvent: PubSubEvent): Promise<string> => {
   try {
     console.log('Pub/Sub event data (base64):', pubsubEvent.data);
     const raw = Buffer.from(pubsubEvent.data, 'base64').toString();

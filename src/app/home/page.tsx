@@ -73,9 +73,9 @@ export default async function HomePage() {
         {/* Featured Rental Properties */}
         <div className="bg-[#D6D2C4] shadow-lg rounded-md w-full">
           <div className="max-w-7xl mx-auto bg-[#D6D2C4] p-6">
-            <h1 className="text-4xl text-[white] font-extrabold text-center mb-8">
+            <h2 className="text-4xl text-[white] font-extrabold text-center mb-8">
               Featured Rental Properties
-            </h1>
+            </h2>
             <HomeHouseGrid houses={houses} />
           </div>
         </div>
@@ -85,9 +85,9 @@ export default async function HomePage() {
   <div className="w-full max-w-[1600px] mx-auto flex flex-col md:flex-row items-center">
     {/* Text Content */}
     <div className="md:w-1/2 p-6">
-      <h1 className="text-4xl font-extrabold text-[#361e1a] mb-4">
+      <h2 className="text-4xl font-extrabold text-[#361e1a] mb-4">
         Discover Your Ideal Property
-      </h1>
+      </h2>
       <h2 className="text-2xl font-bold text-[#361e1a] mb-4">
         Whether you're searching for your dream home or the perfect investment, we're here every step of the way.
       </h2>
@@ -130,9 +130,9 @@ export default async function HomePage() {
 
     {/* Text Content */}
     <div className="md:w-1/2 p-6">
-      <h1 className="text-4xl font-extrabold text-[#361e1a] mb-4">
+      <h2 className="text-4xl font-extrabold text-[#361e1a] mb-4">
         Sell Your Property with Confidence
-      </h1>
+      </h2>
       <p className="text-lg text-[#361e1a] mb-6">
         Selling your home doesn't have to be stressful. With our expert guidance, you'll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price. Let us handle the complexities while you experience a smooth, rewarding selling journey.
       </p>

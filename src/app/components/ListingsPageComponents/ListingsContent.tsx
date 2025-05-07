@@ -37,16 +37,19 @@ export default function ListingsContent({ initialHouses }: Props) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) return;
-
+  
       setLoading(true);
       try {
-        await getToken(appCheck, /* forceRefresh */ false);
-
-        // 2️⃣ now it’s safe to call your function
-        const getHousesFunc = httpsCallable(functions, 'getHouses');
-        const result = await getHousesFunc();
-
-        const additionalHouses = (result.data as House[]).map((house) => ({
+        const res = await fetch('/api/getHouses', {
+          method: 'GET',
+          credentials: 'include', // important to send session cookie
+        });
+  
+        if (!res.ok) throw new Error('Failed to fetch houses');
+  
+        const { houses: fetchedHouses } = await res.json();
+  
+        const additionalHouses = (fetchedHouses as House[]).map((house) => ({
           ...house,
           isAdditional: true,
           location: {
@@ -54,7 +57,7 @@ export default function ListingsContent({ initialHouses }: Props) {
             longitude: Number(house.location.longitude),
           },
         }));
-
+  
         setHouses((prev) => [...prev, ...additionalHouses]);
       } catch (err: any) {
         console.error('Error fetching user-specific houses:', err);
@@ -63,10 +66,9 @@ export default function ListingsContent({ initialHouses }: Props) {
         setLoading(false);
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
-
   if (loading && houses.length === 0) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (houses.length === 0) return <div>No houses found.</div>;

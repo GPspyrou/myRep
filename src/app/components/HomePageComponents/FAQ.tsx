@@ -37,10 +37,10 @@ export default function FAQ({ items }: FAQProps) {
           className="lg:w-1/3 mb-8 lg:mb-0"
         >
           <h2 className="text-3xl font-extrabold mb-4">
-            The Most Frequently Asked Questions About Property in Ibiza
+            The Most Frequently Asked Questions About Property in Greece
           </h2>
           <p className="text-gray-700 mb-2">
-            Here are the questions we are most often asked by people wanting to buy a property in Ibiza.
+            Here are the questions we are most often asked by people wanting to buy a property in Greece.
           </p>
           <p className="text-gray-700">
             If you don’t see the answer to your question, then feel free to ask us in the chat box.

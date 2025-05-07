@@ -1,17 +1,49 @@
-import { NextResponse } from 'next/server';
+// app/api/getHouses/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import { getFirebaseAdminDB, verifySessionCookie } from '@/app/lib/firebaseAdmin';
-import { cookies } from 'next/headers';
+import { getToken } from 'firebase/app-check';
 
-export async function GET() {
-  // you can choose to make this public or protected; here we'll protect it
-  const cookie = (await cookies()).get('__session')?.value;
-  if (!cookie) return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
+export async function GET(req: NextRequest) {
+  try {
+    const sessionCookie = req.cookies.get('__session')?.value;
 
-  // will throw if invalid or revoked
-  await verifySessionCookie(cookie);
+    if (!sessionCookie) {
+      console.log('[getHouses] Missing session cookie.');
+      return NextResponse.json(
+        { error: 'User must be authenticated.' },
+        { status: 401 }
+      );
+    }
 
-  const db = getFirebaseAdminDB();
-  const snap = await db.collection('houses').get();
-  const houses = snap.docs.map((d: { id: any; data: () => any; }) => ({ id: d.id, ...d.data() }));
-  return NextResponse.json(houses);
+    const decodedToken = await verifySessionCookie(sessionCookie);
+    const db = getFirebaseAdminDB();
+    const userRole = decodedToken.role || 'user'; // fallback in case no role
+
+    let snapshot;
+
+    if (userRole === 'admin') {
+      console.log('[getHouses] Admin request. Fetching all houses.');
+      snapshot = await db.collection('houses').get();
+    } else {
+      console.log('[getHouses] Non-admin request. Fetching allowed private houses.');
+      snapshot = await db
+        .collection('houses')
+        .where('isPublic', '==', false)
+        .where('allowedUsers', 'array-contains', decodedToken.uid)
+        .get();
+    }
+
+    const houses = snapshot.docs.map((doc: { id: any; data: () => any; }) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    return NextResponse.json({ houses });
+  } catch (error: any) {
+    console.error('[getHouses] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch houses.' },
+      { status: 500 }
+    );
+  }
 }
