@@ -51,51 +51,47 @@ export default function Filters({ houses }: Props) {
   };
 
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out transform ${
-        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-      }`}
-    >
-      {/* HEADER (transparent) */}
-      <div className="px-2 pt-2 w-[36%] mx-auto border-t border-l border-r border-white border-[1.5px] bg-black/50">
-        <h2 className="text-4xl font-serif text-center mb-2 text-white">
+    <div ref={ref} className={`transition-all duration-700 ease-out transform
+      ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}
+    `}>
+      {/* ——— 1) DARK OVERLAY HEADER ——— */}
+      <div className="mx-auto w-full max-w-lg
+                      bg-black/70 backdrop-blur-sm
+                      border-2 border-white
+                      py-3 px-6
+                      text-white">
+        <h2 className="text-3xl md:text-4xl font-serif text-center">
           Search Property
         </h2>
       </div>
 
-      {/* FILTER SECTION */}
-      <div className="px-6 pb-8 bg-gray-100">
-        {/* Tabs */}
-        <div className="flex justify-center w-[36.5%] mx-auto mb-6 border-b border-[#c7aebe]">
+      {/* ——— 2) TABS BAR ——— */}
+      <div className="mx-auto w-full max-w-lg
+                      flex justify-center
+                      border-b-2 border-pink-200
+                      mt-2">
+        {['sale','rental'].map(m => (
           <button
-            onClick={() => setMode('sale')}
-            className={`px-6 py-2 font-medium tracking-widest uppercase text-md ${
-              mode === 'sale'
-                ? 'text-[#c7aebe] border-b-2 border-[#c7aebe]'
+            key={m}
+            onClick={() => setMode(m as any)}
+            className={`
+              px-6 py-2 font-medium tracking-widest uppercase
+              ${mode === m
+                ? 'text-pink-600 border-b-2 border-pink-600'
                 : 'text-gray-400 hover:text-gray-600 border-b-2 border-transparent hover:border-gray-300'
-            }`}
+              }`}
           >
-            Sale
+            {m}
           </button>
-          <button
-            onClick={() => setMode('rental')}
-            className={`px-6 py-2 font-medium tracking-widest uppercase text-md ${
-              mode === 'rental'
-                ? 'text-[#c7aebe] border-b-2 border-[#c7aebe]'
-                : 'text-gray-400 hover:text-gray-600 border-b-2 border-transparent hover:border-gray-300'
-            }`}
-          >
-            Rental
-          </button>
-        </div>
+        ))}
+      </div>
 
-        {/* Filters Form */}
+      {/* ——— 3) WHITE FORM BOX ——— */}
+      <div className="mx-auto w-full max-w-lg
+                      bg-white px-6 pt-6 pb-8
+                      shadow-sm">
         <form
-          onSubmit={e => {
-            e.preventDefault();
-            handleApply();
-          }}
+          onSubmit={e => { e.preventDefault(); handleApply() }}
           className="flex flex-wrap justify-center gap-4"
         >
           <select
@@ -153,7 +149,11 @@ export default function Filters({ houses }: Props) {
           <div className="w-full flex justify-center mt-6">
             <button
               type="submit"
-              className="px-10 py-3 font-medium rounded-md bg-[rgb(184,161,125)] text-white text-lg tracking-wide hover:bg-white hover:text-black hover:border hover:border-black transition-all duration-200"
+              className="px-10 py-3 font-medium rounded-md
+                         bg-[rgb(184,161,125)] text-white text-lg
+                         tracking-wide hover:bg-white hover:text-black
+                         hover:border hover:border-black
+                         transition-all duration-200"
             >
               Search
             </button>

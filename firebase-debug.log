@@ -1,0 +1,152 @@
+[debug] [2025-05-06T18:59:19.307Z] ----------------------------------------------------------------------
+[debug] [2025-05-06T18:59:19.310Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\nader\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init functions
+[debug] [2025-05-06T18:59:19.310Z] CLI Version:   14.2.2
+[debug] [2025-05-06T18:59:19.310Z] Platform:      win32
+[debug] [2025-05-06T18:59:19.310Z] Node Version:  v20.19.0
+[debug] [2025-05-06T18:59:19.310Z] Time:          Tue May 06 2025 21:59:19 GMT+0300 (Eastern European Summer Time)
+[debug] [2025-05-06T18:59:19.310Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-06T18:59:19.313Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-05-06T18:59:19.497Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-06T18:59:19.497Z] > authorizing via signed-in user (giorgosspirou07@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\nader\propertyhall\propertyhall
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[debug] [2025-05-06T18:59:19.858Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-05-06T18:59:19.858Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-05-06T18:59:21.227Z] Using project from CLI flag: propertyhall-31280
+[debug] [2025-05-06T18:59:21.227Z] Checked if tokens are valid: false, expires at: 1746333680934
+[debug] [2025-05-06T18:59:21.227Z] Checked if tokens are valid: false, expires at: 1746333680934
+[debug] [2025-05-06T18:59:21.228Z] > refreshing access token with scopes: []
+[debug] [2025-05-06T18:59:21.228Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-05-06T18:59:21.228Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-05-06T18:59:21.385Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-05-06T18:59:21.385Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-05-06T18:59:21.393Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/propertyhall-31280 [none]
+[debug] [2025-05-06T18:59:21.726Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/propertyhall-31280 200
+[debug] [2025-05-06T18:59:21.726Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/propertyhall-31280 {"projectId":"propertyhall-31280","projectNumber":"359100325328","displayName":"propertyhall","name":"projects/propertyhall-31280","resources":{"hostingSite":"propertyhall-31280"},"state":"ACTIVE","etag":"1_016db29f-96fc-46d3-ad17-05e294a27940"}
+[info] i  Using project propertyhall-31280 (propertyhall) 
+[info] 
+=== Functions Setup
+[debug] [2025-05-06T18:59:21.731Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-06T18:59:21.731Z] > authorizing via signed-in user (giorgosspirou07@gmail.com)
+[debug] [2025-05-06T18:59:21.731Z] [iam] checking project propertyhall-31280 for permissions ["firebase.projects.get"]
+[debug] [2025-05-06T18:59:21.731Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:21.731Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:21.731Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions [none]
+[debug] [2025-05-06T18:59:21.731Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions x-goog-quota-user=projects/propertyhall-31280
+[debug] [2025-05-06T18:59:21.731Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-05-06T18:59:22.710Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions 200
+[debug] [2025-05-06T18:59:22.710Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-05-06T18:59:22.710Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:22.710Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:22.710Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:22.710Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:22.710Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-05-06T18:59:22.710Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/propertyhall-31280
+[debug] [2025-05-06T18:59:22.711Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-05-06T18:59:22.711Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/propertyhall-31280
+[debug] [2025-05-06T18:59:23.819Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com 200
+[debug] [2025-05-06T18:59:23.819Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-05-06T18:59:23.830Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com 200
+[debug] [2025-05-06T18:59:23.831Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com [omitted]
+[info] 
+Detected existing codebase(s): default
+
+[info] 
+Overwriting codebase default...
+
+[debug] [2025-05-06T18:59:35.004Z] ----------------------------------------------------------------------
+[debug] [2025-05-06T18:59:35.006Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\nader\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init functions
+[debug] [2025-05-06T18:59:35.006Z] CLI Version:   14.2.2
+[debug] [2025-05-06T18:59:35.006Z] Platform:      win32
+[debug] [2025-05-06T18:59:35.006Z] Node Version:  v20.19.0
+[debug] [2025-05-06T18:59:35.006Z] Time:          Tue May 06 2025 21:59:35 GMT+0300 (Eastern European Summer Time)
+[debug] [2025-05-06T18:59:35.006Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-06T18:59:35.158Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-06T18:59:35.159Z] > authorizing via signed-in user (giorgosspirou07@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\nader\propertyhall\propertyhall
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-05-06T18:59:37.428Z] Using project from CLI flag: propertyhall-31280
+[debug] [2025-05-06T18:59:37.429Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:37.429Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:37.430Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/propertyhall-31280 [none]
+[debug] [2025-05-06T18:59:37.884Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/propertyhall-31280 200
+[debug] [2025-05-06T18:59:37.884Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/propertyhall-31280 {"projectId":"propertyhall-31280","projectNumber":"359100325328","displayName":"propertyhall","name":"projects/propertyhall-31280","resources":{"hostingSite":"propertyhall-31280"},"state":"ACTIVE","etag":"1_016db29f-96fc-46d3-ad17-05e294a27940"}
+[info] i  Using project propertyhall-31280 (propertyhall) 
+[info] 
+=== Functions Setup
+[debug] [2025-05-06T18:59:37.889Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-06T18:59:37.889Z] > authorizing via signed-in user (giorgosspirou07@gmail.com)
+[debug] [2025-05-06T18:59:37.889Z] [iam] checking project propertyhall-31280 for permissions ["firebase.projects.get"]
+[debug] [2025-05-06T18:59:37.890Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:37.890Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:37.890Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions [none]
+[debug] [2025-05-06T18:59:37.890Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions x-goog-quota-user=projects/propertyhall-31280
+[debug] [2025-05-06T18:59:37.890Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-05-06T18:59:38.807Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions 200
+[debug] [2025-05-06T18:59:38.807Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/propertyhall-31280:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-05-06T18:59:38.807Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:38.807Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:38.807Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:38.807Z] Checked if tokens are valid: true, expires at: 1746561560386
+[debug] [2025-05-06T18:59:38.808Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-05-06T18:59:38.808Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/propertyhall-31280
+[debug] [2025-05-06T18:59:38.809Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-05-06T18:59:38.809Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/propertyhall-31280
+[debug] [2025-05-06T18:59:39.859Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com 200
+[debug] [2025-05-06T18:59:39.859Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-05-06T18:59:39.911Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com 200
+[debug] [2025-05-06T18:59:39.911Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/propertyhall-31280/services/cloudfunctions.googleapis.com [omitted]
+[info] 
+Detected existing codebase(s): default
+
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+

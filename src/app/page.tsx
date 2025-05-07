@@ -53,7 +53,7 @@ export default async function HomePage() {
   return (
     <>
      
-      <div className="bg-[#D6D2C4] min-h-screen">
+      <div className="bg-[white] min-h-screen">
         
         {/* Carousel + Filters */}
         <HomeHeroSection houses={houses} />
@@ -73,7 +73,7 @@ export default async function HomePage() {
         {/* Featured Rental Properties */}
         <div className="bg-[#D6D2C4] shadow-lg rounded-md w-full">
           <div className="max-w-7xl mx-auto bg-[#D6D2C4] p-6">
-            <h1 className="text-4xl text-[white] font-extrabold text-center mb-8">
+            <h1 className="text-4xl text-[#361e1a] font-extrabold text-center mb-8">
               Featured Rental Properties
             </h1>
             <HomeHouseGrid houses={houses} />
@@ -82,7 +82,7 @@ export default async function HomePage() {
 
        {/* Buy With Us Section */}
 <div className="w-full bg-white shadow-lg py-16 px-4 sm:px-6 lg:px-12">
-  <div className="w-full max-w-[1600px] mx-auto flex flex-col md:flex-row items-center">
+  <div className="w-full max-w-[1800px] mx-auto flex flex-col md:flex-row items-center">
     {/* Text Content */}
     <div className="md:w-1/2 p-6">
       <h1 className="text-4xl font-extrabold text-[#361e1a] mb-4">
