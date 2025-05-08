@@ -1,5 +1,5 @@
 /* --- Google Fonts Import --- */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 
 /* --- slick-carousel CSS --- */
 @import 'slick-carousel/slick/slick.css';
@@ -28,14 +28,16 @@
 
 /* Apply global styles */
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-montserrat),sans-serif;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
     to bottom,
     transparent,
     rgb(var(--background-end-rgb))
-  ) rgb(var(--background-start-rgb));
+  )
+    rgb(var(--background-start-rgb));
 }
+
 
 /* Custom utilities */
 @layer utilities {

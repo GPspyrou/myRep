@@ -18,7 +18,7 @@ const firebaseConfig = {
 };
 
 // Log config for debugging (optional)
-console.log('Firebase config:', firebaseConfig);
+
 
 // Initialize Firebase app (only once)
 let app: FirebaseApp;

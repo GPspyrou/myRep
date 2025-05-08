@@ -1,15 +1,11 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Montserrat } from 'next/font/google';
+
 import "./globals.css";
 import NavBar from "@/app/lib/NavBar"; // import your NavBar
+import { montserratFont } from '@/app/lib/fonts';
 
-const montserratFont = Montserrat({ 
-  subsets: ["latin"],
-  variable: '--font-montserrat',
-  weight: ["400", "700"], // specify the font weights you need
-  display: "swap", // optional but good for performance
-});
+
 
 export const metadata: Metadata = {
   title: "Property Hall",
@@ -22,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={montserratFont.variable}>
+    <html lang="en" className={montserratFont.className}>
       <body > 
         <NavBar /> {/* Render NavBar */}
         <main className="">
