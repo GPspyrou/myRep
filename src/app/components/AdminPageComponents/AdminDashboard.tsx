@@ -21,17 +21,21 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const housesRes = await fetch('/api/houses/getHouses', { method: 'GET', credentials: 'include' });
+        const housesRes = await fetch('/api/getHouses', { method: 'GET', credentials: 'include' });
         if (!housesRes.ok) throw new Error(await housesRes.text());
-        const housesData: House[] = await housesRes.json();
+        const { houses: housesData } = await housesRes.json();
         setHouses(
-          housesData.map(h => ({
+          housesData.map((h: { location: { latitude: any; longitude: any; }; }) => ({
             ...h,
-            location: { latitude: Number(h.location.latitude), longitude: Number(h.location.longitude) }
+            location: {
+              latitude: Number(h.location.latitude),
+              longitude: Number(h.location.longitude)
+            }
           }))
         );
+     
 
-        const usersRes = await fetch('/api/users/getUsers', { method: 'GET', credentials: 'include' });
+        const usersRes = await fetch('/api/getUsers', { method: 'GET', credentials: 'include' });
         if (!usersRes.ok) throw new Error(await usersRes.text());
         const usersJson: { users: User[] } = await usersRes.json();
         setUsers(usersJson.users);
@@ -49,12 +53,12 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       if (data.id) {
-        await fetch('/api/houses/updateHouse', {
+        await fetch('/api/updateHouse', {
           method: 'PUT', credentials: 'include', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
       } else {
-        const addRes = await fetch('/api/houses/addHouse', {
+        const addRes = await fetch('/api/addHouse', {
           method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
@@ -63,7 +67,7 @@ export default function AdminDashboard() {
         data.id = id;
       }
 
-      const freshRes = await fetch('/api/houses/getHouses', { method: 'GET', credentials: 'include' });
+      const freshRes = await fetch('/api/getHouses', { method: 'GET', credentials: 'include' });
       if (!freshRes.ok) throw new Error(await freshRes.text());
       const fresh: House[] = await freshRes.json();
       setHouses(fresh.map(h => ({ ...h, location: { latitude: Number(h.location.latitude), longitude: Number(h.location.longitude) }})));
@@ -80,10 +84,10 @@ export default function AdminDashboard() {
     if (!confirm('Are you sure you want to delete this house?')) return;
     setLoading(true);
     try {
-      await fetch('/api/houses/deleteHouse', {
+      await fetch('/api/deleteHouse', {
         method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
       });
-      const freshRes = await fetch('/api/houses/getHouses', { method: 'GET', credentials: 'include' });
+      const freshRes = await fetch('/api/getHouses', { method: 'GET', credentials: 'include' });
       if (!freshRes.ok) throw new Error(await freshRes.text());
       setHouses(await freshRes.json());
     } catch (err: any) {

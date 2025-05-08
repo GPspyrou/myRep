@@ -7,13 +7,20 @@ import AdminDashboard from '@/app/components/AdminPageComponents/AdminDashboard'
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
-  const cookie = (await cookies()).get('__session')?.value;
-  if (!cookie) return redirect('/login');
+  // Read session cookie synchronously
+  const cookieStore = cookies();
+  const sessionCookie = (await cookieStore).get('__session')?.value;
+  if (!sessionCookie) {
+    return redirect('/login');
+  }
 
   try {
-    const decoded = await verifySessionCookie(cookie);
-    if (decoded.role !== 'admin') return redirect('/unauthorized');
-  } catch {
+    const decoded = await verifySessionCookie(sessionCookie);
+    if (decoded.role !== 'admin') {
+      return redirect('/unauthorized');
+    }
+  } catch (error) {
+    // Invalid or expired cookie
     return redirect('/login');
   }
 

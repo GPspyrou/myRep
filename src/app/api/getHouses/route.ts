@@ -33,11 +33,11 @@ export async function GET(req: NextRequest) {
         .get();
     }
 
-    const houses = snapshot.docs.map((doc: { id: any; data: () => any; }) => ({
+    const houses = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
-
+  
     return NextResponse.json({ houses });
   } catch (error: any) {
     console.error('[getHouses] Error:', error);

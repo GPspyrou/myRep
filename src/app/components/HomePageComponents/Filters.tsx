@@ -1,3 +1,4 @@
+// Updated Filters.tsx
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -26,9 +27,7 @@ export default function Filters({ houses }: Props) {
     [houses]
   );
   const prices = useMemo(() => {
-    const nums = houses
-      .map(h => parseInt(h.price, 10))
-      .filter(n => !isNaN(n));
+    const nums = houses.map(h => parseInt(h.price, 10)).filter(n => !isNaN(n));
     return Array.from(new Set(nums)).sort((a, b) => a - b);
   }, [houses]);
 
@@ -42,31 +41,33 @@ export default function Filters({ houses }: Props) {
   const handleApply = () => {
     const params = new URLSearchParams();
     params.set('mode', mode);
-    if (category)  params.set('category', category);
-    if (bedroom)   params.set('bedrooms', bedroom);
-    if (minPrice)  params.set('minPrice', minPrice);
-    if (maxPrice)  params.set('maxPrice', maxPrice);
-    if (refName)   params.set('ref', refName);
+    if (category) params.set('category', category);
+    if (bedroom) params.set('bedrooms', bedroom);
+    if (minPrice) params.set('minPrice', minPrice);
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    if (refName) params.set('ref', refName);
     router.push(`/listings?${params.toString()}`);
   };
 
   return (
-    <div ref={ref} className={`transition-all duration-700 ease-out transform
-      ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}
-    `}>
-      {/* ——— 1) DARK OVERLAY HEADER ——— */}
-      <div className="mx-auto w-full max-w-lg
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out transform
+        ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
+    >
+      {/* Header */}
+      <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg
                       bg-black/70 backdrop-blur-sm
                       border-2 border-white
-                      py-3 px-6
+                      py-3 px-4 sm:px-6
                       text-white">
-        <h2 className="text-3xl md:text-4xl font-serif text-center">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center">
           Search Property
         </h2>
       </div>
 
-      {/* ——— 2) TABS BAR ——— */}
-      <div className="mx-auto w-full max-w-lg
+      {/* Tabs */}
+      <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg
                       flex justify-center
                       border-b-2 border-pink-200
                       mt-2">
@@ -75,29 +76,31 @@ export default function Filters({ houses }: Props) {
             key={m}
             onClick={() => setMode(m as any)}
             className={`
-              px-6 py-2 font-medium tracking-widest uppercase
+              px-4 sm:px-6 py-2 font-medium tracking-widest uppercase
               ${mode === m
                 ? 'text-pink-600 border-b-2 border-pink-600'
                 : 'text-gray-400 hover:text-gray-600 border-b-2 border-transparent hover:border-gray-300'
-              }`}
+              }
+              text-sm sm:text-base
+            `}
           >
             {m}
           </button>
         ))}
       </div>
 
-      {/* ——— 3) WHITE FORM BOX ——— */}
-      <div className="mx-auto w-full max-w-lg
-                      bg-white px-6 pt-6 pb-8
+      {/* Form Box */}
+      <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg
+                      bg-white px-4 sm:px-6 md:px-6 pt-6 pb-8
                       shadow-sm">
         <form
-          onSubmit={e => { e.preventDefault(); handleApply() }}
-          className="flex flex-wrap justify-center gap-4"
+          onSubmit={e => { e.preventDefault(); handleApply(); }}
+          className="flex flex-wrap justify-center gap-3 sm:gap-4"
         >
           <select
             value={category}
             onChange={e => setCategory(e.target.value)}
-            className="w-40 border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            className="w-full sm:w-40 border border-gray-300 rounded-md px-3 sm:px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
           >
             <option value="">Type</option>
             {categories.map(cat => (
@@ -108,7 +111,7 @@ export default function Filters({ houses }: Props) {
           <select
             value={minPrice}
             onChange={e => setMinPrice(e.target.value)}
-            className="w-32 border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            className="w-full sm:w-32 border border-gray-300 rounded-md px-3 sm:px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
           >
             <option value="">Min Price</option>
             {prices.map(p => (
@@ -119,7 +122,7 @@ export default function Filters({ houses }: Props) {
           <select
             value={maxPrice}
             onChange={e => setMaxPrice(e.target.value)}
-            className="w-32 border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            className="w-full sm:w-32 border border-gray-300 rounded-md px-3 sm:px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
           >
             <option value="">Max Price</option>
             {prices.map(p => (
@@ -132,13 +135,13 @@ export default function Filters({ houses }: Props) {
             value={refName}
             onChange={e => setRefName(e.target.value)}
             placeholder="Ref. or Name"
-            className="w-48 border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            className="w-full sm:w-48 border border-gray-300 rounded-md px-3 sm:px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
           />
 
           <select
             value={bedroom}
             onChange={e => setBedroom(e.target.value)}
-            className="w-32 border border-gray-300 rounded-md px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            className="w-full sm:w-32 border border-gray-300 rounded-md px-3 sm:px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
           >
             <option value="">Bedrooms</option>
             {bedrooms.map(b => (
@@ -149,7 +152,7 @@ export default function Filters({ houses }: Props) {
           <div className="w-full flex justify-center mt-6">
             <button
               type="submit"
-              className="px-10 py-3 font-medium rounded-md
+              className="px-8 sm:px-10 py-3 font-medium rounded-md
                          bg-[rgb(184,161,125)] text-white text-lg
                          tracking-wide hover:bg-white hover:text-black
                          hover:border hover:border-black
