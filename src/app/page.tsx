@@ -1,6 +1,4 @@
 // Updated HomePage.tsx with responsive media queries
-'use client';
-
 import NavBar from '@/app/lib/NavBar';
 import HomeCarousel from '@/app/components/HomePageComponents/HomeCarousel';
 import Filters from '@/app/components/HomePageComponents/Filters';
