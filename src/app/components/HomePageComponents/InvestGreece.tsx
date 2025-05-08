@@ -1,3 +1,4 @@
+// Updated InvestGreece.tsx with responsive media queries
 'use client';
 
 import { FC } from 'react';
@@ -35,32 +36,39 @@ const reasons = [
 
 const InvestGreece: FC = () => {
   return (
-    <div className="bg-white py-16 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-[#003B71]">Investment in Greece</h2>
-        <p className="mt-4 text-lg font-medium text-[#003B71]">
-          A cliffside villa in Santorini, a historic apartment in Athens,<br />
+    <div className="bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-16">
+      <div className="max-w-6xl mx-auto text-center px-2 sm:px-4">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B71]">
+          Investment in Greece
+        </h2>
+        <p className="mt-4 text-base sm:text-lg md:text-xl font-medium text-[#003B71] leading-relaxed">
+          A cliffside villa in Santorini, a historic apartment in Athens,
+          <br className="block sm:hidden" />
           or a seaside retreat in Crete – your dream is within reach
         </p>
 
         {/* Icons Section */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 text-center">
           {features.map((item, index) => (
-            <div key={index} className="flex flex-col items-center space-y-4">
-              <div className="text-4xl">{item.icon}</div>
-              <h3 className="font-bold text-lg text-[#003B71]">{item.title}</h3>
-              <p className="text-sm text-[#003B71]">{item.description}</p>
+            <div key={index} className="flex flex-col items-center space-y-3 sm:space-y-4 md:space-y-6">
+              <div className="text-3xl sm:text-4xl md:text-5xl">{item.icon}</div>
+              <h3 className="font-bold text-base sm:text-lg md:text-xl text-[#003B71]">
+                {item.title}
+              </h3>
+              <p className="text-xs sm:text-sm md:text-base text-[#003B71]">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="w-16 h-1 bg-pink-400 mx-auto my-12" />
+        <div className="w-12 sm:w-16 md:w-20 h-1 bg-pink-400 mx-auto my-8 sm:my-10 md:my-12" />
 
         {/* Reasons List */}
-        <h3 className="text-xl font-bold text-[#003B71] mb-4">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#003B71] mb-4">
           5 reasons which make Greece a great place to invest
         </h3>
-        <ul className="list-disc text-left max-w-2xl mx-auto space-y-2 text-[#003B71] text-sm pl-5">
+        <ul className="list-disc text-left max-w-xl sm:max-w-2xl mx-auto space-y-2 text-[#003B71] text-xs sm:text-sm md:text-base pl-4 sm:pl-5 md:pl-6">
           {reasons.map((reason, idx) => (
             <li key={idx}>{reason}</li>
           ))}
