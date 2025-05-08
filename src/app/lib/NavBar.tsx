@@ -1,3 +1,4 @@
+// Updated NavBar.tsx with responsive tweaks
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,20 +14,12 @@ const poppins = Poppins({
   weight: ['300', '400', '600', '700'],
 });
 
-const defaultAvatar = '/icons/default-avatar.svg'; // Path to your default SVG
-
-/**
- * Note: In next.config.js, allow Google avatar domains:
- * module.exports = {
- *   images: { domains: ['lh3.googleusercontent.com'] },
- * };
- */
+const defaultAvatar = '/icons/default-avatar.svg';
 
 const NavBar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // put all “initially transparent” routes here
   const transparentRoutes = ['/', '/houses/*'];
 
   const [user, setUser] = useState<User | null>(null);
@@ -48,10 +41,8 @@ const NavBar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // wildcard-aware check
   const isTransparentRoute = transparentRoutes.some((route) => {
     if (route.endsWith('/*')) {
-      // strip trailing /* and test prefix
       const prefix = route.slice(0, -1);
       return pathname.startsWith(prefix);
     }
@@ -67,11 +58,8 @@ const NavBar = () => {
     try {
       await auth.signOut();
       const res = await fetch('/api/session', { method: 'DELETE' });
-      if (res.ok) {
-        router.push('/login');
-      } else {
-        console.error('Logout failed', await res.text());
-      }
+      if (res.ok) router.push('/login');
+      else console.error('Logout failed', await res.text());
     } catch (err) {
       console.error('Logout error:', err);
     }
@@ -79,17 +67,19 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`
-        ${poppins.className}
-        fixed inset-x-0 top-0 h-[100px]
+      className={
+        `${poppins.className}
+        fixed inset-x-0 top-0
+        h-16 sm:h-20 md:h-24
         flex items-center justify-between
-        px-8 text-gray-800 text-lg font-medium
+        px-4 sm:px-6 md:px-8 lg:px-12
+        text-gray-800
         z-[9999]
-        ${bgClass}
-      `}
+        ${bgClass}`
+      }
     >
-      {/* Left: support email */}
-      <div className="flex-none">
+      {/* Left: support email, hide on xs */}
+      <div className="flex-none hidden sm:block">
         <a href="mailto:support@property-hall.com" className="text-xs underline">
           support@property-hall.com
         </a>
@@ -97,40 +87,35 @@ const NavBar = () => {
 
       {/* Center: navigation links */}
       <div className="flex-1 flex justify-center">
-        <ul className="list-none flex items-center gap-6 text-base tracking-wide">
-          <li>
-            <Link
-              href="/"
-              className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all"
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/listings"
-              className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all"
-            >
-              Listings
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/contact"
-              className="relative pb-1 hover:text-blue-500 hover:drop-shadow-md transition-all"
-            >
-              Contact
-            </Link>
-          </li>
+        <ul className="list-none flex items-center gap-4 sm:gap-6 lg:gap-8">
+          {['Home','Listings','Contact'].map((item, idx) => {
+            const href = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
+            return (
+              <li key={idx}>
+                <Link
+                  href={href}
+                  className="
+                    relative pb-1
+                    text-sm sm:text-base md:text-lg
+                    font-medium
+                    hover:text-blue-500 hover:drop-shadow-md
+                    transition-all
+                  "
+                >
+                  {item}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
       {/* Right: user info */}
       <div className="flex-none">
         {loading ? (
-          <span>Loading...</span>
+          <span className="text-sm sm:text-base">Loading...</span>
         ) : user ? (
-          <div className="flex flex-col items-center">
+          <div className="flex items-center space-x-2">
             <Image
               src={user.photoURL ?? defaultAvatar}
               alt="User avatar"
@@ -138,18 +123,26 @@ const NavBar = () => {
               height={32}
               className="rounded-full"
             />
-            <span className="mt-1 text-xs text-gray-600">{user.email}</span>
-            <button
-              onClick={handleLogout}
-              className="mt-1 text-xs text-blue-500 hover:underline"
+            <div className="hidden sm:flex sm:flex-col sm:items-start">
+              <span className="text-xs sm:text-sm text-gray-600">{user.email}</span>
+              <button
+                onClick={handleLogout}
+                className="text-xs sm:text-sm text-blue-500 hover:underline"
+              >
+                Logout
+              </button>
+            </div>
+            <Link
+              href="/login"
+              className="block sm:hidden text-sm hover:text-blue-500 hover:drop-shadow-md transition-all"
             >
-              Logout
-            </button>
+              Login
+            </Link>
           </div>
         ) : (
           <Link
             href="/login"
-            className="text-base hover:text-blue-500 hover:drop-shadow-md transition-all"
+            className="text-sm sm:text-base hover:text-blue-500 hover:drop-shadow-md transition-all"
           >
             Login
           </Link>

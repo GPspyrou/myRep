@@ -130,9 +130,9 @@ export default async function HomePage() {
 
     {/* Text Content */}
     <div className="md:w-1/2 p-6">
-      <h1 className="text-4xl font-extrabold text-[#361e1a] mb-4">
+      <h2 className="text-4xl font-extrabold text-[#361e1a] mb-4">
         Sell Your Property with Confidence
-      </h1>
+      </h2>
       <p className="text-lg text-[#361e1a] mb-6">
         Selling your home doesn't have to be stressful. With our expert guidance, you'll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price. Let us handle the complexities while you experience a smooth, rewarding selling journey.
       </p>
