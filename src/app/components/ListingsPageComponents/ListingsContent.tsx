@@ -74,8 +74,8 @@ export default function ListingsContent({ initialHouses }: Props) {
   if (houses.length === 0) return <div>No houses found.</div>;
 
   return (
-    <div className="flex flex-1 overflow-hidden">
-      <div className="flex-[0.95] overflow-y-scroll scrollbar-hide p-5 bg-[#D6D2C4] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20">
+    <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+      <div className="flex-1 md:flex-[0.95] overflow-y-scroll scrollbar-hide p-5 bg-[#D6D2C4] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20">
         <HouseGridWrapper
           houses={houses}
           onHover={(house) => {
@@ -92,7 +92,7 @@ export default function ListingsContent({ initialHouses }: Props) {
         {/* Gradient overlay */}
         <div className="pointer-events-none absolute top-0 -right-2 w-5 h-full bg-gradient-to-l from-[rgba(0,0,0,0.15)] to-transparent" />
       </div>
-      <div className="flex-1 h-full relative z-10">
+      <div className="hidden md:flex md:flex-1 h-full relative z-10">
         <ClientMapWrapper
           houses={houses}
           viewState={viewState}
