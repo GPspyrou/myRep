@@ -99,7 +99,7 @@ export default async function HomePage() {
             </div>
             <div className="md:w-1/2 p-6">
               <Image
-                src="https://firebasestorage.googleapis.com/v0/b/propertyhall-31280.appspot.com/o/istockphoto-1483031614-1024x1024.jpg?alt=media"
+                src="https://firebasestorage.googleapis.com/v0/b/propertyhall-31280.firebasestorage.app/o/istockphoto-1483031614-1024x1024.jpg?alt=media&token=dc3249b3-88b1-4dc0-a5b2-bdc5a1e2f6dd"
                 alt="Luxurious living room"
                 width={1000}
                 height={1000}
@@ -115,7 +115,7 @@ export default async function HomePage() {
           <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 p-6">
               <Image
-                src="https://firebasestorage.googleapis.com/v0/b/propertyhall-31280.appspot.com/o/istockphoto-1469939366-612x612.jpg?alt=media"
+                src="https://firebasestorage.googleapis.com/v0/b/propertyhall-31280.firebasestorage.app/o/istockphoto-1469939366-612x612.jpg?alt=media&token=7cbe11b6-b42a-478e-b125-994ce45c02cb"
                 alt="Property showcase"
                 width={1000}
                 height={1000}
