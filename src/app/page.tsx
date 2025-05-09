@@ -139,7 +139,7 @@ export default async function HomePage() {
 
         <InvestGreece />
         <FAQ items={faqItems} />
-        <Footer />
+        
       </div>
     </>
   );
