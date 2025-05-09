@@ -58,119 +58,8 @@ export default function HomeHeroSection({ houses }: Props) {
 
   return (
     <div>
-      {/* Filters */}
-      <div
-        ref={ref}
-        className={`transition-all duration-700 ease-out transform ${
-          inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-        }`}
-      >
-        <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg bg-black/70 backdrop-blur-sm border-2 border-white py-3 px-4 sm:px-6 text-white">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center">
-            Search Property
-          </h2>
-        </div>
-
-        <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg flex justify-center border-b-2 border-pink-200 mt-2">
-          {(['sale', 'rental'] as const).map(m => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`
-                px-4 sm:px-6 py-2 font-medium tracking-widest uppercase
-                ${mode === m
-                  ? 'text-pink-600 border-b-2 border-pink-600'
-                  : 'text-gray-400 hover:text-gray-600 border-b-2 border-transparent hover:border-gray-300'}
-                text-sm sm:text-base
-              `}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-
-        <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg bg-white px-4 sm:px-6 pt-6 pb-8 shadow-sm">
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              handleApply();
-            }}
-            className="flex flex-wrap justify-center gap-3 sm:gap-4"
-          >
-            <select
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-              className="w-full sm:w-40 border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
-            >
-              <option value="">Type</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={minPrice}
-              onChange={e => setMinPrice(e.target.value)}
-              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
-            >
-              <option value="">Min Price</option>
-              {prices.map(p => (
-                <option key={p} value={p}>
-                  {p} €
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={maxPrice}
-              onChange={e => setMaxPrice(e.target.value)}
-              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
-            >
-              <option value="">Max Price</option>
-              {prices.map(p => (
-                <option key={p} value={p}>
-                  {p} €
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="text"
-              value={refName}
-              onChange={e => setRefName(e.target.value)}
-              placeholder="Ref. or Name"
-              className="w-full sm:w-48 border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
-            />
-
-            <select
-              value={bedroom}
-              onChange={e => setBedroom(e.target.value)}
-              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
-            >
-              <option value="">Bedrooms</option>
-              {bedrooms.map(b => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-            </select>
-
-            <div className="w-full flex justify-center mt-6">
-              <button
-                type="submit"
-                className="px-8 sm:px-10 py-3 font-medium rounded-md bg-[rgb(184,161,125)] text-white text-lg tracking-wide hover:bg-white hover:text-black hover:border hover:border-black transition-all duration-200"
-              >
-                Search
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
       {/* Carousel */}
-      <div className="relative w-full h-[60vh] md:h-screen mt-8">
+      <div className="relative w-full h-[60vh] md:h-screen">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={16}
@@ -222,6 +111,120 @@ export default function HomeHeroSection({ houses }: Props) {
             );
           })}
         </Swiper>
+
+        {/* Search Property overlay at bottom of carousel */}
+        <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-xs sm:max-w-md md:max-w-lg p-4 pointer-events-none z-20">
+          <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-3 px-4 sm:px-6 text-white pointer-events-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center">
+              Search Property
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters below carousel */}
+      <div
+        ref={ref}
+        className={`mt-8 transition-all duration-700 ease-out transform ${
+          inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+        }`}
+      >
+        {/* Sale/Rental Tabs */}
+        <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg flex justify-center border-b-2 border-pink-200">
+          {(['sale', 'rental'] as const).map(m => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`px-4 sm:px-6 py-2 font-medium tracking-widest uppercase ${
+                mode === m
+                  ? 'text-pink-600 border-b-2 border-pink-600'
+                  : 'text-gray-400 hover:text-gray-600 border-b-2 border-transparent hover:border-gray-300'
+              } text-sm sm:text-base`}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+
+        {/* Filter Form */}
+        <div className="mx-auto w-full max-w-xs sm:max-w-md md:max-w-lg bg-white px-4 sm:px-6 pt-6 pb-8 shadow-sm">
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              handleApply();
+            }}
+            className="flex flex-wrap justify-center gap-3 sm:gap-4"
+          >
+            <select
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              className="w-full sm:w-40 border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            >
+              <option value="">Type</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={minPrice}
+              onChange={e => setMinPrice(e.target.value)}
+              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            >
+              <option value="">Min Price</option>
+              {prices.map(p => (
+                <option key={p} value={p}>
+                  {p} €
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={maxPrice}
+              onChange={e => setMaxPrice(e.target.value)}
+              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            >
+              <option value="">Max Price</option>
+              {prices.map(p => (
+                <option key={p} value={p}>
+                  {p} €
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="text"
+              value={refName}
+              onChange={e => setRefName(e.target.value)}
+              placeholder="Ref. or Name"
+              className="w-full sm:w-48	border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            />
+
+            <select
+              value={bedroom}
+              onChange={e => setBedroom(e.target.value)}
+              className="w-full sm:w-32	border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+            >
+              <option value="">Bedrooms</option>
+              {bedrooms.map(b => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
+
+            <div className="w-full flex justify-center mt-6">
+              <button
+                type="submit"
+                className="px-8 sm:px-10 py-3 font-medium rounded-md bg-[rgb(184,161,125)] text-white text-lg tracking-wide hover:bg-white hover:text-black hover;border hover;border-black transition-all duration-200"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
