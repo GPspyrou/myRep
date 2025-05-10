@@ -1,4 +1,3 @@
-// components/HomeHeroCarousel.tsx
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -18,8 +17,12 @@ interface Props {
 
 export default function HomeHeroSection({ houses }: Props) {
   const router = useRouter();
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
-
+  const { ref, inView } = useInView({
+       triggerOnce: true,
+       threshold: 0,                     // fire on even 1px visibility
+       rootMargin: '0px 0px -0px 0px'  // shrink the bottom of viewport by 200px
+     });
+    
   const categories = useMemo(
     () => Array.from(new Set(houses.map(h => h.category))).sort(),
     [houses]
@@ -112,20 +115,22 @@ export default function HomeHeroSection({ houses }: Props) {
           })}
         </Swiper>
 
-        {/* Search Property overlay at bottom of carousel */}
-        <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-xs sm:max-w-md md:max-w-lg p-4 pointer-events-none z-20">
-          <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-3 px-4 sm:px-6 text-white pointer-events-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center">
-              Search Property
-            </h2>
+        {/* Search Property overlay at bottom of carousel (shown after filters in view) */}
+        {inView && (
+          <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-xs sm:max-w-md md:max-w-lg p-4 pointer-events-none z-20">
+            <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-3 px-4 sm:px-6 text-white pointer-events-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center">
+                Search Property
+              </h2>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Filters below carousel */}
       <div
         ref={ref}
-        className={`mt-8 transition-all duration-700 ease-out transform ${
+        className={`mt-8 transition-all shadow-md duration-300 ease-out transform ${
           inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
         }`}
       >
@@ -171,7 +176,7 @@ export default function HomeHeroSection({ houses }: Props) {
             <select
               value={minPrice}
               onChange={e => setMinPrice(e.target.value)}
-              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2\tbg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
             >
               <option value="">Min Price</option>
               {prices.map(p => (
@@ -184,7 +189,7 @@ export default function HomeHeroSection({ houses }: Props) {
             <select
               value={maxPrice}
               onChange={e => setMaxPrice(e.target.value)}
-              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+              className="w-full sm:w-32 border border-gray-300 rounded-md px-3 py-2\tbg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
             >
               <option value="">Max Price</option>
               {prices.map(p => (
@@ -199,13 +204,13 @@ export default function HomeHeroSection({ houses }: Props) {
               value={refName}
               onChange={e => setRefName(e.target.value)}
               placeholder="Ref. or Name"
-              className="w-full sm:w-48	border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+              className="w-full sm:w-48\tborder border-gray-300 rounded-md px-3 py-2\tbg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
             />
 
             <select
               value={bedroom}
               onChange={e => setBedroom(e.target.value)}
-              className="w-full sm:w-32	border border-gray-300 rounded-md px-3 py-2	bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
+              className="w-full sm:w-32\tborder border-gray-300 rounded-md px-3 py-2\tbg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c7aebe]"
             >
               <option value="">Bedrooms</option>
               {bedrooms.map(b => (

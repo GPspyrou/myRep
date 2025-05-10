@@ -14,6 +14,7 @@ import { House } from '@/app/types/house';
 // ← NEW: import your client‐SDK instance instead of the Admin one
 import { db } from '@/app/firebase/firebaseServer';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -59,11 +60,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <div className="bg-white min-h-screen">
+      <div className="bg-white  min-h-screen">
         <HomeHeroSection houses={houses} />
 
         <section className="w-full shadow-lg bg-[#e9e5dd]">
-          <div className="max-w-7xl mx-auto p-12">
+          <div className="max-w-7xl  mx-auto p-12">
             <h1 className="text-4xl text-center text-[#361e1a] mb-8">
               Featured Properties For Sale
             </h1>
@@ -93,9 +94,11 @@ export default async function HomePage() {
               <p className="text-[26px] text-[#361e1a] mb-6">
                 Our dedicated team provides expert guidance on current market trends, property valuations, and strategic negotiation techniques to help you secure the ideal property at the best possible value. Let us simplify your buying experience and make your property dreams a reality.
               </p>
-              <button className="px-6 py-3 border border-[#361e1a] text-[#361e1a] font-medium rounded-md hover:bg-[#361e1a] hover:text-white transition">
-                Explore Our Listings
-              </button>
+              <Link href="/listings">
+                <span className="inline-block px-6 py-3 border border-[#361e1a] text-[#361e1a] font-medium rounded-md hover:bg-[#361e1a] hover:text-white transition cursor-pointer">
+                  Explore Our Listings
+                </span>
+              </Link>
             </div>
             <div className="md:w-1/2 p-6">
               <Image
@@ -109,7 +112,7 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-
+        
         {/* Sell With Us */}
         <div className="w-full bg-[#D6D2C4] shadow-lg py-16 px-4 sm:px-6 lg:px-12">
           <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center">
@@ -130,9 +133,11 @@ export default async function HomePage() {
               <p className="text-[26px] text-[#361e1a] mb-6">
                 Selling your home doesn’t have to be stressful. With our expert guidance, you’ll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price. Let us handle the complexities while you experience a smooth, rewarding selling journey.
               </p>
-              <button className="px-6 py-3 border border-[#361e1a] text-[#361e1a] font-medium rounded-md hover:bg-[#361e1a] hover:text-white transition">
-                View Pricing Options
-              </button>
+              <Link href="/sell-with-us">
+                <span className="inline-block px-6 py-3 border border-[#361e1a] text-[#361e1a] font-medium rounded-md hover:bg-[#361e1a] hover:text-white transition cursor-pointer">
+                  View Pricing Options
+                </span>
+              </Link>
             </div>
           </div>
         </div>

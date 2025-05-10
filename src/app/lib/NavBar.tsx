@@ -1,4 +1,3 @@
-// Updated NavBar.tsx with responsive tweaks
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -15,23 +14,22 @@ const poppins = Poppins({
 });
 
 const defaultAvatar = '/icons/default-avatar.svg';
+const transparentRoutes = ['/', '/houses/*'];
 
-const NavBar = () => {
+export default function NavBar() {
   const router = useRouter();
   const pathname = usePathname();
-
-  const transparentRoutes = ['/', '/houses/*'];
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
       setLoading(false);
     });
-    return () => unsubscribe();
+    return unsub;
   }, []);
 
   useEffect(() => {
@@ -41,25 +39,32 @@ const NavBar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const isTransparentRoute = transparentRoutes.some((route) => {
-    if (route.endsWith('/*')) {
-      const prefix = route.slice(0, -1);
-      return pathname.startsWith(prefix);
-    }
-    return pathname === route;
-  });
+  const isTransparentRoute = transparentRoutes.some((r) =>
+    r.endsWith('/*') ? pathname.startsWith(r.slice(0, -1)) : pathname === r
+  );
+  const showSolid = !(isTransparentRoute && !scrolled);
 
-  const bgClass =
-    isTransparentRoute && !scrolled
-      ? 'bg-transparent shadow-none'
-      : 'bg-white bg-gradient-to-b from-white/95 to-white/90 shadow-md';
+  const bgClass = showSolid
+    ? 'bg-white/90 shadow-md'
+    : 'bg-transparent shadow-none';
 
-  const handleLogout = async (): Promise<void> => {
+  const transitionClasses = 'transition-colors duration-500 ease-in-out';
+
+  const commonLinkStyles = `
+    relative
+    text-[black]
+    transition
+    after:absolute after:-bottom-0.5 after:left-0
+    after:h-0.5 after:w-0 after:bg-[black]
+    after:transition-all after:duration-300 after:ease-in-out
+    hover:after:w-full
+  `;
+
+  const handleLogout = async () => {
     try {
       await auth.signOut();
-      const res = await fetch('/api/session', { method: 'DELETE' });
-      if (res.ok) router.push('/login');
-      else console.error('Logout failed', await res.text());
+      await fetch('/api/session', { method: 'DELETE' });
+      router.push('/login');
     } catch (err) {
       console.error('Logout error:', err);
     }
@@ -67,41 +72,46 @@ const NavBar = () => {
 
   return (
     <nav
-      className={
-        `${poppins.className}
-        fixed inset-x-0 top-0
-        h-16 sm:h-20 md:h-24
-        flex items-center justify-between
-        px-4 sm:px-6 md:px-8 lg:px-12
-        text-gray-800
-        z-[9999]
-        ${bgClass}`
-      }
+      className={`
+        ${poppins.className}
+        fixed inset-x-0 top-0 z-50 backdrop-blur-sm
+        ${bgClass}
+        ${transitionClasses}
+      `}
     >
-      {/* Left: support email, hide on xs */}
-      <div className="flex-none hidden sm:block">
-        <a href="mailto:support@property-hall.com" className="text-xs underline">
-          support@property-hall.com
-        </a>
-      </div>
+      <a
+        href="mailto:support@property-hall.com"
+        className="absolute top-0 right-0 mt-1 mr-4 text-xs underline text-[black]"
+      >
+        support@property-hall.com
+      </a>
 
-      {/* Center: navigation links */}
-      <div className="flex-1 flex justify-center">
-        <ul className="list-none flex items-center gap-4 sm:gap-6 lg:gap-8">
-          {['Home','Listings','Contact'].map((item, idx) => {
-            const href = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
+      <div className="max-w-7xl mx-auto flex items-center h-16 px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <Link href="/" className="mr-10 flex items-center">
+          <Image
+            src="/LOGOTEST.png" // <-- Replace with your logo path
+            alt="Logo"
+            width={70}
+            height={70}
+            className="object-contain"
+          />
+        </Link>
+
+        {/* Left Nav Links */}
+        <ul className="hidden sm:flex space-x-12">
+          {['Home', 'Listings', 'Sell with Us'].map((item) => {
+            let href = '/';
+            if (item === 'Home') {
+              href = '/';
+            } else if (item === 'Sell with Us') {
+              href = '/sell-with-us';
+            } else {
+              href = `/${item.toLowerCase()}`;
+            }
             return (
-              <li key={idx}>
-                <Link
-                  href={href}
-                  className="
-                    relative pb-1
-                    text-sm sm:text-base md:text-lg
-                    font-medium
-                    hover:text-blue-500 hover:drop-shadow-md
-                    transition-all
-                  "
-                >
+              <li key={item}>
+                <Link href={href} className={`text-lg font-medium ${commonLinkStyles}`}>
                   {item}
                 </Link>
               </li>
@@ -110,12 +120,15 @@ const NavBar = () => {
         </ul>
       </div>
 
-      {/* Right: user info */}
-      <div className="flex-none">
+      {/* Right Side */}
+      <div className="absolute inset-y-0 pt-3 right-4 pr-6 flex items-center space-x-4">
+        <Link href="/contact" className={`text-sm pr-4 font-medium ${commonLinkStyles}`}>
+          Contact
+        </Link>
         {loading ? (
-          <span className="text-sm sm:text-base">Loading...</span>
+          <span className={`text-base text-gray-600 ${commonLinkStyles}`}>Loading...</span>
         ) : user ? (
-          <div className="flex items-center space-x-2">
+          <>
             <Image
               src={user.photoURL ?? defaultAvatar}
               alt="User avatar"
@@ -123,33 +136,25 @@ const NavBar = () => {
               height={32}
               className="rounded-full"
             />
-            <div className="hidden sm:flex sm:flex-col sm:items-start">
-              <span className="text-xs sm:text-sm text-gray-600">{user.email}</span>
-              <button
-                onClick={handleLogout}
-                className="text-xs sm:text-sm text-blue-500 hover:underline"
-              >
+            <div className="hidden sm:flex flex-col text-right">
+              <span className={`text-xs ${commonLinkStyles}`}>{user.email}</span>
+              <button onClick={handleLogout} className={`text-xs ${commonLinkStyles}`}>
                 Logout
               </button>
             </div>
             <Link
               href="/login"
-              className="block sm:hidden text-sm hover:text-blue-500 hover:drop-shadow-md transition-all"
+              className={`sm:hidden ml-6 text-sm font-medium ${commonLinkStyles}`}
             >
               Login
             </Link>
-          </div>
+          </>
         ) : (
-          <Link
-            href="/login"
-            className="text-sm sm:text-base hover:text-blue-500 hover:drop-shadow-md transition-all"
-          >
+          <Link href="/login" className={`text-sm font-medium ${commonLinkStyles}`}>
             Login
           </Link>
         )}
       </div>
     </nav>
   );
-};
-
-export default NavBar;
+}
