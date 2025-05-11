@@ -49,7 +49,7 @@ export default async function SecureListingsPage({
       isAdditional: false,
     };
   });
-
+  
   // Check user auth via cookie and get additional user-specific houses
   let userHouses: House[] = [];
   const cookieStore = cookies();
@@ -59,9 +59,11 @@ export default async function SecureListingsPage({
     const userId = await verifyIdTokenFromCookie(token);
     if (userId) {
       const userSnap = await db
-        .collection('houses')
-        .where('userId', '==', userId)
-        .get();
+      .collection('houses')
+      .where('allowedUsers', 'array-contains', userId)
+      .where('isPublic', '==', false)
+      .get();
+      
 
       userHouses = userSnap.docs.map(doc => {
         const data = doc.data() as House;
@@ -80,7 +82,7 @@ export default async function SecureListingsPage({
 
   // Combine all houses
   let allHouses: House[] = [...publicHouses, ...userHouses];
-
+  
   // Apply filters to all houses
   allHouses = allHouses.filter(h => {
     const hBedrooms = typeof h.bedrooms === 'string' ? parseInt(h.bedrooms, 10) : h.bedrooms;
