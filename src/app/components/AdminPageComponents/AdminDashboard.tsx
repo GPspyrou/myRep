@@ -25,15 +25,16 @@ export default function AdminDashboard() {
         if (!housesRes.ok) throw new Error(await housesRes.text());
         const { houses: housesData } = await housesRes.json();
         setHouses(
-          housesData.map((h: { location: { latitude: any; longitude: any; }; }) => ({
+          housesData.map((h: { location: { latitude: any; longitude: any; }; allowedUsers: any; }) => ({
             ...h,
             location: {
               latitude: Number(h.location.latitude),
-              longitude: Number(h.location.longitude)
-            }
+              longitude: Number(h.location.longitude),
+            },
+            // Ensure allowedUsers is always an array
+            allowedUsers: Array.isArray(h.allowedUsers) ? h.allowedUsers : [],
           }))
         );
-     
 
         const usersRes = await fetch('/api/getUsers', { method: 'GET', credentials: 'include' });
         if (!usersRes.ok) throw new Error(await usersRes.text());
@@ -67,10 +68,20 @@ export default function AdminDashboard() {
         data.id = id;
       }
 
+      // Refresh the list after save
       const freshRes = await fetch('/api/getHouses', { method: 'GET', credentials: 'include' });
       if (!freshRes.ok) throw new Error(await freshRes.text());
-      const fresh: House[] = await freshRes.json();
-      setHouses(fresh.map(h => ({ ...h, location: { latitude: Number(h.location.latitude), longitude: Number(h.location.longitude) }})));
+      const { houses: freshData } = await freshRes.json();
+      setHouses(
+        freshData.map((h: { location: { latitude: any; longitude: any; }; allowedUsers: any; }) => ({
+          ...h,
+          location: {
+            latitude: Number(h.location.latitude),
+            longitude: Number(h.location.longitude),
+          },
+          allowedUsers: Array.isArray(h.allowedUsers) ? h.allowedUsers : [],
+        }))
+      );
       setEditingHouse(null);
     } catch (err: any) {
       console.error(err);
@@ -89,7 +100,17 @@ export default function AdminDashboard() {
       });
       const freshRes = await fetch('/api/getHouses', { method: 'GET', credentials: 'include' });
       if (!freshRes.ok) throw new Error(await freshRes.text());
-      setHouses(await freshRes.json());
+      const { houses: freshData } = await freshRes.json();
+      setHouses(
+        freshData.map((h: { location: { latitude: any; longitude: any; }; allowedUsers: any; }) => ({
+          ...h,
+          location: {
+            latitude: Number(h.location.latitude),
+            longitude: Number(h.location.longitude),
+          },
+          allowedUsers: Array.isArray(h.allowedUsers) ? h.allowedUsers : [],
+        }))
+      );
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to delete house.');

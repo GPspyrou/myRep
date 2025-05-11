@@ -2,8 +2,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFirebaseAdminDB } from '@/app/lib/firebaseAdmin';
 import * as admin from 'firebase-admin';
+import { applyRateLimit } from '@/app/lib/LargeRateLimiter';
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+  const { success } = await applyRateLimit(ip);
+
+  if (!success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const appCheckToken = req.headers.get('x-firebase-appcheck');
 
   if (!appCheckToken) {
@@ -11,7 +19,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Verify the App Check token
     await admin.appCheck().verifyToken(appCheckToken);
   } catch (err) {
     console.error('Invalid App Check token', err);

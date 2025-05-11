@@ -137,20 +137,20 @@ export default function NavBar() {
               className="rounded-full"
             />
             <div className="hidden sm:flex flex-col text-right">
-              <span className={`text-xs ${commonLinkStyles}`}>{user.email}</span>
-              <button onClick={handleLogout} className={`text-xs ${commonLinkStyles}`}>
+              <span className={`text-xs `}>{user.email}</span>
+              <button onClick={handleLogout} className={`text-xs `}>
                 Logout
               </button>
             </div>
             <Link
               href="/login"
-              className={`sm:hidden ml-6 text-sm font-medium ${commonLinkStyles}`}
+              className={`sm:hidden ml-6 text-sm font-medium `}
             >
               Login
             </Link>
           </>
         ) : (
-          <Link href="/login" className={`text-sm font-medium ${commonLinkStyles}`}>
+          <Link href="/login" className={`text-sm font-medium `}>
             Login
           </Link>
         )}

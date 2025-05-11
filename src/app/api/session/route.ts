@@ -1,15 +1,21 @@
-// src/app/api/session/route.tsx
-
 import { getFirebaseAdminAuth } from '@/app/lib/firebaseAdmin';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { applyRateLimit } from '@/app/lib/LargeRateLimiter';
 
 const COOKIE_NAME = process.env.COOKIE_NAME || '__session';
 
-export async function POST(req: Request) {
-  const { token } = await req.json();
+export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+  const { success } = await applyRateLimit(ip);
 
+  if (!success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
+  const { token } = await req.json();
   const adminAuth = getFirebaseAdminAuth();
+
   if (!adminAuth) {
     return NextResponse.json(
       { error: 'Firebase Admin not available' },
@@ -18,8 +24,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Create session cookie with 1 hour expiration (in milliseconds)
-    const expiresIn = 60 * 60 * 1000; // 3,600,000 ms
+    const expiresIn = 60 * 60 * 1000; // 1 hour
     const sessionCookie = await adminAuth.createSessionCookie(token, { expiresIn });
 
     (await cookies()).set({
@@ -28,7 +33,7 @@ export async function POST(req: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
-      maxAge: expiresIn / 1000, // convert milliseconds to seconds for cookie settings
+      maxAge: expiresIn / 1000,
       sameSite: 'lax',
     });
 

@@ -23,12 +23,12 @@ function initServices() {
       }),
     });
   }
-
+  
   db = getFirestore();
   const redis = Redis.fromEnv();
   ratelimit = new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(5, '10 s'),
+    limiter: Ratelimit.slidingWindow(5, '6000 s'),
   });
 }
 
@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
   const ua = req.headers.get('user-agent') ?? '';
 
+  
   const { success } = await ratelimit.limit(ip);
   if (!success) {
     return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 });
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
       policyVersion: process.env.PRIVACY_POLICY_VERSION || '1.0',
       context: 'contact-form',
     });
-
+   
     // 2) Send the email
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
         pass: process.env.SMTP_PASS!,
       },
     });
-
+    console.log( process.env.SMTP_USER, process.env.SMTP_PASS);
     await transporter.sendMail({
       from: `"${firstName} ${lastName}" <${process.env.SMTP_USER}>`,
       to: process.env.SMTP_USER,
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
         <p>${message}</p>
       `,
     });
-
+ 
     return NextResponse.json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Contact form error:', error);

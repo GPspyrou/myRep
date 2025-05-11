@@ -1,9 +1,16 @@
 // app/api/getHouses/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getFirebaseAdminDB, verifySessionCookie } from '@/app/lib/firebaseAdmin';
-import { getToken } from 'firebase/app-check';
+import { applyRateLimit } from '@/app/lib/LargeRateLimiter'; // Adjusted import for large rate limiter
 
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+  const { success } = await applyRateLimit(ip);
+
+  if (!success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   try {
     const sessionCookie = req.cookies.get('__session')?.value;
 
@@ -17,7 +24,7 @@ export async function GET(req: NextRequest) {
 
     const decodedToken = await verifySessionCookie(sessionCookie);
     const db = getFirebaseAdminDB();
-    const userRole = decodedToken.role || 'user'; // fallback in case no role
+    const userRole = decodedToken.role || 'user';
 
     let snapshot;
 
