@@ -25,6 +25,7 @@ interface HouseFormProps {
 export default function HouseForm({ house, users, onSave, onCancel }: HouseFormProps) {
   const [formData, setFormData] = useState<House>(
     house || {
+      listingType: '',
       id: '',
       title: '',
       description: '',
@@ -60,6 +61,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
     setFormData(
       house || {
         id: '',
+        listingType: '',
         title: '',
         description: '',
         price: '',
