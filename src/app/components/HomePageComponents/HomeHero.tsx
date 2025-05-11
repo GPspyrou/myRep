@@ -114,11 +114,7 @@ export default function HomeHeroSection({ houses }: Props) {
             );
           })}
         </Swiper>
-        <div class="bg-black/70 backdrop-blur-sm border-2 border-white py-3 px-4 sm:px-6 text-white pointer-events-auto">
-  <h2 class="text-lg sm:text-2xl md:text-3xl font-serif text-center">
-    Search Property
-  </h2>
-</div>
+    
         {/* Search Property overlay at bottom of carousel (shown after filters in view) */}
         {inView && (
           <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-xs sm:max-w-sm md:max-w-md p-4 pointer-events-none z-20">
