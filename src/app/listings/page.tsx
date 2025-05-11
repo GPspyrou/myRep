@@ -1,86 +1,102 @@
-//listings/page.tsx
 import NavBar from '@/app/lib/NavBar';
 import ListingsClientWrapper from '@/app/components/ListingsPageComponents/ListingsClientWrapper';
 import { getFirebaseAdminDB } from '@/app/lib/firebaseAdmin';
+import { cookies } from 'next/headers';
+import { verifyIdTokenFromCookie } from '@/app/components/ListingsPageComponents/verify-token'; // utility you'll need to add
 import { House } from '@/app/types/house';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 type RawSearchParams = Partial<{
-  category: string
-  bedrooms: number
-  minPrice: string
-  maxPrice: string
+  category: string;
+  bedrooms: string;
+  minPrice: string;
+  maxPrice: string;
 }>;
 
 export default async function SecureListingsPage({
   searchParams,
 }: {
-  searchParams: Promise<RawSearchParams>
+  searchParams: RawSearchParams;
 }) {
-  // 1) unpack and parse
+  const db = getFirebaseAdminDB();
+  if (!db) throw new Error('Firebase Admin DB not initialized.');
+
   const {
     category,
     bedrooms: bStr,
     minPrice: minStr,
     maxPrice: maxStr,
-  } = await searchParams;
-  const bedrooms = typeof bStr === 'string' ? parseInt(bStr, 10) : undefined;
+  } = searchParams;
+  const bedrooms = bStr ? parseInt(bStr, 10) : undefined;
   const minPrice = minStr ? parseInt(minStr, 10) : undefined;
   const maxPrice = maxStr ? parseInt(maxStr, 10) : undefined;
 
-  // 2) fetch
-  const db = getFirebaseAdminDB();
-  if (!db) throw new Error('Firebase Admin DB not initialized.');
   const snapshot = await db
     .collection('houses')
     .where('isPublic', '==', true)
     .get();
 
-  const publicHouses: House[] = snapshot.docs.map(doc => {
+  let publicHouses: House[] = snapshot.docs.map(doc => {
     const data = doc.data() as House;
     return {
       ...data,
       id: doc.id,
       location: {
         ...data.location,
+        latitude: Number(data.location.latitude),
         longitude: Number(data.location.longitude),
       },
       isAdditional: false,
     };
   });
 
-  // 3) apply filters in-memory
-  let filtered = publicHouses;
+  // In-memory filters
+  publicHouses = publicHouses.filter(h => {
+    const hBedrooms = typeof h.bedrooms === 'string' ? parseInt(h.bedrooms, 10) : h.bedrooms;
+    const hPrice = parseInt(h.price, 10);
 
-  if (category) {
-    filtered = filtered.filter(h => h.category === category);
+    return (!category || h.category === category) &&
+      (bedrooms === undefined || hBedrooms === bedrooms) &&
+      (minPrice === undefined || hPrice >= minPrice) &&
+      (maxPrice === undefined || hPrice <= maxPrice);
+  });
+
+  // Check user auth via cookie and get additional user-specific houses
+  let userHouses: House[] = [];
+  const cookieStore = cookies();
+  const token = (await cookieStore).get('__session')?.value;
+
+  if (token) {
+    const userId = await verifyIdTokenFromCookie(token);
+    if (userId) {
+      const userSnap = await db
+        .collection('houses')
+        .where('userId', '==', userId)
+        .get();
+
+      userHouses = userSnap.docs.map(doc => {
+        const data = doc.data() as House;
+        return {
+          ...data,
+          id: doc.id,
+          location: {
+            latitude: Number(data.location.latitude),
+            longitude: Number(data.location.longitude),
+          },
+          isAdditional: true,
+        };
+      });
+    }
   }
 
-  if (bedrooms !== undefined) {
-    filtered = filtered.filter(h => {
-      // h.bedrooms is a string like "3" — parse it to a number before comparing
-      const b = typeof h.bedrooms === 'string'
-        ? parseInt(h.bedrooms, 10)
-        : h.bedrooms;
-      return b === bedrooms;
-    });
-  }
-
-  if (minPrice !== undefined) {
-    filtered = filtered.filter(h => parseInt(h.price, 10) >= minPrice);
-  }
-
-  if (maxPrice !== undefined) {
-    filtered = filtered.filter(h => parseInt(h.price, 10) <= maxPrice);
-  }
-
+  const allHouses = [...publicHouses, ...userHouses];
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden ">
+    <div className="flex flex-col h-screen overflow-hidden">
       <NavBar />
-      <ListingsClientWrapper initialHouses={filtered} />
+      <ListingsClientWrapper initialHouses={allHouses} />
     </div>
   );
 }

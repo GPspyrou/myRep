@@ -1,10 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { httpsCallable } from 'firebase/functions';
-import { functions, auth, appCheck } from '@/app/firebase/firebaseConfig';  // ← pull in appCheck
-import { getToken } from 'firebase/app-check';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useState } from 'react';
 import HouseGridWrapper from '@/app/components/ListingsPageComponents/HouseGridWrapper';
 import ClientMapWrapper from '@/app/components/ListingsPageComponents/ClientMapWrapper';
 import { House } from '@/app/types/house';
@@ -14,14 +10,8 @@ type Props = {
 };
 
 export default function ListingsContent({ initialHouses }: Props) {
-  const [houses, setHouses] = useState<House[]>(initialHouses);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [viewState, setViewState] = useState<{
-    latitude: number;
-    longitude: number;
-    zoom: number;
-  }>(() => {
+  const [houses] = useState(initialHouses);
+  const [viewState, setViewState] = useState(() => {
     if (initialHouses.length) {
       const h = initialHouses[0];
       return {
@@ -32,50 +22,14 @@ export default function ListingsContent({ initialHouses }: Props) {
     }
     return { latitude: 0, longitude: 0, zoom: 2 };
   });
+
   const [selectedHouse, setSelectedHouse] = useState<House | null>(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
-  
-      setLoading(true);
-      try {
-        const res = await fetch('/api/getHouses', {
-          method: 'GET',
-          credentials: 'include', // important to send session cookie
-        });
-  
-        if (!res.ok) throw new Error('Failed to fetch houses');
-  
-        const { houses: fetchedHouses } = await res.json();
-  
-        const additionalHouses = (fetchedHouses as House[]).map((house) => ({
-          ...house,
-          isAdditional: true,
-          location: {
-            ...house.location,
-            longitude: Number(house.location.longitude),
-          },
-        }));
-  
-        setHouses((prev) => [...prev, ...additionalHouses]);
-      } catch (err: any) {
-        console.error('Error fetching user-specific houses:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    });
-  
-    return () => unsubscribe();
-  }, []);
-  if (loading && houses.length === 0) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
   if (houses.length === 0) return <div>No houses found.</div>;
 
   return (
     <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-    <div className="flex-1 md:flex-[0.95] overflow-y-scroll scrollbar-hide p-5 bg-[#D6D2C4] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20 md:top-[40px] lg:top-[55px]">
+      <div className="flex-1 md:flex-[0.95] overflow-y-scroll scrollbar-hide p-5 bg-[#D6D2C4] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20 md:top-[40px] lg:top-[55px]">
         <HouseGridWrapper
           houses={houses}
           onHover={(house) => {
@@ -89,7 +43,6 @@ export default function ListingsContent({ initialHouses }: Props) {
             }
           }}
         />
-        {/* Gradient overlay */}
         <div className="pointer-events-none absolute top-0 -right-2 w-5 h-full bg-gradient-to-l from-[rgba(0,0,0,0.15)] to-transparent" />
       </div>
       <div className="hidden md:flex md:flex-1 h-full relative z-10">

@@ -2,6 +2,8 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { appCheck } from '@/app/firebase/firebaseConfig';
+import { getToken } from 'firebase/app-check';
 import { login } from '@/app/hooks/useFirebaseLogin';
 import { signInWithGoogle } from '@/app/hooks/useGoogleAuth';
 
@@ -16,9 +18,11 @@ export default function Login() {
     setError('');
 
     try {
-      console.log('🟦 Attempting login with:', email);
-      await login(email, password);
-      console.log('✅ Session stored, redirecting...');
+      // 🔐 Get App Check token before login
+      const appCheckToken = await getToken(appCheck, true);
+      console.log('✅ App Check Token:', appCheckToken.token);
+
+      await login(email, password); // You can modify `login` to accept appCheckToken if needed
       router.push('/listings');
     } catch (err: any) {
       console.error('❌ Login error:', err);
@@ -44,7 +48,11 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithGoogle();
+      // 🔐 Get App Check token before Google sign-in
+      const appCheckToken = await getToken(appCheck, true);
+      console.log('✅ App Check Token (Google):', appCheckToken.token);
+
+      await signInWithGoogle(); // You can pass the token to your logic if needed
       router.push('/listings');
     } catch (err) {
       console.error('Google login error:', err);
@@ -82,7 +90,6 @@ export default function Login() {
             required
           />
 
-          {/* Forgot Password Link */}
           <p className="text-right text-sm mb-4">
             <a href="/forgot-password" className="text-blue-600 hover:underline">
               Forgot password?

@@ -1,12 +1,7 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import ListingsContent from '@/app/components/ListingsPageComponents/ListingsContent';
 import { House } from '@/app/types/house';
-
-const ListingsContent = dynamic(
-  () => import('@/app/components/ListingsPageComponents/ListingsContent'),
-  { ssr: false }
-);
 
 type Props = {
   initialHouses: House[];
