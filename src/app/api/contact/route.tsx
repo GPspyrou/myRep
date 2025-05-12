@@ -34,10 +34,10 @@ function initServices() {
   if (!combinedUpstash) {
     throw new Error('Missing UPSTASH_COMBINED env var');
   }
-  const UPSTASH_URL_LEN = 36; // length of "https://bright-dodo-10875.upstash.io"
+  const UPSTASH_URL_LEN = 36; 
   const upstashUrl   = combinedUpstash.slice(0, UPSTASH_URL_LEN);
   const upstashToken = combinedUpstash.slice(UPSTASH_URL_LEN);
-
+  console.log('Upstash URL:', upstashUrl);
   // Initialize Upstash Redis
   const redis = new Redis({ url: upstashUrl, token: upstashToken });
 

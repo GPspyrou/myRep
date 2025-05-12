@@ -29,7 +29,9 @@ export default function DetailsContent({ property }) {
 
       {/* Header (conditional) */}
       {headerFields && headerFields.length > 0 && (
-        <PropertyHeader property={property} fields={headerFields} />
+        <div className="mb-10 rounded-xl border border-black shadow-2xl bg-gradient-to-br from-[#F3F2ED] to-[#DDD9CE] p-6">
+          <PropertyHeader property={property} fields={headerFields} />
+        </div>
       )}
 
       {/* Details + Map */}

@@ -57,33 +57,38 @@ export default function PropertyHeader({
     .filter(Boolean)
     .join(' ');
 
-  return (
-    <section className="bg-white py-8">
-      <div className="container mx-auto px-4">
-        {/* Title + subtitle + price */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-          <div>
-            <h1 className="text-4xl font-bold">{title}</h1>
-            <p className="text-gray-500 mt-1">{locationLabel}</p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <span className="text-3xl font-semibold">€{price}</span>
-          </div>
-        </div>
-
-        {/* Dynamic icons grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {summaryItems.map((item) => (
-            <div
-              key={item.key}
-              className="flex items-center space-x-2 text-gray-700"
-            >
-              <span className="text-xl">{item.icon}</span>
-              <span className="text-base">{item.text}</span>
+    return (
+      <section className="bg-white py-12">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+            <div>
+              <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
+                {title}
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">{locationLabel}</p>
             </div>
-          ))}
+            <div>
+              <span className="text-2xl md:text-3xl font-medium text-gray-800">
+                €{price}
+              </span>
+            </div>
+          </div>
+    
+          {/* Feature Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {summaryItems.map((item) => (
+              <div
+                key={item.key}
+                className="flex items-center gap-3 p-4 bg-white rounded-xl border border-black shadow-2xl transition-shadow duration-200"
+              >
+                <span className="text-2xl text-gray-700">{item.icon}</span>
+                <span className="text-sm text-gray-800">{item.text}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+    
 }
