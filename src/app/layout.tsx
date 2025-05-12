@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Property Hall",
   description: "Property Hall - Your Gateway to Real Estate Excellence",
 };
-// this is the main layout for your application
+
 export default function RootLayout({
   children,
 }: Readonly<{
