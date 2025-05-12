@@ -27,7 +27,7 @@ function initServices() {
     });
   }
   db = getFirestore();
-
+  // Initialize Upstash Redis
   // Split combined Upstash secret by character count
   const combined = process.env.UPSTASH_COMBINED;
   if (!combined) {
