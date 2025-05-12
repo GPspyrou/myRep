@@ -88,3 +88,8 @@ env:
     secret: "smtp-pass"
     availability:
       - RUNTIME
+
+  - variable: UPSTASH_COMBINED
+    secret: "upstash-combined"
+    availability:
+      - RUNTIME
