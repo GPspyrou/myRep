@@ -73,33 +73,34 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
       <div className="flex gap-4">
         <input
-          type="text"
-          name="firstName"
-          placeholder="First Name"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-          className="flex-1 p-2 border rounded"
+        type="text"
+        name="firstName"
+        placeholder="First Name"
+        value={formData.firstName}
+        onChange={handleChange}
+        required
+        className="flex-1 p-2 border rounded text-black"
         />
         <input
-          type="text"
-          name="lastName"
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-          className="flex-1 p-2 border rounded"
+        type="text"
+        name="lastName"
+        placeholder="Last Name"
+        value={formData.lastName}
+        onChange={handleChange}
+        required
+        className="flex-1 p-2 border rounded text-black"
         />
+
       </div>
 
       <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded"
+      type="email"
+      name="email"
+      placeholder="Email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+      className="w-full p-2 border rounded text-black"
       />
 
       <input
@@ -109,8 +110,9 @@ export default function ContactForm() {
         value={formData.number}
         onChange={handleChange}
         required
-        className="w-full p-2 border rounded"
+        className="w-full p-2 border rounded text-black"
       />
+
 
       <textarea
         name="message"
@@ -118,8 +120,9 @@ export default function ContactForm() {
         value={formData.message}
         onChange={handleChange}
         required
-        className="w-full p-2 border rounded h-32"
+        className="w-full p-2 border rounded h-32 text-black"
       />
+
 
       <div className="flex items-center">
         <input

@@ -1,53 +1,55 @@
-// src/app/components/DetailsPageComponents/DetailsContent.js
 'use client';
 
-import Gallery from '@/app/components/DetailsPageComponents/Gallery';
-import PropertyDetails from '@/app/components/DetailsPageComponents/PropertyDetails';
-import PropertyDescription from '@/app/components/DetailsPageComponents/PropertyDescription';
-import DetailsMap from '@/app/components/DetailsPageComponents/DetailsMap';
-import PropertyHeader from '@/app/components/DetailsPageComponents/PropertyHeader';
+import Gallery from './Gallery';
+import PropertyDetails from './PropertyDetails';
+import PropertyDescription from './PropertyDescription';
+import DetailsMap from './DetailsMap';
+import PropertyHeader from './PropertyHeader';
+
 export default function DetailsContent({ property }) {
+  const headerFields =
+    property.propertyHeaders ??
+    property.PropertyHeaders ??
+    null;
+  const detailFields =
+    property.propertyDetails ??
+    property.PropertyDetails ??
+    null;
+  const description = property.description ?? null;
+
   return (
     <main className="flex flex-col gap-8 min-h-screen bg-[#D6D2C4] pt-0 pb-44 px-4 md:px-44">
       {/* Gallery */}
       <Gallery
-        images={property.images.map((image, i) => ({
-          src: image.src,
-          alt: image.alt || `Property image ${i + 1}`,
+        images={property.images.map((img, i) => ({
+          src: img.src,
+          alt: img.alt || `Property image ${i + 1}`,
         }))}
       />
-       <PropertyHeader
-        title={property.title}
-        locationLabel={`${property.yearBuilt ?? ''} ${property.location.city ?? ''}`.trim()}
-        price={`€${property.price}`}
-        category={property.category}
-        rooms={property.rooms}
-        bedrooms={property.bedrooms}
-        bathrooms={property.bathrooms}
-        size={property.size}
-        yearBuilt={property.yearBuilt}
-        energyClass={property.energyClass}
-      />
-      {/* detailsMapContainer */}
+
+      {/* Header (conditional) */}
+      {headerFields && headerFields.length > 0 && (
+        <PropertyHeader property={property} fields={headerFields} />
+      )}
+
+      {/* Details + Map */}
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 h-[300px] md:h-[500px] w-full">
-        {/* detailsWrapper */}
-        <div className="flex-1 bg-[#D6D2C4] p-4 w-full md:w-1/2">
-          <PropertyDetails property={property} />
-        </div>
-
-        {/* mapWrapper */}
-        <div className="w-full md:w-[63%] h-[200px] sm:h-[300px] md:h-[500px] mt-4 md:mt-5">
-          <DetailsMap
-            location={property.location}
-            title={property.title}
-          />
+        {detailFields && detailFields.length > 0 && (
+          <div className="flex-1 bg-[#D6D2C4] p-4">
+            <PropertyDetails property={property} fields={detailFields} />
+          </div>
+        )}
+        <div className="w-full md:w-[63%] mt-4 md:mt-5 h-[200px] sm:h-[300px] md:h-[500px]">
+          <DetailsMap location={property.location} title={property.title} />
         </div>
       </div>
 
-      {/* descriptionWrapper */}
-      <div className="bg-[#D6D2C4] p-4 overflow-hidden transition-[max-height] duration-500 ease-in-out">
-        <PropertyDescription description={property.description || ''} />
-      </div>
+      {/* Description (conditional) */}
+      {description && (
+        <div className="bg-[#D6D2C4] p-4 overflow-hidden transition-[max-height] duration-500 ease-in-out">
+          <PropertyDescription description={description} />
+        </div>
+      )}
     </main>
   );
 }

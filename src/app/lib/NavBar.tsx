@@ -126,7 +126,7 @@ export default function NavBar() {
           Contact
         </Link>
         {loading ? (
-          <span className={`text-base text-gray-600 ${commonLinkStyles}`}>Loading...</span>
+          <span className="text-base text-gray-600">Loading...</span>
         ) : user ? (
           <>
             <Image
@@ -137,23 +137,24 @@ export default function NavBar() {
               className="rounded-full"
             />
             <div className="hidden sm:flex flex-col text-right">
-              <span className={`text-xs `}>{user.email}</span>
-              <button onClick={handleLogout} className={`text-xs `}>
+              <span className="text-xs text-black">{user.email}</span>
+              <button onClick={handleLogout} className="text-xs text-black">
                 Logout
               </button>
             </div>
             <Link
               href="/login"
-              className={`sm:hidden ml-6 text-sm font-medium `}
+              className="sm:hidden ml-6 text-sm sm:text-black font-medium"
             >
               Login
             </Link>
           </>
         ) : (
-          <Link href="/login" className={`text-sm font-medium `}>
+          <Link href="/login" className={`text-sm text-black sm:text-black font-medium ${commonLinkStyles}`}>
             Login
           </Link>
         )}
+        
       </div>
     </nav>
   );

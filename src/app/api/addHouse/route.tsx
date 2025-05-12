@@ -19,11 +19,56 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const data = await req.json();
-  const { id, ...houseData } = data;
-
   const db = getFirebaseAdminDB();
-  const ref = await db.collection('houses').add(houseData);
+  const body = await req.json();
 
-  return NextResponse.json({ id: ref.id });
+  const { id: incomingId, title, listingType, ...houseData } = body;
+
+  if (!listingType || (listingType !== 'sale' && listingType !== 'rental')) {
+    return NextResponse.json({ error: 'Invalid or missing listingType' }, { status: 400 });
+  }
+
+  const counterKey = listingType === 'sale' ? 'sale' : 'rental';
+  const prefix = listingType === 'sale' ? 'S' : 'R';
+
+  let docId: string | null = null;
+
+  try {
+    await db.runTransaction(async (transaction) => {
+      const counterRef = db.collection('counters').doc(counterKey);
+      const counterSnap = await transaction.get(counterRef);
+
+      if (!counterSnap.exists) {
+        throw new Error(`Counter for ${listingType} does not exist. Please initialize it in Firestore.`);
+      }
+      const counterData = counterSnap.data();
+      const current = counterData?.current;
+
+      if (typeof current !== 'number') {
+        throw new Error(`Invalid counter value for ${listingType}`);
+      }
+
+      const next = current + 1;
+      docId = `${prefix}${next.toString().padStart(4, '0')}`;
+
+      transaction.update(counterRef, { current: next });
+    });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error during ID generation';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  }
+
+  if (!docId) {
+    return NextResponse.json({ error: 'Failed to generate document ID' }, { status: 500 });
+  }
+
+  await db.collection('houses').doc(docId).set({
+    id: docId,
+    title,
+    listingType,
+    ...houseData,
+  });
+
+  return NextResponse.json({ id: docId });
 }

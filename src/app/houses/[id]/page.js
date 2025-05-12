@@ -15,7 +15,9 @@ export default async function PropertyPage({ params }) {
     console.error('[PropertyPage] Firebase Admin DB not initialized')
     throw new Error('Internal server error')
   }
-  const { id } = await params
+
+  const { id } = params
+
   // 1. Fetch the house
   let houseSnap
   try {
@@ -26,28 +28,30 @@ export default async function PropertyPage({ params }) {
   }
 
   if (!houseSnap.exists) {
-    console.warn('[PropertyPage] House not found:', params.id)
+    console.warn('[PropertyPage] House not found:', id)
     notFound()
   }
 
   const houseData = houseSnap.data()
 
+  // Helper to render the page content
+  const renderContent = () => (
+    <>
+      <NavBar />
+      <DetailsContent property={houseData} />
+    </>
+  )
 
   // 2. Public → show
   if (houseData.isPublic) {
-    return (
-      <>
-        <NavBar />
-        <DetailsContent property={houseData} />
-      </>
-    )
+    return renderContent()
   }
 
   // 3. Private → check session cookie
   const sessionCookie = cookies().get('__session')?.value
   if (!sessionCookie) {
     console.warn('[PropertyPage] No session cookie, redirecting to login')
-    redirect('/login')
+    return redirect('/login')
   }
 
   const adminAuth = getFirebaseAdminAuth()
@@ -56,31 +60,27 @@ export default async function PropertyPage({ params }) {
     throw new Error('Internal server error')
   }
 
+  // Verify the session cookie
   let decoded
   try {
     decoded = await adminAuth.verifySessionCookie(sessionCookie, true)
   } catch (err) {
     console.error('[PropertyPage] Invalid session cookie:', err)
-    redirect('/login')
+    return redirect('/login')
   }
 
   const { uid, role } = decoded || {}
   if (!uid) {
     console.error('[PropertyPage] Missing UID in decoded cookie:', decoded)
-    redirect('/login')
+    return redirect('/login')
   }
 
   // 4a. Admins always see it
   if (role === 'admin') {
-    return (
-      <>
-        <NavBar />
-        <DetailsContent property={houseData} />
-      </>
-    )
+    return renderContent()
   }
 
-  // Sanity: ensure allowedUsers is an array of strings
+  // Sanity-check allowedUsers
   if (
     !Array.isArray(houseData.allowedUsers) ||
     !houseData.allowedUsers.every((x) => typeof x === 'string')
@@ -89,17 +89,12 @@ export default async function PropertyPage({ params }) {
       '[PropertyPage] Invalid allowedUsers array:',
       houseData.allowedUsers
     )
-    redirect('/login')
+    return redirect('/login')
   }
 
   // 4b. Otherwise must be in allowedUsers[]
   if (houseData.allowedUsers.includes(uid)) {
-    return (
-      <>
-        <NavBar />
-        <DetailsContent property={houseData} />
-      </>
-    )
+    return renderContent()
   }
 
   // 5. No access
@@ -108,5 +103,5 @@ export default async function PropertyPage({ params }) {
     uid,
     houseData.allowedUsers
   )
-  redirect('/login')
+  return redirect('/login')
 }

@@ -146,6 +146,7 @@ export default async function HomePage() {
         <FAQ items={faqItems} />
         
       </div>
+      <Footer />
     </>
   );
 }

@@ -28,8 +28,8 @@ export default function ListingsContent({ initialHouses }: Props) {
   if (houses.length === 0) return <div>No houses found.</div>;
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-      <div className="flex-1 md:flex-[0.95] overflow-y-scroll scrollbar-hide p-5 bg-[#D6D2C4] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20 md:top-[40px] lg:top-[55px]">
+    <div className="flex flex-col md:flex-row  flex-1 overflow-hidden">
+      <div className="flex-1 md:flex-[0.95] overflow-y-scroll  scrollbar-hide p-5 bg-[#D6D2C4] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20 mt-[50px]">
         <HouseGridWrapper
           houses={houses}
           onHover={(house) => {

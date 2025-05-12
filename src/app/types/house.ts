@@ -32,4 +32,6 @@ export type House = {
   }[];
   isPublic: boolean;
   allowedUsers: string[];
+  PropertyHeaders?: string[];
+  propertyDetails?: string[];
 };

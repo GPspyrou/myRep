@@ -89,11 +89,11 @@ export default function Gallery({ images }: GalleryProps) {
           loop
           breakpoints={{
             // when window width >= 320px
-            320: { slidesPerView: 2 },
+            320: { slidesPerView: 1 },
             // >= 640px
             640: { slidesPerView: 4 },
             // >= 1024px
-            1024: { slidesPerView: 6 },
+            1024: { slidesPerView: 5 },
           }}
         
           modules={[FreeMode]}

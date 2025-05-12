@@ -54,6 +54,13 @@ env:
     availability:
       - BUILD
       - RUNTIME
+  
+  - variable: SMTP_USER
+    value: "support@property-hall.com"
+    availability:
+      - BUILD
+      - RUNTIME  
+
 
   # Non-secret server-side values (runtime only)
   - variable: FIREBASE_PROJECT_ID
@@ -74,5 +81,10 @@ env:
 
   - variable: ADMIN_PRIVATE_KEY
     secret: "admin-private-key"
+    availability:
+      - RUNTIME
+
+  - variable: SMTP_PASS
+    secret: "smtp-pass"
     availability:
       - RUNTIME

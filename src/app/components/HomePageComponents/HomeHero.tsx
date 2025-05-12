@@ -118,8 +118,20 @@
           {/* Search Property overlay at bottom of carousel (shown after filters in view) */}
           {inView && (
             <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-xs sm:max-w-sm md:max-w-md p-4 pointer-events-none z-20">
-              <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-3 px-4 sm:px-6 text-white pointer-events-auto">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-center">
+              <div className="
+                  bg-black/70 
+                  backdrop-blur-sm 
+                  border-2 border-white  
+                  py-2 px-3            /* Smaller default padding */
+                  sm:py-3 sm:px-6      /* Larger padding on small+ screens */
+                  text-sm              /* Smaller text on mobile */
+                  sm:text-base         /* Normal text on sm and up */
+                  max-w-[90%]          /* Limit width */
+                  sm:max-w-md          /* Wider on sm+ */
+                  mx-auto              /* Center it horizontally */
+                  pointer-events-auto
+                ">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl text-white font-serif text-center">
                   Search Property
                 </h2>
               </div>

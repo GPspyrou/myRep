@@ -22,22 +22,40 @@ export default async function SecureListingsPage({
 }: {
   searchParams: Promise<RawSearchParams>;
 }) {
-  const { mode, category, bedrooms: bStr, minPrice: minStr, maxPrice: maxStr, ref: refParam } = await searchParams;
-  const bedrooms = bStr ? parseInt(bStr, 10) : undefined;
-  const minPrice = minStr ? parseInt(minStr, 10) : undefined;
-  const maxPrice = maxStr ? parseInt(maxStr, 10) : undefined;
+  // 1. Read and parse the filters from the URL
+  const {
+    mode,
+    category,
+    bedrooms: bStr,
+    minPrice: minStr,
+    maxPrice: maxStr,
+    ref: refParam,
+  } = await searchParams;
+
+  const bedrooms  = bStr    ? parseInt(bStr,   10) : undefined;
+  const minPrice  = minStr  ? parseInt(minStr, 10) : undefined;
+  const maxPrice  = maxStr  ? parseInt(maxStr, 10) : undefined;
   const refSearch = refParam ? refParam.toLowerCase() : undefined;
 
+  // Detect whether *any* filter was provided
+  const noFiltersApplied =
+    !mode &&
+    !category &&
+    bedrooms === undefined &&
+    minPrice === undefined &&
+    maxPrice === undefined &&
+    !refSearch;
+
+  // 2. Fetch public houses
   const db = getFirebaseAdminDB();
   if (!db) throw new Error('Firebase Admin DB not initialized.');
 
-  // Fetch public houses
-  const snapshot = await db
+  const publicSnap = await db
     .collection('houses')
     .where('isPublic', '==', true)
     .get();
 
-  let publicHouses: House[] = snapshot.docs.map(doc => {
+  const publicHouses: House[] = publicSnap.docs.map((doc) => {
     const data = doc.data() as House;
     return {
       ...data,
@@ -49,23 +67,20 @@ export default async function SecureListingsPage({
       isAdditional: false,
     };
   });
-  
-  // Check user auth via cookie and get additional user-specific houses
-  let userHouses: House[] = [];
-  const cookieStore = cookies();
-  const token = (await cookieStore).get('__session')?.value;
 
+  // 3. Optionally fetch user-specific (non-public) houses
+  let userHouses: House[] = [];
+  const token = (await cookies()).get('__session')?.value;
   if (token) {
     const userId = await verifyIdTokenFromCookie(token);
     if (userId) {
       const userSnap = await db
-      .collection('houses')
-      .where('allowedUsers', 'array-contains', userId)
-      .where('isPublic', '==', false)
-      .get();
-      
+        .collection('houses')
+        .where('allowedUsers', 'array-contains', userId)
+        .where('isPublic', '==', false)
+        .get();
 
-      userHouses = userSnap.docs.map(doc => {
+      userHouses = userSnap.docs.map((doc) => {
         const data = doc.data() as House;
         return {
           ...data,
@@ -80,22 +95,39 @@ export default async function SecureListingsPage({
     }
   }
 
-  // Combine all houses
-  let allHouses: House[] = [...publicHouses, ...userHouses];
-  
-  // Apply filters to all houses
-  allHouses = allHouses.filter(h => {
-    const hBedrooms = typeof h.bedrooms === 'string' ? parseInt(h.bedrooms, 10) : h.bedrooms;
-    const hPrice = parseInt(h.price, 10);
-    const matchesMode = !mode || h.listingType === mode;
-    const matchesCategory = !category || h.category === category;
-    const matchesBedrooms = bedrooms === undefined || hBedrooms === bedrooms;
-    const matchesMinPrice = minPrice === undefined || (!isNaN(hPrice) && hPrice >= minPrice);
-    const matchesMaxPrice = maxPrice === undefined || (!isNaN(hPrice) && hPrice <= maxPrice);
-    const matchesRef = !refSearch || (h.title && h.title.toLowerCase().includes(refSearch));
+  // 4. Combine them
+  let allHouses = [...publicHouses, ...userHouses];
 
-    return matchesMode && matchesCategory && matchesBedrooms && matchesMinPrice && matchesMaxPrice && matchesRef;
-  });
+  // 5. If any filters were applied, run the filter logic
+  if (!noFiltersApplied) {
+    allHouses = allHouses.filter((h) => {
+      const hBedrooms =
+        typeof h.bedrooms === 'string'
+          ? parseInt(h.bedrooms, 10)
+          : h.bedrooms;
+      const hPrice = parseInt(h.price, 10);
+
+      const matchesMode     = !mode      || h.listingType === mode;
+      const matchesCategory = !category  || h.category === category;
+      const matchesBeds     = bedrooms === undefined || hBedrooms === bedrooms;
+      const matchesMin      = minPrice === undefined || (!isNaN(hPrice) && hPrice >= minPrice);
+      const matchesMax      = maxPrice === undefined || (!isNaN(hPrice) && hPrice <= maxPrice);
+      const matchesRef = !refSearch || 
+      h.title.toLowerCase().includes(refSearch) ||
+      h.id.toLowerCase().includes(refSearch);
+
+
+      return (
+        matchesMode &&
+        matchesCategory &&
+        matchesBeds &&
+        matchesMin &&
+        matchesMax &&
+        matchesRef
+      );
+    });
+  }
+
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">

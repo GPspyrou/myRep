@@ -9,12 +9,13 @@ const formatLabel = (key: string) =>
     .replace(/([A-Z])/g, ' $1') // Add space before capital letters
     .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
 
-// Props type definition: a property object with flexible field types
+// Props type definition: a property object with flexible field types, plus a list of which fields to display
 type PropertyDetailsProps = {
   property: Record<string, string | number | null | undefined | object>;
+  fields: string[];
 };
 
-export default function PropertyDetails({ property }: PropertyDetailsProps) {
+export default function PropertyDetails({ property, fields }: PropertyDetailsProps) {
   // Ref for the container element to observe when it comes into view
   const containerRef = useRef<HTMLUListElement>(null);
 
@@ -41,9 +42,6 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Fields to exclude from rendering (e.g., location data)
-  const excludedFields = ['location', 'latitude', 'longitude', 'description','isPublic','isFeatured'];
-
   // Helper to check if a value should be rendered
   const hasRenderableValue = (v: any) =>
     v !== null &&
@@ -51,9 +49,9 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
     !(typeof v === 'string' && v.trim() === '') &&
     typeof v !== 'object'; // Excludes nested objects
 
-  // Filter out excluded and non-renderable fields
+  // Filter entries by the incoming 'fields' array and renderable values
   const visibleEntries = Object.entries(property).filter(
-    ([key, value]) => !excludedFields.includes(key) && hasRenderableValue(value)
+    ([key, value]) => fields.includes(key) && hasRenderableValue(value)
   );
 
   return (
