@@ -61,11 +61,6 @@ env:
       - BUILD
       - RUNTIME  
   
-  - variable: AZURE_OAUTH_COMBINED
-    value: "UDe8Q~9GU.wr~PEs3WltQb5ofEeGmo4HzyfHOaXY"
-    availability:
-      - BUILD
-      - RUNTIME  
 
   # Non-secret server-side values (runtime only)
   - variable: FIREBASE_PROJECT_ID
@@ -100,7 +95,7 @@ env:
     availability:
       - RUNTIME
       - BUILD
-      
+
   - variable: AZURE_OAUTH_COMBINED
     secret: "azure-oauth-combined"
     availability:
