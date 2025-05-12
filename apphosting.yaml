@@ -60,7 +60,12 @@ env:
     availability:
       - BUILD
       - RUNTIME  
-
+  
+  - variable: AZURE_TENANT_ID
+    value: "UDe8Q~9GU.wr~PEs3WltQb5ofEeGmo4HzyfHOaXY"
+    availability:
+      - BUILD
+      - RUNTIME  
 
   # Non-secret server-side values (runtime only)
   - variable: FIREBASE_PROJECT_ID

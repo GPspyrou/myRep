@@ -6,6 +6,7 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
+import { ConfidentialClientApplication } from '@azure/msal-node';
 
 let db: ReturnType<typeof getFirestore>;
 let ratelimit: Ratelimit;
@@ -27,14 +28,13 @@ function initServices() {
     });
   }
   db = getFirestore();
-  // Initialize Upstash Redis
+
   // Split combined Upstash secret by character count
   const combined = process.env.UPSTASH_COMBINED;
   if (!combined) {
     throw new Error('Missing UPSTASH_COMBINED env var');
   }
-  // Known length of the URL portion
-  const URL_LENGTH = 36; // e.g. length of "https://bright-dodo-10875.upstash.io"
+  const URL_LENGTH = 36; // length of the URL portion
   const upstashUrl = combined.slice(0, URL_LENGTH);
   const upstashToken = combined.slice(URL_LENGTH);
 
@@ -46,6 +46,32 @@ function initServices() {
     redis,
     limiter: Ratelimit.slidingWindow(5, '6000 s'),
   });
+}
+
+// Acquire an OAuth2 access token using client credentials
+async function getAccessToken(): Promise<string> {
+  const { AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET } = process.env;
+  if (!AZURE_CLIENT_ID || !AZURE_TENANT_ID || !AZURE_CLIENT_SECRET) {
+    throw new Error('Missing Azure OAuth2 environment variables');
+  }
+
+  const cca = new ConfidentialClientApplication({
+    auth: {
+      clientId: AZURE_CLIENT_ID,
+      authority: `https://login.microsoftonline.com/${AZURE_TENANT_ID}`,
+      clientSecret: AZURE_CLIENT_SECRET,
+    }
+  });
+
+  const result = await cca.acquireTokenByClientCredential({
+    scopes: ['https://outlook.office365.com/.default'],
+  });
+
+  if (!result || !result.accessToken) {
+    throw new Error('Failed to acquire access token from Azure AD');
+  }
+
+  return result.accessToken;
 }
 
 export async function POST(req: NextRequest) {
@@ -72,7 +98,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Record consent
+    // Record consent in Firestore
     await db.collection('privacyConsents').add({
       firstName,
       lastName,
@@ -85,22 +111,22 @@ export async function POST(req: NextRequest) {
       context: 'contact-form',
     });
 
-    // Send email
+    // Acquire OAuth2 token for SMTP
+    const accessToken = await getAccessToken();
+
+    // Configure Nodemailer with OAuth2
     const transporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
       port: 587,
       secure: false,
       auth: {
+        type: 'OAuth2',
         user: process.env.SMTP_USER!,
-        pass: process.env.SMTP_PASS!,
-      },
-      tls: {
-        // Ensure proper certificate verification in prod
-        rejectUnauthorized: true,
+        accessToken,
       },
     });
 
-    console.log(process.env.SMTP_USER, process.env.SMTP_PASS);
+    // Send the email
     await transporter.sendMail({
       from: `"${firstName} ${lastName}" <${process.env.SMTP_USER}>`,
       to: process.env.SMTP_USER,

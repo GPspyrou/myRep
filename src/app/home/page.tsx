@@ -52,6 +52,7 @@ export default async function HomePage() {
 
   return (
     <>
+    <script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="ZZiN4Ug9WZ28Qu" async></script>
       <NavBar />
       <div className="bg-[#D6D2C4] min-h-screen">
         
