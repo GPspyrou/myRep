@@ -70,7 +70,7 @@ async function getAccessToken(): Promise<string> {
 
   // Request token for SMTP OAuth2 (SMTP.SendAsApp)
   const result = await cca.acquireTokenByClientCredential({
-    scopes: ['https://outlook.office365.com/.default'],
+    scopes: ['https://outlook.office.com/.default'],
   });
   if (!result || !result.accessToken) {
     throw new Error('Failed to acquire access token from Azure AD');
