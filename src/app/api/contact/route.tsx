@@ -30,13 +30,13 @@ function initServices() {
   db = getFirestore();
 
   // Split combined Upstash secret by character count
-  const combined = process.env.UPSTASH_COMBINED;
-  if (!combined) {
+  const combinedUpstash = process.env.UPSTASH_COMBINED;
+  if (!combinedUpstash) {
     throw new Error('Missing UPSTASH_COMBINED env var');
   }
-  const URL_LENGTH = 36; // length of the URL portion
-  const upstashUrl = combined.slice(0, URL_LENGTH);
-  const upstashToken = combined.slice(URL_LENGTH);
+  const UPSTASH_URL_LEN = 36; // length of "https://bright-dodo-10875.upstash.io"
+  const upstashUrl   = combinedUpstash.slice(0, UPSTASH_URL_LEN);
+  const upstashToken = combinedUpstash.slice(UPSTASH_URL_LEN);
 
   // Initialize Upstash Redis
   const redis = new Redis({ url: upstashUrl, token: upstashToken });
@@ -48,18 +48,29 @@ function initServices() {
   });
 }
 
-// Acquire an OAuth2 access token using client credentials
+// Acquire an OAuth2 access token using combined Azure secret
 async function getAccessToken(): Promise<string> {
-  const { AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET } = process.env;
-  if (!AZURE_CLIENT_ID || !AZURE_TENANT_ID || !AZURE_CLIENT_SECRET) {
-    throw new Error('Missing Azure OAuth2 environment variables');
+  const combined = process.env.AZURE_OAUTH_COMBINED;
+  if (!combined) {
+    throw new Error('Missing AZURE_OAUTH_COMBINED env var');
+  }
+  // Known lengths of IDs
+  const CLIENT_ID_LEN = 36; 
+  const TENANT_ID_LEN = 36; 
+
+  const clientId     = combined.slice(0, CLIENT_ID_LEN);
+  const tenantId     = combined.slice(CLIENT_ID_LEN, CLIENT_ID_LEN + TENANT_ID_LEN);
+  const clientSecret = combined.slice(CLIENT_ID_LEN + TENANT_ID_LEN);
+
+  if (!clientId || !tenantId || !clientSecret) {
+    throw new Error('AZURE_OAUTH_COMBINED is not correctly formatted');
   }
 
   const cca = new ConfidentialClientApplication({
     auth: {
-      clientId: AZURE_CLIENT_ID,
-      authority: `https://login.microsoftonline.com/${AZURE_TENANT_ID}`,
-      clientSecret: AZURE_CLIENT_SECRET,
+      clientId,
+      authority: `https://login.microsoftonline.com/${tenantId}`,
+      clientSecret,
     }
   });
 
