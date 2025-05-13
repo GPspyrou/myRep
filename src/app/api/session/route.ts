@@ -1,17 +1,13 @@
 import { getFirebaseAdminAuth } from '@/app/lib/firebaseAdmin';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { applyRateLimit } from '@/app/lib/LargeRateLimiter';
+
 
 const COOKIE_NAME = process.env.COOKIE_NAME || '__session';
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
-  const { success } = await applyRateLimit(ip);
 
-  if (!success) {
-    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
-  }
 
   const { token } = await req.json();
   const adminAuth = getFirebaseAdminAuth();

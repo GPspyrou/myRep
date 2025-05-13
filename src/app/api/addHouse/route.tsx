@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getFirebaseAdminDB, verifySessionCookie } from '@/app/lib/firebaseAdmin';
 import { cookies } from 'next/headers';
-import { applyRateLimit } from '@/app/lib/LargeRateLimiter';
+
 
 export async function POST(req: Request) {
   const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
-  const { success } = await applyRateLimit(ip);
 
-  if (!success) {
-    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
-  }
 
+  
   const cookie = (await cookies()).get('__session')?.value;
   if (!cookie) return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
 

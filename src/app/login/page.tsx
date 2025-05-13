@@ -19,8 +19,8 @@ export default function Login() {
 
     try {
        //🔐 Get App Check token before login
-      const appCheckToken = await getToken(appCheck, true);
-      console.log('✅ App Check Token:', appCheckToken.token);
+      //const appCheckToken = await getToken(appCheck, true);
+      //console.log('✅ App Check Token:', appCheckToken.token);
 
       //await login(email, password); // You can modify `login` to accept appCheckToken if needed
       //router.push('/listings');

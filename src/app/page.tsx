@@ -34,6 +34,8 @@ export default async function HomePage() {
     id: doc.id,
     ...(doc.data() as Omit<House, 'id'>),
   }));
+  const housesForSale = houses.filter(house => house.listingType === 'sale');
+  const rentalHouses = houses.filter(house => house.listingType === 'rental');
 
   const faqItems: FAQItem[] = [
     {
@@ -62,22 +64,23 @@ export default async function HomePage() {
     <>
       <div className="bg-white  min-h-screen">
         <HomeHeroSection houses={houses} />
-
+        {/* For Sale Section */}
         <section className="w-full shadow-lg bg-[#e9e5dd]">
-          <div className="max-w-7xl  mx-auto p-12">
+          <div className="max-w-7xl mx-auto p-12">
             <h1 className="text-4xl text-center text-[#361e1a] mb-8">
               Featured Properties For Sale
             </h1>
-            <HomeHouseGrid houses={houses} />
+            <HomeHouseGrid houses={housesForSale} />
           </div>
         </section>
 
+        {/* Rental Section */}
         <section className="bg-[#D6D2C4] shadow-lg rounded-md">
           <div className="max-w-7xl mx-auto p-6">
             <h1 className="text-4xl text-[#361e1a] text-center mb-8">
               Featured Rental Properties
             </h1>
-            <HomeHouseGrid houses={houses} />
+            <HomeHouseGrid houses={rentalHouses} />
           </div>
         </section>
 

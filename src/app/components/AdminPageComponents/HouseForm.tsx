@@ -231,6 +231,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
   return (
     <>
     <form onSubmit={handleSubmit} className="max-w-full sm:max-w-2xl mx-auto space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow-md">
+      
       {/* Title */}
       <div className="flex items-center space-x-4">
         <label className="flex-1 space-y-1">
@@ -248,7 +249,23 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
           <span>Details</span>
         </label>
       </div>
-
+      {/* Listing Type */}
+      <div className="flex items-center space-x-4">
+        <label className="flex-1 space-y-1">
+          <span className="font-bold">Listing Type:</span>
+          <select
+            name="listingType"
+            value={formData.listingType}
+            onChange={handleChange}
+            required
+            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>Select type</option>
+            <option value="sale">Sale</option>
+            <option value="rental">Rental</option>
+          </select>
+        </label>
+      </div>
       {/* Description */}
       <div className="flex items-center space-x-4">
         <label className="flex-1 space-y-1">
