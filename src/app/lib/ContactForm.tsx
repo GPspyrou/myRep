@@ -73,7 +73,7 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
       <div className="flex gap-4">
         <input
-        type="text"
+        type="text" 
         name="firstName"
         placeholder="First Name"
         value={formData.firstName}
