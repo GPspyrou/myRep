@@ -43,7 +43,7 @@ function initServices() {
   if (!combinedUpstash) throw new Error('Missing UPSTASH_COMBINED env var');
 
   // Extract URL and token from combined secret - adjust length based on your Upstash URL
-  const UPSTASH_URL_LEN = 36; // e.g., https://bright-dodo-10875.upstash.io
+  const UPSTASH_URL_LEN = 36; // e.g., 
   const upstashUrl = combinedUpstash.slice(0, UPSTASH_URL_LEN);
   const upstashToken = combinedUpstash.slice(UPSTASH_URL_LEN);
   console.log('Upstash URL:', upstashUrl);
@@ -64,8 +64,8 @@ async function getAccessToken(): Promise<string> {
   if (!combined) throw new Error('Missing AZURE_OAUTH_COMBINED env var');
 
   // Define lengths for GUIDs (client ID and tenant ID)
-  const CLIENT_ID_LEN = 36; // e.g., ac047069-d043-4a90-9783-8213bb3db55f
-  const TENANT_ID_LEN = 36; // e.g., 842dab55-ac31-4f11-a67f-ae441da579b7
+  const CLIENT_ID_LEN = 36; // e.g.,
+  const TENANT_ID_LEN = 36; // e.g., 
   const clientId = combined.slice(0, CLIENT_ID_LEN);
   const tenantId = combined.slice(CLIENT_ID_LEN, CLIENT_ID_LEN + TENANT_ID_LEN);
   const clientSecret = combined.slice(CLIENT_ID_LEN + TENANT_ID_LEN);
@@ -75,7 +75,7 @@ async function getAccessToken(): Promise<string> {
     throw new Error('AZURE_OAUTH_COMBINED is not correctly formatted');
   }
   console.log('Azure Client ID:', clientId);
-
+  console.log('Azure Client ID:', tenantId);
   // Initialize MSAL client for OAuth2
   const cca = new ConfidentialClientApplication({
     auth: {
