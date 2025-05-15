@@ -45,8 +45,8 @@ export default function NavBar() {
   const showSolid = !(isTransparentRoute && !scrolled);
 
   const bgClass = showSolid
-    ? 'bg-white/90 shadow-md'
-    : 'bg-transparent shadow-none';
+  ? 'bg-white shadow-md'
+  : 'bg-transparent ';
 
   const transitionClasses = 'transition-colors duration-500 ease-in-out';
 
@@ -154,7 +154,7 @@ export default function NavBar() {
             Login
           </Link>
         )}
-        
+          
       </div>
     </nav>
   );

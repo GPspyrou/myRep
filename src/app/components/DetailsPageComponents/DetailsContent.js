@@ -5,6 +5,7 @@ import PropertyDetails from './PropertyDetails';
 import PropertyDescription from './PropertyDescription';
 import DetailsMap from './DetailsMap';
 import PropertyHeader from './PropertyHeader';
+import ContactForm from '@/app/lib/ContactForm';
 
 export default function DetailsContent({ property }) {
   const headerFields =
@@ -29,29 +30,35 @@ export default function DetailsContent({ property }) {
 
       {/* Header (conditional) */}
       {headerFields && headerFields.length > 0 && (
-        <div className="mb-10 rounded-xl border border-black shadow-2xl bg-gradient-to-br from-[#F3F2ED] to-[#DDD9CE] p-6">
+        <div className="mb-10 rounded-xl  bg-transparent p-6">
           <PropertyHeader property={property} fields={headerFields} />
         </div>
       )}
-
-      {/* Details + Map */}
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8 h-[300px] md:h-[500px] w-full">
-        {detailFields && detailFields.length > 0 && (
-          <div className="flex-1 bg-[#D6D2C4] p-4">
-            <PropertyDetails property={property} fields={detailFields} />
-          </div>
-        )}
-        <div className="w-full md:w-[63%] mt-4 md:mt-5 h-[200px] sm:h-[300px] md:h-[500px]">
-          <DetailsMap location={property.location} title={property.title} />
-        </div>
-      </div>
 
       {/* Description (conditional) */}
       {description && (
         <div className="bg-[#D6D2C4] p-4 overflow-hidden transition-[max-height] duration-500 ease-in-out">
           <PropertyDescription description={description} />
+          
         </div>
       )}
+      {/* Details + Map */}
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8 h-[300px] md:h-[500px] w-full">
+        {detailFields && detailFields.length > 0 && (
+          <div className="flex-1 bg-[#D6D2C4] p-4">
+            <PropertyDetails property={property} fields={detailFields} />
+            
+          </div>
+        )}
+        <div className="w-full md:w-[63%] mt-4 md:mt-5 h-[200px] sm:h-[300px] md:h-[500px]">
+          <ContactForm></ContactForm>
+        </div>
+      </div>
+      <div className="w-full md:w-[63%] mt-4 md:mt-5 h-[200px] sm:h-[300px] md:h-[500px]">
+          <DetailsMap location={property.location} title={property.title} />
+        </div>   
+      
+      
     </main>
   );
 }

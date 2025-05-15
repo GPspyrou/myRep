@@ -84,8 +84,7 @@ export default function PropertyHeader({
     .join(' ');
 
   return (
-    <section className="bg-white py-12">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="w-full mx-auto px-6">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
@@ -116,6 +115,6 @@ export default function PropertyHeader({
           ))}
         </div>
       </div>
-    </section>
+
   );
 }

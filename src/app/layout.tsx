@@ -1,11 +1,8 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-
 import "./globals.css";
-import NavBar from "@/app/lib/NavBar"; // import your NavBar
-import { montserratFont } from '@/app/lib/fonts';
-
-
+import NavBar from "@/app/lib/NavBar";
+import { montserratFont } from "@/app/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Property Hall",
@@ -19,11 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={montserratFont.className}>
-      <body > 
-        <NavBar /> {/* Render NavBar */}
-        <main className="">
-          {children}
-        </main>
+      <head>
+       
+        
+      </head>
+      <body>
+        <NavBar />
+        <main>{children}</main>
       </body>
     </html>
   );
