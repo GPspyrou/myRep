@@ -74,7 +74,7 @@ export default function NavBar() {
     <nav
       className={`
         ${poppins.className}
-        fixed inset-x-0 top-0 z-50 backdrop-blur-sm
+        fixed inset-x-0 top-0 z-50 
         ${bgClass}
         ${transitionClasses}
       `}

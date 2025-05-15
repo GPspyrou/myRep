@@ -84,24 +84,24 @@ export default function PropertyHeader({
     .join(' ');
 
   return (
-      <div className="w-full mx-auto px-6">
+      <div className="w-full mx-auto ">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-          <div>
-            <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">
+          <div className="mb-20">
+            <h1 className="text-4xl  text-gray-900 tracking-tight">
               {title}
             </h1>
             <p className="text-sm text-gray-500 mt-1">{locationLabel}</p>
           </div>
-          <div>
-            <span className="text-2xl md:text-3xl font-medium text-gray-800">
+          <div className="mt-10 mr-7 ">
+            <span className="text-2xl font-semibold md:text-3xl font-medium text-black">
               €{price}
             </span>
           </div>
         </div>
 
         {/* Feature Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1  gap-3 sm:gap-4">
           {summaryItems.map((item) => (
             <div
               key={item.key}
@@ -110,7 +110,7 @@ export default function PropertyHeader({
               <div className="w-6 h-6 flex items-center justify-center">
                 {item.icon}
               </div>
-              <span className="text-sm text-gray-800">{item.text}</span>
+              <span className="text-sm font-semibold text-gray-800">{item.text}</span>
             </div>
           ))}
         </div>

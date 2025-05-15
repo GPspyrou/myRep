@@ -73,7 +73,7 @@ export default function DetailsMap({
         href={`https://www.google.com/maps?q=${lat},${lng}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="absolute bottom-4 left-4 bg-white bg-opacity-50 hover:bg-opacity-75 text-black text-sm font-medium px-3 py-1 rounded shadow transition"
+        className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-100 hover:bg-opacity-75 text-white text-sm font-medium px-3 py-1 rounded shadow transition"
       >
         View on maps
       </a>

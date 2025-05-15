@@ -25,7 +25,7 @@ const Section = ({
 
 const SellWithUsPage = () => {
   return (
-    <main className="min-h-screen w-full px-0 md:px-0 py-0" style={{ backgroundColor: '#D6D2C4' }}>
+    <main className="min-h-screen w-full px-0 md:px-0 py-0" style={{ backgroundColor: '#e9e5dd' }}>
       <div className="relative w-full h-[60vh]">
         <Image
           src="/sell-with-us-hero.jpg" // Replace with your actual image path

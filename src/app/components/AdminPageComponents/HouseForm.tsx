@@ -77,16 +77,30 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
   useEffect(() => {
     if (house) {
       setFormData(house);
-      const incoming = Array.isArray(house.PropertyHeaders)
-      ? house.PropertyHeaders
-      : [];
-      // ensure title & price are always present
-      setPropertyHeaders(Array.from(new Set([
-      ...DEFAULT_HEADER_FIELDS,
-      ...incoming
-        ])));
+  
+      const knownKeys = [
+        'listingType', 'id', 'title', 'description', 'price', 'bedrooms', 'bathrooms',
+        'rooms', 'category', 'energyClass', 'floor', 'hasHeating', 'heatingType',
+        'kitchens', 'latitude', 'longitude', 'location', 'parking', 'size',
+        'isFeatured', 'specialFeatures', 'suitableFor', 'windowType', 'yearBuilt',
+        'images', 'isPublic', 'allowedUsers', 'PropertyHeaders', 'propertyDetails'
+      ];
+  
+      // Identify custom fields from house object
+      const customFieldsFromHouse: CustomField[] = Object.entries(house)
+        .filter(([key]) => !knownKeys.includes(key))
+        .map(([key, value]) => ({
+          fieldName: key,
+          fieldValue: String(value)
+        }));
+  
+      setCustomFields(customFieldsFromHouse);
+  
+      const incomingHeaders = Array.isArray(house.PropertyHeaders) ? house.PropertyHeaders : [];
+      setPropertyHeaders(Array.from(new Set([...DEFAULT_HEADER_FIELDS, ...incomingHeaders])));
+  
       setPropertyDetails(Array.isArray(house.propertyDetails) ? house.propertyDetails : []);
-    } else {
+    } else  {
       setFormData({
         listingType: '',
         id: '',
@@ -116,11 +130,12 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
         isPublic: true,
         allowedUsers: [],
       });
-      setPropertyHeaders([...DEFAULT_HEADER_FIELDS]);
-      setPropertyDetails([]);
-    }
-    setCustomFields([]);
-  }, [house]);
+      setCustomFields([]);
+    setPropertyHeaders([...DEFAULT_HEADER_FIELDS]);
+    setPropertyDetails([]);
+  }
+}, [house]);
+
   const DEFAULT_HEADER_FIELDS = ['title', 'price'];
 
   const handleChange = (

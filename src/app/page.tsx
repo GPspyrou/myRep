@@ -62,27 +62,9 @@ export default async function HomePage() {
 
   return (
     <>
-      <div className="bg-white  min-h-screen">
+      <div className="bg-[#e9e5dd]  min-h-screen">
         <HomeHeroSection houses={houses} />
-        {/* For Sale Section */}
-        <section className="w-full shadow-lg bg-[#e9e5dd]">
-          <div className="max-w-7xl mx-auto p-12">
-            <h1 className="text-4xl text-center text-[#361e1a] mb-8">
-              Featured Properties For Sale
-            </h1>
-            <HomeHouseGrid houses={housesForSale} />
-          </div>
-        </section>
-
-        {/* Rental Section */}
-        <section className="bg-[#D6D2C4] shadow-lg rounded-md">
-          <div className="max-w-7xl mx-auto p-6">
-            <h1 className="text-4xl text-[#361e1a] text-center mb-8">
-              Featured Rental Properties
-            </h1>
-            <HomeHouseGrid houses={rentalHouses} />
-          </div>
-        </section>
+        
 
         {/* Buy With Us */}
         <div className="w-full bg-white shadow-lg py-16 px-4 sm:px-6 lg:px-12">
@@ -144,7 +126,25 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+        {/* For Sale Section */}
+        <section className="w-full shadow-lg bg-[#e9e5dd]">
+          <div className="max-w-7xl mx-auto p-12">
+            <h1 className="text-4xl text-center text-[#361e1a] mb-8">
+              Featured Properties For Sale
+            </h1>
+            <HomeHouseGrid houses={housesForSale} />
+          </div>
+        </section>
 
+        {/* Rental Section */}
+        <section className="bg-[#D6D2C4] shadow-lg rounded-md">
+          <div className="max-w-7xl mx-auto p-12">
+            <h1 className="text-4xl text-[#361e1a] text-center mb-8">
+              Featured Rental Properties
+            </h1>
+            <HomeHouseGrid houses={rentalHouses} />
+          </div>
+        </section>
         <InvestGreece />
         <FAQ items={faqItems} />
         
