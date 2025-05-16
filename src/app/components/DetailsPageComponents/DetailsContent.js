@@ -35,43 +35,44 @@ export default function DetailsContent({ property }) {
 
         {/* Property Header - Right side */}
         {headerFields && headerFields.length > 0 && (
-          <div className="w-full md:w-[20%] h-full pt-20 overflow-y-shown px-4 py-6 bg-#bg-[#e9e5dd] ">
+          <div className="hidden md:block w-[20%] px-4">
+          <div
+            className="sticky top-20 bg-[#e9e5dd] p-6 overflow-y-auto"
+            style={{ maxHeight: 'calc(100vh - 5rem)' }}
+          >
             <PropertyHeader property={property} fields={headerFields} />
           </div>
+        </div>
         )}
       </div>
-      {/* Description (conditional) */}
-      
-      {description && (
-        <div className="bg-[#D6D2C4] p-4 w-[30%] mx-left overflow-hidden transition-[max-height] duration-500 ease-in-out">
-          <PropertyDescription description={description} />
-          
-
+      {/* Description + Details side-by-side */}
+      {(description || (detailFields && detailFields.length > 0)) && (
+        <div className="flex flex-col md:flex-row justify-between gap-4 px-4 md:px-8">
+          {description && (
+            <div className="w-full md:w-[60%] bg-[#D6D2C4] p-4">
+              <PropertyDescription description={description} />
+            </div>
+          )}
+          {detailFields && detailFields.length > 0 && (
+            <div className="w-full md:w-[40%] bg-[#D6D2C4] p-4">
+              <PropertyDetails property={property} fields={detailFields} />
+            </div>
+          )}
         </div>
       )}
-      <div className="w-full h-full   sm:h-[300px] md:h-[400px]">
-          <DetailsMap location={property.location} title={property.title} />
-          
-        </div>  
-      
-      <div className="flex max-w-full items-start justify-between px-4 md:px-8 flex-col md:flex-row gap-6 pt-20 md:gap-8">
-        {detailFields && detailFields.length > 0 && (
-          <div className="w-[30%]  bg-[#D6D2C4] p-4">
-            <PropertyDetails property={property} fields={detailFields} />
-            
-          </div>
-          
-        )}
-        <div className="w-full md:w-[40%] lg:w-[30%]">
-                  <ContactForm> </ContactForm>
-                  
-        </div>
-        
-      </div>
-      {/* Footer */}<Footer></Footer>
-  
-       
-       
+      {/* Map + Contact Form Side-by-Side */}
+<div className="flex flex-col md:flex-row justify-between gap-6 px-4 md:px-8 pt-20">
+  {/* Map */}
+  <div className="w-full md:w-[60%] h-[300px] md:h-[400px]">
+    <DetailsMap location={property.location} title={property.title} />
+  </div>
+
+  {/* Contact Form */}
+  <div className="w-full md:w-[40%] lg:w-[30%]">
+    <ContactForm />
+  </div>
+</div>
+        <Footer></Footer>
     </main>
   );
 }

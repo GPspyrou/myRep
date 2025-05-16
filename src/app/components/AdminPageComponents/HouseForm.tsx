@@ -64,7 +64,6 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
   
   const previewData = {
     ...formData,
-    // merge in any customFields:
     ...customFields.reduce((acc, {fieldName, fieldValue}) => {
       if (fieldName.trim()) acc[fieldName] = fieldValue;
       return acc;
@@ -74,6 +73,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
     PropertyHeaders,
     propertyDetails,
   };
+
   useEffect(() => {
     if (house) {
       setFormData(house);
@@ -86,7 +86,6 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
         'images', 'isPublic', 'allowedUsers', 'PropertyHeaders', 'propertyDetails'
       ];
   
-      // Identify custom fields from house object
       const customFieldsFromHouse: CustomField[] = Object.entries(house)
         .filter(([key]) => !knownKeys.includes(key))
         .map(([key, value]) => ({
@@ -100,7 +99,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
       setPropertyHeaders(Array.from(new Set([...DEFAULT_HEADER_FIELDS, ...incomingHeaders])));
   
       setPropertyDetails(Array.isArray(house.propertyDetails) ? house.propertyDetails : []);
-    } else  {
+    } else {
       setFormData({
         listingType: '',
         id: '',
@@ -131,10 +130,10 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
         allowedUsers: [],
       });
       setCustomFields([]);
-    setPropertyHeaders([...DEFAULT_HEADER_FIELDS]);
-    setPropertyDetails([]);
-  }
-}, [house]);
+      setPropertyHeaders([...DEFAULT_HEADER_FIELDS]);
+      setPropertyDetails([]);
+    }
+  }, [house]);
 
   const DEFAULT_HEADER_FIELDS = ['title', 'price'];
 
@@ -229,8 +228,6 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
       return acc;
     }, {});
     
-    
-    
     const payload = {
       ...formData,
       ...customData,
@@ -245,660 +242,682 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
   
   return (
     <>
-    <form onSubmit={handleSubmit} className="max-w-full sm:max-w-2xl mx-auto space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow-md">
-      
-      {/* Title */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Title:</span>
-          <input type="text" name="title" required value={formData.title} onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </label>
+      <form onSubmit={handleSubmit} className="max-w-full sm:max-w-2xl mx-auto space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow-md">
         
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('title')}
-            onChange={(e) => handleDetailsCheckbox('title', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-      {/* Listing Type */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Listing Type:</span>
-          <select
-            name="listingType"
-            value={formData.listingType}
-            onChange={handleChange}
-            required
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>Select type</option>
-            <option value="sale">Sale</option>
-            <option value="rental">Rental</option>
-          </select>
-        </label>
-      </div>
-      {/* Description */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Description:</span>
-          <textarea name="description" value={formData.description} onChange={handleChange}
-            className="border rounded p-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </label>
-      </div>
 
-      {/* Price */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Price:</span>
-          <input type="text" name="price" value={formData.price}  onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('price')}
-            onChange={(e) => handleDetailsCheckbox('price', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Bedrooms */}
-<div className="flex items-center space-x-4">
-  <label className="flex-1 space-y-1">
-    <span className="font-bold">Bedrooms:</span>
-    <input
-      type="number"
-      name="bedrooms"
-      value={formData.bedrooms}
-      onChange={handleChange}
-      className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </label>
-  <label className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      checked={PropertyHeaders.includes('bedrooms')}
-      onChange={e => handleHeaderCheckbox('bedrooms', e.target.checked)}
-    />
-    <span>Header</span>
-  </label>
-  <label className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      checked={propertyDetails.includes('bedrooms')}
-      onChange={e => handleDetailsCheckbox('bedrooms', e.target.checked)}
-    />
-    <span>Details</span>
-  </label>
-</div>
-
-{/* Bathrooms */}
-<div className="flex items-center space-x-4">
-  <label className="flex-1 space-y-1">
-    <span className="font-bold">Bathrooms:</span>
-    <input
-      type="number"
-      name="bathrooms"
-      value={formData.bathrooms}
-      onChange={handleChange}
-      className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </label>
-  <label className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      checked={PropertyHeaders.includes('bathrooms')}
-      onChange={e => handleHeaderCheckbox('bathrooms', e.target.checked)}
-    />
-    <span>Header</span>
-  </label>
-  <label className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      checked={propertyDetails.includes('bathrooms')}
-      onChange={e => handleDetailsCheckbox('bathrooms', e.target.checked)}
-    />
-    <span>Details</span>
-  </label>
-</div>
-
-{/* Rooms */}
-<div className="flex items-center space-x-4">
-  <label className="flex-1 space-y-1">
-    <span className="font-bold">Rooms:</span>
-    <input
-      type="number"
-      name="rooms"
-      value={formData.rooms}
-      onChange={handleChange}
-      className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </label>
-  <label className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      checked={PropertyHeaders.includes('rooms')}
-      onChange={e => handleHeaderCheckbox('rooms', e.target.checked)}
-    />
-    <span>Header</span>
-  </label>
-  <label className="flex items-center space-x-2">
-    <input
-      type="checkbox"
-      checked={propertyDetails.includes('rooms')}
-      onChange={e => handleDetailsCheckbox('rooms', e.target.checked)}
-    />
-    <span>Details</span>
-  </label>
-</div>
-
-      {/* Category */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Category:</span>
-          <input
-            type="text"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('category')}
-            onChange={(e) => handleHeaderCheckbox('category', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('category')}
-            onChange={(e) => handleDetailsCheckbox('category', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Energy Class */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Energy Class:</span>
-          <input
-            type="text"
-            name="energyClass"
-            value={formData.energyClass}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('energyClass')}
-            onChange={(e) => handleHeaderCheckbox('energyClass', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('energyClass')}
-            onChange={(e) => handleDetailsCheckbox('energyClass', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Floor */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Floor:</span>
-          <input
-            type="text"
-            name="floor"
-            value={formData.floor}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('floor')}
-            onChange={(e) => handleHeaderCheckbox('floor', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('floor')}
-            onChange={(e) => handleDetailsCheckbox('floor', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Has Heating */}
-      <div className="flex items-center space-x-4">
-        <label className="flex items-center space-x-2 flex-1">
-          <input
-            type="checkbox"
-            name="hasHeating"
-            checked={formData.hasHeating === 'Yes'}
-            onChange={e =>
-              setFormData(prev => ({
-                ...prev,
-                hasHeating: e.target.checked ? 'Yes' : 'No',
-              }))
-            }
-          />
-          <span>Has Heating</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('hasHeating')}
-            onChange={(e) => handleHeaderCheckbox('hasHeating', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('hasHeating')}
-            onChange={(e) => handleDetailsCheckbox('hasHeating', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Heating Type */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Heating Type:</span>
-          <input
-            type="text"
-            name="heatingType"
-            value={formData.heatingType}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('heatingType')}
-            onChange={(e) => handleHeaderCheckbox('heatingType', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('heatingType')}
-            onChange={(e) => handleDetailsCheckbox('heatingType', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Kitchens */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Kitchens:</span>
-          <input
-            type="text"
-            name="kitchens"
-            value={formData.kitchens}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('kitchens')}
-            onChange={(e) => handleHeaderCheckbox('kitchens', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('kitchens')}
-            onChange={(e) => handleDetailsCheckbox('kitchens', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
-
-      {/* Latitude and Longitude */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Title */}
         <div className="flex items-center space-x-4">
           <label className="flex-1 space-y-1">
-            <span className="font-bold">Latitude:</span>
+            <span className="font-bold">Title:</span>
             <input
-              type="number"
-              name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
+              type="text"
+              name="title"
               required
+              value={formData.title}
+              onChange={handleChange}
               className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('title')}
+              onChange={e => handleDetailsCheckbox('title', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
         </div>
+
+        {/* Listing Type */}
         <div className="flex items-center space-x-4">
           <label className="flex-1 space-y-1">
-            <span className="font-bold">Longitude:</span>
-            <input
-              type="number"
-              name="longitude"
-              value={formData.longitude}
+            <span className="font-bold">Listing Type:</span>
+            <select
+              name="listingType"
+              value={formData.listingType}
               onChange={handleChange}
               required
               className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>Select type</option>
+              <option value="sale">Sale</option>
+              <option value="rental">Rental</option>
+            </select>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('yearBuilt')}
+              onChange={e => handleDetailsCheckbox('yearBuilt', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Description */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Description:</span>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="border rounded p-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
         </div>
-      </div>
 
-      {/* Parking */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Parking:</span>
-          <input
-            type="text"
-            name="parking"
-            value={formData.parking}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('parking')}
-            onChange={(e) => handleHeaderCheckbox('parking', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('parking')}
-            onChange={(e) => handleDetailsCheckbox('parking', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
+        {/* Price */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Price:</span>
+            <input
+              type="text"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('price')}
+              onChange={e => handleDetailsCheckbox('price', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
 
-      {/* Size */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Size:</span>
-          <input
-            type="text"
-            name="size"
-            value={formData.size}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('size')}
-            onChange={(e) => handleHeaderCheckbox('size', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('size')}
-            onChange={(e) => handleDetailsCheckbox('size', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
+        {/* Bedrooms */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Bedrooms:</span>
+            <input
+              type="number"
+              name="bedrooms"
+              value={formData.bedrooms}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('bedrooms')}
+              onChange={e => handleHeaderCheckbox('bedrooms', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('bedrooms')}
+              onChange={e => handleDetailsCheckbox('bedrooms', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Bathrooms */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Bathrooms:</span>
+            <input
+              type="number"
+              name="bathrooms"
+              value={formData.bathrooms}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('bathrooms')}
+              onChange={e => handleHeaderCheckbox('bathrooms', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('bathrooms')}
+              onChange={e => handleDetailsCheckbox('bathrooms', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Rooms */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Rooms:</span>
+            <input
+              type="number"
+              name="rooms"
+              value={formData.rooms}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('rooms')}
+              onChange={e => handleHeaderCheckbox('rooms', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('rooms')}
+              onChange={e => handleDetailsCheckbox('rooms', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Category */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Category:</span>
+            <input
+              type="text"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('category')}
+              onChange={e => handleHeaderCheckbox('category', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('category')}
+              onChange={e => handleDetailsCheckbox('category', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Energy Class */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Energy Class:</span>
+            <input
+              type="text"
+              name="energyClass"
+              value={formData.energyClass}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('energyClass')}
+              onChange={e => handleHeaderCheckbox('energyClass', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('energyClass')}
+              onChange={e => handleDetailsCheckbox('energyClass', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Floor */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Floor:</span>
+            <input
+              type="text"
+              name="floor"
+              value={formData.floor}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('floor')}
+              onChange={e => handleHeaderCheckbox('floor', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('floor')}
+              onChange={e => handleDetailsCheckbox('floor', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Has Heating */}
+        <div className="flex items-center space-x-4">
+          <label className="flex items-center space-x-2 flex-1">
+            <input
+              type="checkbox"
+              name="hasHeating"
+              checked={formData.hasHeating === 'Yes'}
+              onChange={e =>
+                setFormData(prev => ({
+                  ...prev,
+                  hasHeating: e.target.checked ? 'Yes' : 'No',
+                }))
+              }
+            />
+            <span>Has Heating</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('hasHeating')}
+              onChange={e => handleHeaderCheckbox('hasHeating', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('hasHeating')}
+              onChange={e => handleDetailsCheckbox('hasHeating', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Heating Type */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Heating Type:</span>
+            <input
+              type="text"
+              name="heatingType"
+              value={formData.heatingType}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('heatingType')}
+              onChange={e => handleHeaderCheckbox('heatingType', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('heatingType')}
+              onChange={e => handleDetailsCheckbox('heatingType', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Kitchens */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Kitchens:</span>
+            <input
+              type="text"
+              name="kitchens"
+              value={formData.kitchens}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('kitchens')}
+              onChange={e => handleHeaderCheckbox('kitchens', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('kitchens')}
+              onChange={e => handleDetailsCheckbox('kitchens', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Latitude and Longitude */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex items-center space-x-4">
+            <label className="flex-1 space-y-1">
+              <span className="font-bold">Latitude:</span>
+              <input
+                type="number"
+                name="latitude"
+                value={formData.latitude}
+                onChange={handleChange}
+                required
+                className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </label>
+          </div>
+          <div className="flex items-center space-x-4">
+            <label className="flex-1 space-y-1">
+              <span className="font-bold">Longitude:</span>
+              <input
+                type="number"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleChange}
+                required
+                className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </label>
+          </div>
+        </div>
+
+        {/* Parking */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Parking:</span>
+            <input
+              type="text"
+              name="parking"
+              value={formData.parking}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('parking')}
+              onChange={e => handleHeaderCheckbox('parking', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('parking')}
+              onChange={e => handleDetailsCheckbox('parking', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
+
+        {/* Size */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Size:</span>
+            <input
+              type="text"
+              name="size"
+              value={formData.size}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('size')}
+              onChange={e => handleHeaderCheckbox('size', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('size')}
+              onChange={e => handleDetailsCheckbox('size', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
 
         {/* Suitable For */}
         <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Suitable For:</span>
-          <input
-            type="text"
-            name="suitableFor"
-            value={formData.suitableFor}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('suitableFor')}
-            onChange={e => handleHeaderCheckbox('suitableFor', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('suitableFor')}
-            onChange={e => handleDetailsCheckbox('suitableFor', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Suitable For:</span>
+            <input
+              type="text"
+              name="suitableFor"
+              value={formData.suitableFor}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('suitableFor')}
+              onChange={e => handleHeaderCheckbox('suitableFor', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('suitableFor')}
+              onChange={e => handleDetailsCheckbox('suitableFor', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
 
-      {/* Window Type */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Window Type:</span>
-          <input
-            type="text"
-            name="windowType"
-            value={formData.windowType}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('windowType')}
-            onChange={e => handleHeaderCheckbox('windowType', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('windowType')}
-            onChange={e => handleDetailsCheckbox('windowType', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
+        {/* Window Type */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Window Type:</span>
+            <input
+              type="text"
+              name="windowType"
+              value={formData.windowType}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('windowType')}
+              onChange={e => handleHeaderCheckbox('windowType', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('windowType')}
+              onChange={e => handleDetailsCheckbox('windowType', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
 
-      {/* Year Built */}
-      <div className="flex items-center space-x-4">
-        <label className="flex-1 space-y-1">
-          <span className="font-bold">Year Built:</span>
-          <input
-            type="text"
-            name="yearBuilt"
-            value={formData.yearBuilt}
-            onChange={handleChange}
-            className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={PropertyHeaders.includes('yearBuilt')}
-            onChange={e => handleHeaderCheckbox('yearBuilt', e.target.checked)}
-          />
-          <span>Header</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={propertyDetails.includes('yearBuilt')}
-            onChange={e => handleDetailsCheckbox('yearBuilt', e.target.checked)}
-          />
-          <span>Details</span>
-        </label>
-      </div>
+        {/* Year Built */}
+        <div className="flex items-center space-x-4">
+          <label className="flex-1 space-y-1">
+            <span className="font-bold">Year Built:</span>
+            <input
+              type="text"
+              name="yearBuilt"
+              value={formData.yearBuilt}
+              onChange={handleChange}
+              className="border rounded p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={PropertyHeaders.includes('yearBuilt')}
+              onChange={e => handleHeaderCheckbox('yearBuilt', e.target.checked)}
+            />
+            <span>Header</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={propertyDetails.includes('yearBuilt')}
+              onChange={e => handleDetailsCheckbox('yearBuilt', e.target.checked)}
+            />
+            <span>Details</span>
+          </label>
+        </div>
 
-      {/* Featured & Public */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="isFeatured"
-            checked={formData.isFeatured}
-            onChange={handleCheckboxChange}
-          />
-          <span>Featured Listing</span>
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="isPublic"
-            checked={formData.isPublic}
-            onChange={handleCheckboxChange}
-          />
-          <span>Is Public</span>
-        </label>
-      </div>
+        {/* Featured & Public */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="isFeatured"
+              checked={formData.isFeatured}
+              onChange={handleCheckboxChange}
+            />
+            <span>Featured Listing</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="isPublic"
+              checked={formData.isPublic}
+              onChange={handleCheckboxChange}
+            />
+            <span>Is Public</span>
+          </label>
+        </div>
 
-      {/* Allowed Users */}
-      {!formData.isPublic && (
-        <fieldset className="border p-4 rounded">
-          <legend className="font-bold">Allowed Users</legend>
-          <div className="space-y-2">
-            {users.map(u => (
-              <label key={u.uid} className="flex items-center space-x-2">
+        {/* Allowed Users */}
+        {!formData.isPublic && (
+          <fieldset className="border p-4 rounded">
+            <legend className="font-bold">Allowed Users</legend>
+            <div className="space-y-2">
+              {users.map(u => (
+                <label key={u.uid} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.allowedUsers.includes(u.uid)}
+                    onChange={() => handleToggleUser(u.uid)}
+                  />
+                  <span>{u.displayName || u.email}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
+        {/* Images */}
+        <h3 className="text-xl font-bold mt-6">Images</h3>
+        {formData.images.map((img, idx) => (
+          <div key={idx} className="flex space-x-4 items-center mt-2">
+            <input
+              type="text"
+              placeholder="Image Src"
+              value={img.src}
+              onChange={e => handleImageChange(idx, 'src', e.target.value)}
+              className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              placeholder="Image Alt"
+              value={img.alt}
+              onChange={e => handleImageChange(idx, 'alt', e.target.value)}
+              className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addImage}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4"
+        >
+          Add Image
+        </button>
+{/* Custom Fields */}
+<div className="border-t pt-4">
+          <h3 className="text-xl font-bold mb-2">Custom Fields</h3>
+          {customFields.map((cf, i) => (
+            <div key={i} className="flex space-x-2 items-center mb-2">
+              {/* Name & Value */}
+              <input
+                type="text"
+                placeholder="Field name"
+                value={cf.fieldName}
+                onChange={e => handleCustomFieldChange(i, 'fieldName', e.target.value)}
+                className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <input
+                type="text"
+                placeholder="Field value"
+                value={cf.fieldValue}
+                onChange={e => handleCustomFieldChange(i, 'fieldValue', e.target.value)}
+                className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {/* Header / Details toggles */}
+              <label className="flex items-center space-x-1">
                 <input
                   type="checkbox"
-                  checked={formData.allowedUsers.includes(u.uid)}
-                  onChange={() => handleToggleUser(u.uid)}
+                  checked={PropertyHeaders.includes(cf.fieldName)}
+                  onChange={e => handleHeaderCheckbox(cf.fieldName, e.target.checked)}
+                  disabled={!cf.fieldName.trim()}
                 />
-                <span>{u.displayName || u.email}</span>
+                <span className="text-sm">Header</span>
               </label>
-            ))}
-          </div>
-        </fieldset>
-      )}
-
-      {/* Images */}
-      <h3 className="text-xl font-bold mt-6">Images</h3>
-      {formData.images.map((img, idx) => (
-        <div key={idx} className="flex space-x-4 items-center mt-2">
-          <input
-            type="text"
-            placeholder="Image Src"
-            value={img.src}
-            onChange={e => handleImageChange(idx, 'src', e.target.value)}
-            className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="text"
-            placeholder="Image Alt"
-            value={img.alt}
-            onChange={e => handleImageChange(idx, 'alt', e.target.value)}
-            className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+              <label className="flex items-center space-x-1">
+                <input
+                  type="checkbox"
+                  checked={propertyDetails.includes(cf.fieldName)}
+                  onChange={e => handleDetailsCheckbox(cf.fieldName, e.target.checked)}
+                  disabled={!cf.fieldName.trim()}
+                />
+                <span className="text-sm">Details</span>
+              </label>
+              {/* Remove field */}
+              <button
+                type="button"
+                onClick={() => removeCustomField(i)}
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          {/* Add new custom field */}
           <button
             type="button"
-            onClick={() => removeImage(idx)}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            onClick={addCustomField}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
-            Remove
+            Add Custom Field
           </button>
         </div>
-      ))}
-      <button
-        type="button"
-        onClick={addImage}
-        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4"
-      >
-        Add Image
-      </button>
-
-      {/* Custom Fields */}
-<div className="border-t pt-4">
-  <h3 className="text-xl font-bold mb-2">Custom Fields</h3>
-  {customFields.map((cf, i) => (
-    <div key={i} className="flex space-x-2 items-center mb-2">
-      {/* Name & Value */}
-      <input
-        type="text"
-        placeholder="Field name"
-        value={cf.fieldName}
-        onChange={e => handleCustomFieldChange(i, 'fieldName', e.target.value)}
-        className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        type="text"
-        placeholder="Field value"
-        value={cf.fieldValue}
-        onChange={e => handleCustomFieldChange(i, 'fieldValue', e.target.value)}
-        className="border rounded p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-
-      {/* Header / Details toggles */}
-      <label className="flex items-center space-x-1">
-        <input
-          type="checkbox"
-          checked={PropertyHeaders.includes(cf.fieldName)}
-          onChange={e => handleHeaderCheckbox(cf.fieldName, e.target.checked)}
-        />
-        <span className="text-sm">Header</span>
-      </label>
-      <label className="flex items-center space-x-1">
-        <input
-          type="checkbox"
-          checked={propertyDetails.includes(cf.fieldName)}
-          onChange={e => handleDetailsCheckbox(cf.fieldName, e.target.checked)}
-        />
-        <span className="text-sm">Details</span>
-      </label>
-
-      {/* Remove field */}
-      <button
-        type="button"
-        onClick={() => removeCustomField(i)}
-        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-      >
-        Remove
-      </button>
-    </div>
-  ))}
-
-  {/* Add new custom field */}
-  <button
-    type="button"
-    onClick={addCustomField}
-    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-  >
-    Add Custom Field
-  </button>
-</div>
-
-      {/* Form Actions */}
-      <div className="flex justify-end space-x-4 mt-6">
+        {/* Form Actions */}
+        <div className="flex justify-end space-x-4 mt-6">
           <button
             type="button"
             onClick={() => setIsPreviewOpen(true)}
@@ -913,9 +932,10 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
             Cancel
           </button>
         </div>
+        
       </form>
 
-       {isPreviewOpen && (
+      {isPreviewOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex">
           <div className="bg-white m-auto w-full h-full md:w-3/4 md:h-5/6 overflow-auto rounded-lg shadow-lg">
             <div className="flex justify-end p-2">
@@ -926,12 +946,10 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
                 ✕ Close
               </button>
             </div>
-            {/* pass the top-level previewData */}
             <DetailsContent property={previewData} />
           </div>
-          </div>
+        </div>
       )}
-    </>                                
+    </>
   );
-}                           
- 
+}
