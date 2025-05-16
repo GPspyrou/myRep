@@ -1,49 +1,77 @@
-// app/components/DetailsPageComponents/PropertyDescription.tsx
 'use client';
-
-import React, { useState, useRef } from 'react';
+import React, { forwardRef, useState, useRef, useLayoutEffect, useImperativeHandle } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 type PropertyDescriptionProps = {
   description: string;
+  collapsedMaxHeight?: string;
+  expanded?: boolean;
+  onToggle?: () => void;
 };
 
-export default function PropertyDescription({ description }: PropertyDescriptionProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const paragraphs = description.split('\n');
-  const visibleParagraphs = isExpanded ? paragraphs : paragraphs.slice(0, 3);
+const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>(
+  ({ description, collapsedMaxHeight = '16rem', expanded: controlledExpanded, onToggle }, ref) => {
+    const isControlled = controlledExpanded !== undefined;
+    const [localExpanded, setLocalExpanded] = useState(false);
+    const expanded = isControlled ? controlledExpanded : localExpanded;
+    const containerRef = useRef<HTMLDivElement>(null);
+    const inView = useInView(containerRef, { once: true, margin: '-50px' });
+    const [shouldShowToggle, setShouldShowToggle] = useState(false);
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(containerRef, { once: true, margin: '-50px' });
+    useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
 
-  return (
-    <div
-      ref={containerRef}
-      className="relative pb-8 pt-12 max-h-[1000px] transition-all"
-    >
-      <h2 className="mb-3 text-[1.4rem] font-semibold text-[#111] tracking-wide capitalize">
-        Περιγραφή
-      </h2>
+    const paras = description.split('\n').filter(p => p.trim().length > 0);
 
-      {visibleParagraphs.map((paragraph, index) => (
-        <motion.p
-          key={index}
-          className="mb-4 font-normal text-[#444] text-justify whitespace-pre-line"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: index * 0.2, ease: 'easeOut' }}>
-          {paragraph}
-        </motion.p>
-      ))}
+    useLayoutEffect(() => {
+      const el = containerRef.current;
+      if (!el) return;
+      const computedStyle = window.getComputedStyle(el);
+      const maxHeight = parseFloat(computedStyle.maxHeight);
+      if (!isNaN(maxHeight) && el.scrollHeight > maxHeight + 20) {
+        setShouldShowToggle(true);
+      }
+    }, [description, collapsedMaxHeight]);
 
-      {paragraphs.length > 3 && (
-        <button
-          className="mt-2 text-base font-semibold text-black hover:opacity-70 transition-opacity"
-          onClick={() => setIsExpanded(!isExpanded)}
+    const toggle = () => {
+      if (isControlled && onToggle) onToggle();
+      else setLocalExpanded(prev => !prev);
+    };
+    return (
+      <div className="w-full">
+        <h2 className="mb-4 text-xl md:text-2xl font-semibold text-gray-900 tracking-tight capitalize">
+          Περιγραφή
+        </h2>
+        <div
+          ref={containerRef}
+          style={{
+            maxHeight: expanded ? 'none' : collapsedMaxHeight,
+            overflow: 'hidden',
+            transition: 'max-height 0.5s ease',
+          }}
         >
-          {isExpanded ? 'Read Less' : 'Read More'}
-        </button>
-      )}
-    </div>
-  );
-}
+          {paras.map((p, i) => (
+            <motion.p
+              key={i}
+              className="mb-4 text-base leading-relaxed text-gray-700 whitespace-pre-line"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, delay: i * 0.15, ease: 'easeOut' }}
+            >
+              {p}
+            </motion.p>
+          ))}
+        </div>
+        {shouldShowToggle && (
+          <button
+            onClick={toggle}
+            className="mt-3 text-sm font-medium text-blue-600 hover:underline transition-all"
+          >
+            {expanded ? 'Read Less' : 'Read More'}
+          </button>
+        )}
+      </div>
+    );
+  }
+);    
+
+export default PropertyDescription;

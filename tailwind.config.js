@@ -1,4 +1,3 @@
-// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -9,14 +8,20 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
-        fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
-      },fontFamily: {
-        montserrat: ['var(--font-montserrat)'],
-      },  
+        fadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+      },
       animation: {
         fadeIn: 'fadeIn 0.5s ease-out forwards',
       },
+      fontFamily: {
+        montserrat: ['var(--font-montserrat)'],
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+  ],
 };
