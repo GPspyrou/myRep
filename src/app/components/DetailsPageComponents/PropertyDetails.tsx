@@ -1,13 +1,14 @@
 'use client';
 
 import React, {
-    forwardRef,
-    useRef,
-    useState,
-    useEffect,
-    useLayoutEffect,
-    useImperativeHandle,
-  } from 'react';
+  forwardRef,
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useImperativeHandle,
+} from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type PropertyDetailsProps = {
   property: Record<string, any>;
@@ -53,7 +54,11 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
     }, [collapsedMaxHeight]);
 
     const entries = Object.entries(property).filter(
-      ([k, v]) => fields.includes(k) && v != null && !(typeof v === 'string' && !v.trim()) && typeof v !== 'object'
+      ([k, v]) =>
+        fields.includes(k) &&
+        v != null &&
+        !(typeof v === 'string' && !v.trim()) &&
+        typeof v !== 'object'
     );
 
     const toggle = () => {
@@ -63,44 +68,49 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
 
     return (
       <div>
-        <ul
-        ref={internalRef}
-
-          style={{
-            maxHeight: expanded ? 'none' : collapsedMaxHeight,
-            transition: 'max-height 0.5s ease',
+        <motion.ul
+          ref={internalRef}
+          layout
+          initial={false}
+          animate={{
+            height: expanded ? 'auto' : collapsedMaxHeight,
             overflow: 'hidden',
           }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
           className="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
-          {entries.map(([key, value], idx) => (
-            <li
-              key={idx}
-              className="relative py-1 font-medium"
-              style={{
-                opacity: isVisible ? 1 : 0,
-                transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
-                transition: 'opacity 0.7s ease-out, transform 0.7s ease-out',
-                transitionDelay: `${idx * 0.15}s`,
-              }}
-            >
-              <div className="flex gap-x-2 items-baseline relative">
-                <strong className="text-[1rem] text-[#361e1a]">
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-                </strong>
-                <span className="text-[1.05rem] font-medium text-black">{value}</span>
-                <span
-                  className="absolute bottom-0 left-0 h-[2px] bg-neutral-400"
-                  style={{
-                    width: isVisible ? '100%' : '0%',
-                    transition: 'width 1s ease-out',
-                    transitionDelay: `${idx * 0.15 + 0.2}s`,
-                  }}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
+          <AnimatePresence>
+            {entries.map(([key, value], idx) => (
+              <motion.li
+                key={idx}
+                initial={{ opacity: 0, y: 16 }}
+                animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: idx * 0.12,
+                  ease: 'easeOut',
+                }}
+                className="relative py-1 font-medium"
+              >
+                <div className="flex gap-x-2 items-baseline relative">
+                  <strong className="text-[1rem] text-[#361e1a]">
+                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                  </strong>
+                  <span className="text-[1.05rem] font-medium text-black">{value}</span>
+                  <span
+                    className="absolute bottom-0 left-0 h-[2px] bg-neutral-400"
+                    style={{
+                      width: isVisible ? '100%' : '0%',
+                      transition: 'width 1s ease-out',
+                      transitionDelay: `${idx * 0.15 + 0.2}s`,
+                    }}
+                  />
+                </div>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </motion.ul>
 
         {showToggle && (
           <button

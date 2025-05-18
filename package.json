@@ -24,6 +24,7 @@
     "nodemailer": "^6.10.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-draggable": "^4.4.6",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
     "react-slick": "^0.30.3",

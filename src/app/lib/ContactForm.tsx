@@ -70,8 +70,17 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto">
-      <div className="flex gap-4">
+    <form
+   onSubmit={handleSubmit}
+   className="
+     w-full            /* full width on tiniest screens */
+     sm:w-80           /* 20rem (≈320px) on small screens and up */
+     md:w-96           /* 24rem (≈384px) on medium screens and up */
+     lg:w-[28rem]      /* 28rem (≈448px) on large screens and up */
+     xl:w-[32rem]      /* 32rem (≈512px) on extra-large screens and up */
+     mx-auto
+     space-y-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <input
         type="text" 
         name="firstName"

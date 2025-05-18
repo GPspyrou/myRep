@@ -1,6 +1,13 @@
 'use client';
-import React, { forwardRef, useState, useRef, useLayoutEffect, useImperativeHandle } from 'react';
-import { motion, useInView } from 'framer-motion';
+
+import React, {
+  forwardRef,
+  useState,
+  useRef,
+  useLayoutEffect,
+  useImperativeHandle,
+} from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 type PropertyDescriptionProps = {
   description: string;
@@ -14,7 +21,10 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
     const isControlled = controlledExpanded !== undefined;
     const [localExpanded, setLocalExpanded] = useState(false);
     const expanded = isControlled ? controlledExpanded : localExpanded;
+
     const containerRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+
     const inView = useInView(containerRef, { once: true, margin: '-50px' });
     const [shouldShowToggle, setShouldShowToggle] = useState(false);
 
@@ -23,11 +33,11 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
     const paras = description.split('\n').filter(p => p.trim().length > 0);
 
     useLayoutEffect(() => {
-      const el = containerRef.current;
+      const el = contentRef.current;
       if (!el) return;
-      const computedStyle = window.getComputedStyle(el);
-      const maxHeight = parseFloat(computedStyle.maxHeight);
-      if (!isNaN(maxHeight) && el.scrollHeight > maxHeight + 20) {
+
+      const maxHeightNum = parseFloat(collapsedMaxHeight);
+      if (!isNaN(maxHeightNum) && el.scrollHeight > maxHeightNum + 10) {
         setShouldShowToggle(true);
       }
     }, [description, collapsedMaxHeight]);
@@ -36,31 +46,41 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
       if (isControlled && onToggle) onToggle();
       else setLocalExpanded(prev => !prev);
     };
+
     return (
-      <div className="w-full">
+      <div className="w-full bg-[#D6D2C4] rounded-lg shadow-sm p-6 transition-shadow hover:shadow-md">
         <h2 className="mb-4 text-xl md:text-2xl font-semibold text-gray-900 tracking-tight capitalize">
-          Περιγραφή
+          Description
         </h2>
-        <div
+
+        <motion.div
           ref={containerRef}
-          style={{
-            maxHeight: expanded ? 'none' : collapsedMaxHeight,
-            overflow: 'hidden',
-            transition: 'max-height 0.5s ease',
+          layout
+          initial={false}
+          animate={{
+            height: expanded ? 'auto' : collapsedMaxHeight,
           }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          style={{ overflow: 'hidden' }}
         >
-          {paras.map((p, i) => (
-            <motion.p
-              key={i}
-              className="mb-4 text-base leading-relaxed text-gray-700 whitespace-pre-line"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5, delay: i * 0.15, ease: 'easeOut' }}
-            >
-              {p}
-            </motion.p>
-          ))}
-        </div>
+          <div ref={contentRef}>
+            <AnimatePresence>
+              {paras.map((p, i) => (
+                <motion.p
+                  key={i}
+                  className="mb-4 text-base leading-relaxed text-gray-700 whitespace-pre-line"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                >
+                  {p}
+                </motion.p>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
         {shouldShowToggle && (
           <button
             onClick={toggle}
@@ -72,6 +92,6 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
       </div>
     );
   }
-);    
+);
 
 export default PropertyDescription;

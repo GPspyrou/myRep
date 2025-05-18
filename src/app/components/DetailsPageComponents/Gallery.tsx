@@ -91,8 +91,8 @@ export default function Gallery({ images }: GalleryProps) {
             spaceBetween={8}
             loop={images.length > 1}
             breakpoints={{
-              320: { slidesPerView: Math.min(thumbsPerView, 2) },
-              640: { slidesPerView: Math.min(thumbsPerView, 3) },
+              320: { slidesPerView: thumbsPerView-1 },
+              640: { slidesPerView: thumbsPerView-1 },
               1024: { slidesPerView: thumbsPerView },
             }}
             modules={[FreeMode]}
