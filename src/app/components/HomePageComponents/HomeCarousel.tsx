@@ -42,7 +42,6 @@ export default function HomeCarousel({ houses }: Props) {
                     <span className="text-gray-400">No Image</span>
                   </div>
                 )}
-
                 <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row justify-between items-start sm:items-center text-white z-10 space-y-2 sm:space-y-0">
                   <div>
                     <h2 className="text-base sm:text-xl md:text-2xl font-light">
@@ -59,7 +58,6 @@ export default function HomeCarousel({ houses }: Props) {
                     View Property
                   </Link>
                 </div>
-
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-0" />
               </div>
