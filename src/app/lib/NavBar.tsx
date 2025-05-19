@@ -45,8 +45,8 @@ export default function NavBar() {
   const showSolid = !(isTransparentRoute && !scrolled);
 
   const bgClass = showSolid
-  ? 'bg-white shadow-md'
-  : 'bg-transparent ';
+    ? 'bg-white shadow-md'
+    : 'bg-transparent ';
 
   const transitionClasses = 'transition-colors duration-500 ease-in-out';
 
@@ -81,21 +81,24 @@ export default function NavBar() {
     >
       <a
         href="mailto:support@property-hall.com"
-        className="absolute top-0 right-0 mt-1 mr-4 text-xs underline text-[black]"
+        className="absolute top-2 right-4 text-xs underline text-[black] block z-50 cursor-pointer"
       >
         support@property-hall.com
       </a>
 
-      <div className="max-w-7xl mx-auto flex items-center h-16 px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link href="/" className="mr-10 flex items-center">
+      <div className="max-w-7xl mx-auto flex items-center h-24 px-4 sm:px-6 lg:px-8">
+        {/* Logo + Centered Header */}
+        <Link href="/" className="mr-10 flex flex-col items-center justify-center">
           <Image
-            src="/LOGOTEST.png" // <-- Replace with your logo path
+            src="/LOGOTEST.png"
             alt="Logo"
             width={70}
             height={70}
             className="object-contain"
           />
+          <h1 className="text-sm text-black font-normal mt-1 text-center">
+            Property Hall
+          </h1>
         </Link>
 
         {/* Left Nav Links */}
@@ -121,7 +124,7 @@ export default function NavBar() {
       </div>
 
       {/* Right Side */}
-      <div className="absolute inset-y-0 pt-3 right-4 pr-6 flex items-center space-x-4">
+      <div className="absolute inset-y-0 pt-6 right-4 pr-6 flex items-center space-x-4">
         <Link href="/contact" className={`text-sm pr-4 font-medium ${commonLinkStyles}`}>
           Contact
         </Link>
@@ -154,7 +157,6 @@ export default function NavBar() {
             Login
           </Link>
         )}
-          
       </div>
     </nav>
   );

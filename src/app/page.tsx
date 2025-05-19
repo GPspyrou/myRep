@@ -116,9 +116,9 @@ export default async function HomePage() {
         <div className="w-full bg-white shadow-lg py-16 px-4 sm:px-6 lg:px-12">
           <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 p-6">
-              <h1 className="text-5xl font-medium text-[#361e1a] mb-4">
+              <h2 className="text-5xl font-medium text-[#361e1a] mb-4">
                 Discover Your Ideal Property
-              </h1>
+              </h2>
               <h2 className="text-2xl font-bold text-[#361e1a] mb-4">
                 Whether you're searching for your dream home or the perfect investment, we're here every step of the way.
               </h2>
@@ -158,9 +158,9 @@ export default async function HomePage() {
               />
             </div>
             <div className="md:w-1/2 p-6">
-              <h1 className="text-5xl font-medium text-[#361e1a] mb-4">
+              <h2 className="text-5xl font-medium text-[#361e1a] mb-4">
                 Sell Your Property with Confidence
-              </h1>
+              </h2>
               <p className="text-[26px] text-[#361e1a] mb-6">
                 Selling your home doesn’t have to be stressful. With our expert guidance, you’ll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price. Let us handle the complexities while you experience a smooth, rewarding selling journey.
               </p>
@@ -175,9 +175,9 @@ export default async function HomePage() {
         {/* For Sale Section */}
         <section className="w-full shadow-lg bg-[#e9e5dd]">
           <div className="max-w-7xl mx-auto p-12">
-            <h1 className="text-4xl text-center text-[#361e1a] mb-8">
+            <h2 className="text-4xl text-center text-[#361e1a] mb-8">
               Featured Properties For Sale
-            </h1>
+            </h2>
             <HomeHouseGrid houses={housesForSale} />
           </div>
         </section>
@@ -185,9 +185,9 @@ export default async function HomePage() {
         {/* Rental Section */}
         <section className="bg-[#D6D2C4] shadow-lg rounded-md">
           <div className="max-w-7xl mx-auto p-12">
-            <h1 className="text-4xl text-[#361e1a] text-center mb-8">
+            <h2 className="text-4xl text-[#361e1a] text-center mb-8">
               Featured Rental Properties
-            </h1>
+            </h2>
             <HomeHouseGrid houses={rentalHouses} />
           </div>
         </section>
