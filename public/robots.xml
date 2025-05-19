@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /login
+Disallow: /api/
+Disallow: /404
+Disallow: /nimda
+Disallow: /home
+Sitemap: https://propertyhall.com/sitemap.xml

@@ -15,9 +15,40 @@ import { House } from '@/app/types/house';
 import { db } from '@/app/firebase/firebaseServer';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import Link from 'next/link';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
+export const metadata: Metadata = {
+  title: 'Property Hall – Find Your Dream Home in Greece',
+  description:
+    'Browse featured properties for sale and rent in Greece. Expert guidance, transparent pricing, and a seamless experience. Start your search today!',
+  openGraph: {
+    title: 'Property Hall – Your Gateway to Real Estate in Greece',
+    description:
+      'Discover beachfront villas, city apartments, and rental opportunities across Greece with Property Hall.',
+    url: 'https://propertyhall.example.com/',
+    images: [
+      {
+        url: 'https://propertyhall.example.com/og-hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Greek villa overlooking the sea',
+      },
+    ],
+    siteName: 'Property Hall',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Property Hall – Real Estate in Greece',
+    description: 'Explore top listings for sale and rent across Greece.',
+    images: ['https://propertyhall.example.com/og-hero.jpg'],
+  },
+  alternates: {
+    canonical: 'https://propertyhall.com/home',
+  },
+}
 
 export default async function HomePage() {
   // build a Firestore query just like you would client‐side
@@ -36,6 +67,16 @@ export default async function HomePage() {
   }));
   const housesForSale = houses.filter(house => house.listingType === 'sale');
   const rentalHouses = houses.filter(house => house.listingType === 'rental');
+  const baseUrl = 'https://propertyhall.example.com'
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: houses.map((h, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${baseUrl}/houses/${h.id}`,
+    })),
+  }
 
   const faqItems: FAQItem[] = [
     {
@@ -62,6 +103,11 @@ export default async function HomePage() {
 
   return (
     <>
+    <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+
       <div className="bg-[#e9e5dd]  min-h-screen">
         <HomeHeroSection houses={houses} />
         

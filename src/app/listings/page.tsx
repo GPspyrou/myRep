@@ -7,6 +7,9 @@ import { House } from '@/app/types/house';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
+export const metadata = {
+  robots: 'noindex, follow',
+};
 
 type RawSearchParams = Partial<{
   mode: 'sale' | 'rental';
@@ -131,6 +134,7 @@ export default async function SecureListingsPage({
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
+      
       <NavBar />
       <ListingsClientWrapper initialHouses={allHouses} />
     </div>
