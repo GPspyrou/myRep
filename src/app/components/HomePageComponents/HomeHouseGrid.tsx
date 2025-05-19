@@ -13,7 +13,7 @@ type HouseGridProps = {
 
 export default function HomeHouseGrid({ houses }: HouseGridProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
       {houses.slice(0, 6).map((house, index) => (
         <motion.div
           key={house.id}
@@ -21,7 +21,7 @@ export default function HomeHouseGrid({ houses }: HouseGridProps) {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
           viewport={{ once: true, amount: 0.3 }}
-          className="overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.5)] bg-[#FAF9F6] transition-shadow duration-200 hover:shadow-lg"
+          className="overflow-hidden rounded shadow-[0_0px_10px_rgba(0,0,0,0.5)] bg-[#FAF9F6] transition-shadow duration-200 hover:shadow-[0_0px_20px_rgba(0,0,0,0.5)] hover:scale-[1.02] transform ease-in-out"
         >
           <Link href={`/houses/${house.id}`}>  
             <div className="relative w-full h-48 sm:h-56 md:h-64 cursor-pointer">

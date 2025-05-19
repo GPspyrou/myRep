@@ -1,24 +1,20 @@
-// app/pages/index.tsx  (or wherever your HomePage lives)
- // remove this if you’re in a .tsx server component file
-
-import HomeCarousel from '@/app/components/HomePageComponents/HomeCarousel';
-import Filters from '@/app/components/HomePageComponents/Filters';
+// app/page.tsx
 import HomeHouseGrid from '@/app/components/HomePageComponents/HomeHouseGrid';
 import FAQ, { FAQItem } from '@/app/components/HomePageComponents/FAQ';
 import InvestGreece from '@/app/components/HomePageComponents/InvestGreece';
 import HomeHeroSection from '@/app/components/HomePageComponents/HomeHero';
 import Footer from '@/app/lib/Footer';
 import Image from 'next/image';
-import { House } from '@/app/types/house';
-
-// ← NEW: import your client‐SDK instance instead of the Admin one
-import { db } from '@/app/firebase/firebaseServer';
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
+import { db } from '@/app/firebase/firebaseServer';
+import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { House } from '@/app/types/house';
+
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
+
 export const metadata: Metadata = {
   title: 'Property Hall – Find Your Dream Home in Greece',
   description:
@@ -48,35 +44,60 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://propertyhall.com/home',
   },
-}
+};
 
 export default async function HomePage() {
-  // build a Firestore query just like you would client‐side
-  const housesQ = query(
-    collection(db, 'houses'),
-    where('isPublic', '==', true)
+  // Build Firestore reference
+  const baseRef = collection(db, 'houses');
+
+  // Query 1: featured for sale
+  const saleQ = query(
+    baseRef,
+    where('isPublic', '==', true),
+    where('listingType', '==', 'sale'),
+    where('isFeatured', '==', true),
+    limit(6)
   );
 
-  // run it
-  const snapshot = await getDocs(housesQ);
+  // Query 2: featured rentals
+  const rentQ = query(
+    baseRef,
+    where('isPublic', '==', true),
+    where('listingType', '==', 'rental'),
+    where('isFeatured', '==', true),
+    limit(6)
+  );
 
-  // map out your House[]
-  const houses: House[] = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as Omit<House, 'id'>),
-  }));
-  const housesForSale = houses.filter(house => house.listingType === 'sale');
-  const rentalHouses = houses.filter(house => house.listingType === 'rental');
-  const baseUrl = 'https://propertyhall.example.com'
+  // Run both in parallel
+  const [saleSnap, rentSnap] = await Promise.all([
+    getDocs(saleQ),
+    getDocs(rentQ),
+  ]);
+
+  // Map snapshots to typed House objects without duplicate `id`
+  const housesForSale: House[] = saleSnap.docs.map((doc): House => {
+    const data = doc.data() as Omit<House, 'id'>;
+    return { id: doc.id, ...data };
+  });
+
+  const rentalHouses: House[] = rentSnap.docs.map((doc): House => {
+    const data = doc.data() as Omit<House, 'id'>;
+    return { id: doc.id, ...data };
+  });
+
+  // Combine for schema and hero/carousel components
+  const featuredHouses = [...housesForSale, ...rentalHouses];
+
+  const baseUrl = 'https://propertyhall.example.com';
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    itemListElement: houses.map((h, i) => ({
+    itemListElement: featuredHouses.map((h: House, i: number) => ({
       '@type': 'ListItem',
       position: i + 1,
       url: `${baseUrl}/houses/${h.id}`,
     })),
-  }
+  };
 
   const faqItems: FAQItem[] = [
     {
@@ -109,8 +130,27 @@ export default async function HomePage() {
       />
 
       <div className="bg-[#e9e5dd]  min-h-screen">
-        <HomeHeroSection houses={houses} />
+        <HomeHeroSection houses={featuredHouses} />
         
+        {/* For Sale Section */}
+        <section className="w-full shadow-lg bg-[#e9e5dd]">
+          <div className="max-w-7xl mx-auto p-12">
+            <h2 className="text-4xl text-center text-[#361e1a] mb-8">
+              Featured Properties For Sale
+            </h2>
+            <HomeHouseGrid houses={housesForSale} />
+          </div>
+        </section>
+
+        {/* Rental Section */}
+        <section className="bg-[#D6D2C4] shadow-lg rounded-md">
+          <div className="max-w-7xl mx-auto p-12">
+            <h2 className="text-4xl text-[#361e1a] text-center mb-8">
+              Featured Rental Properties
+            </h2>
+            <HomeHouseGrid houses={rentalHouses} />
+          </div>
+        </section>
 
         {/* Buy With Us */}
         <div className="w-full bg-white shadow-lg py-16 px-4 sm:px-6 lg:px-12">
@@ -172,25 +212,7 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-        {/* For Sale Section */}
-        <section className="w-full shadow-lg bg-[#e9e5dd]">
-          <div className="max-w-7xl mx-auto p-12">
-            <h2 className="text-4xl text-center text-[#361e1a] mb-8">
-              Featured Properties For Sale
-            </h2>
-            <HomeHouseGrid houses={housesForSale} />
-          </div>
-        </section>
-
-        {/* Rental Section */}
-        <section className="bg-[#D6D2C4] shadow-lg rounded-md">
-          <div className="max-w-7xl mx-auto p-12">
-            <h2 className="text-4xl text-[#361e1a] text-center mb-8">
-              Featured Rental Properties
-            </h2>
-            <HomeHouseGrid houses={rentalHouses} />
-          </div>
-        </section>
+        
         <InvestGreece />
         <FAQ items={faqItems} />
         

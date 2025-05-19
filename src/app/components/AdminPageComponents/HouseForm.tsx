@@ -792,7 +792,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
               checked={formData.isFeatured}
               onChange={handleCheckboxChange}
             />
-            <span>Featured Listing</span>
+            <span>Show in Home Page </span>
           </label>
           <label className="flex items-center space-x-2">
             <input

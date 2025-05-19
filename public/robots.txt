@@ -4,6 +4,5 @@ Allow: /
 Disallow: /login
 Disallow: /api/
 Disallow: /404
-Disallow: /nimda
-Disallow: /home
+Disallow: /nimda    
 Sitemap: https://propertyhall.com/sitemap.xml
