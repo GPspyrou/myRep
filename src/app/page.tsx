@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description:
     'Browse featured properties for sale and rent in Greece. Expert guidance, transparent pricing, and a seamless experience. Start your search today!',
   openGraph: {
-    title: 'Property Hall – Your Gateway to Real Estate in Greece',
+    title: 'Property Hall – Browse featured properties for sale and rent in Greece. Expert guidance, transparent pricing, and a seamless experience. Start your search today!',
     description:
       'Discover beachfront villas, city apartments, and rental opportunities across Greece with Property Hall.',
     url: 'https://propertyhall.example.com/',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
         alt: 'Greek villa overlooking the sea',
       },
     ],
-    siteName: 'Property Hall',
+    siteName: 'Property Hall | Real Estate Agency | Sales & Rentals',
     type: 'website',
   },
   twitter: {
