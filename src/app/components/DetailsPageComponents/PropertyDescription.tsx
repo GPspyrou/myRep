@@ -7,7 +7,7 @@ import React, {
   useLayoutEffect,
   useImperativeHandle,
 } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 type PropertyDescriptionProps = {
   description: string;
@@ -25,7 +25,6 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
     const containerRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const inView = useInView(containerRef, { once: true, margin: '-50px' });
     const [shouldShowToggle, setShouldShowToggle] = useState(false);
 
     useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
@@ -48,7 +47,7 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
     };
 
     return (
-      <div className="w-full  ">
+      <div className="w-full">
         <h2 className="mb-4 text-xl md:text-2xl font-semibold text-gray-900 tracking-tight capitalize">
           Description
         </h2>
@@ -64,20 +63,18 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
           style={{ overflow: 'hidden' }}
         >
           <div ref={contentRef}>
-            <AnimatePresence>
-              {paras.map((p, i) => (
-                <motion.p
-                  key={i}
-                  className="mb-4 text-base leading-relaxed text-gray-700 whitespace-pre-line"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                >
-                  {p}
-                </motion.p>
-              ))}
-            </AnimatePresence>
+            {paras.map((p, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true }}
+                className="mb-4 text-base leading-relaxed text-gray-700 whitespace-pre-line"
+              >
+                {p}
+              </motion.p>
+            ))}
           </div>
         </motion.div>
 

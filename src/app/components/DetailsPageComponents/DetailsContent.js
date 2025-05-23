@@ -90,7 +90,7 @@ export default function DetailsContent({ property }) {
           {/* Right Column: Property Details + Contact Form */}
           <div className="w-full md:w-[40%] flex flex-col gap-6">
             {detailFields?.length > 0 && (
-              <div className="bg-[#D6D2C4] rounded-xl shadow-md p-6 transition-shadow hover:shadow-lg">
+              <div className="bg-[#e9e5dd] rounded-xl  p-6 ">
                 <PropertyDetails
                   ref={detailsRef}
                   property={property}

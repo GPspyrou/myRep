@@ -26,12 +26,38 @@ export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
+    let isMounted = true;
+  
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+      if (!isMounted) return;
+  
       setUser(u);
       setLoading(false);
+  
+      if (!u) {
+        try {
+          const res = await fetch('/api/session/check', {
+            credentials: 'include'
+          });
+  
+          if (res.status === 401) {
+            await fetch('/api/session', { method: 'DELETE' });
+            
+          }
+        } catch (err) {
+          console.error('Session check failed:', err);
+        }
+      }
     });
-    return unsub;
-  }, []);
+  
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, [router]);
+  
+  
+  
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 0);
