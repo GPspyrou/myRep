@@ -3,13 +3,7 @@ import { getFirebaseAdminDB, verifySessionCookie } from '@/app/lib/firebaseAdmin
 import { applyRateLimit } from '@/app/lib/LargeRateLimiter';
 
 export async function GET(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
-  const { success } = await applyRateLimit(ip);
-
-  if (!success) {
-    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
-  }
-
+  
   try {
     const sessionCookie = req.cookies.get('__session')?.value;
 
