@@ -112,7 +112,7 @@ export default function AdminDashboard() {
   if (error)   return <div className="max-w-full mx-auto p-4 sm:p-6 text-center text-red-500">Error: {error}</div>;
 
   return (
-    <div className="max-w-full sm:max-w-4xl mx-auto p-4 sm:p-6 bg-gray-100">
+    <div className="max-w-full mt-20 sm:max-w-4xl mx-auto p-4 sm:p-6 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <button
         className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4"

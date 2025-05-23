@@ -29,7 +29,7 @@ export default function ListingsContent({ initialHouses }: Props) {
 
   return (
     <div className="flex flex-col md:flex-row  flex-1 overflow-hidden">
-      <div className="flex-1 md:flex-[0.95] overflow-y-scroll  scrollbar-hide p-5 bg-[#e9e5dd] relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20 mt-[50px]">
+      <div className="flex-1 md:flex-[0.95] overflow-y-scroll  scrollbar-hide p-6 pt-20 bg-[#e9e5dd] sm:mt-10 relative shadow-[10px_0px_20px_rgba(0,0,0,0.15)] z-20 mt-[50px]">
         <HouseGridWrapper
           houses={houses}
           onHover={(house) => {

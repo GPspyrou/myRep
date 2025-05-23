@@ -48,7 +48,7 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
     };
 
     return (
-      <div className="w-full bg-[#D6D2C4] rounded-lg shadow-sm p-6 transition-shadow hover:shadow-md">
+      <div className="w-full  ">
         <h2 className="mb-4 text-xl md:text-2xl font-semibold text-gray-900 tracking-tight capitalize">
           Description
         </h2>

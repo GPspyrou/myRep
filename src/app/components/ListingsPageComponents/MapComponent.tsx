@@ -2,9 +2,9 @@
 
 import React, { useRef, useCallback, useEffect } from 'react';
 import { useLoadScript, GoogleMap, InfoWindow } from '@react-google-maps/api';
-import Image from 'next/image';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { House } from '@/app/types/house';
+import HousePopupCard from '@/app/components/ListingsPageComponents/HousePopupCard';
 
 type ViewState = {
   longitude: number;
@@ -21,7 +21,9 @@ type Props = {
 };
 
 const MAP_CONTAINER_STYLE = { width: '100%', height: '100%' };
-const libraries = ['places'] as const;
+
+const librariesConst = ['places', 'marker'] as const;
+const libraries = [...librariesConst];
 
 export default function MapComponent({
   houses,
@@ -32,101 +34,119 @@ export default function MapComponent({
 }: Props) {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: [...libraries],
+    libraries,
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const clustererRef = useRef<MarkerClusterer | null>(null);
-  const markersRef = useRef<google.maps.Marker[]>([]);
+  const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
 
-  const onMapLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
+  const onMapLoad = useCallback(
+    (map: google.maps.Map) => {
+      mapRef.current = map;
+      markersRef.current.forEach(m => { m.map = null; });
+      markersRef.current = [];
+      clustererRef.current?.clearMarkers();
 
-    // clean up any old markers/clusters
-    markersRef.current.forEach(m => m.setMap(null));
-    markersRef.current = [];
-    clustererRef.current?.clearMarkers();
+      const markers = houses
+        .map(house => {
+          const lat = Number(house.location.latitude),
+                lng = Number(house.location.longitude);
+          if (isNaN(lat) || isNaN(lng)) return null;
 
-    // build individual markers
-    const markers = houses
-      .map(house => {
-        const lat = Number(house.location.latitude),
-          lng = Number(house.location.longitude);
-        if (isNaN(lat) || isNaN(lng)) return null;
+          // Construct text for marker
+          let text = '';
+          if (house.bedrooms != null && house.bathrooms != null) {
+            text = `${house.bedrooms}BD | ${house.bathrooms}BA | ${house.size} M²`;
+          } else {
+            text = house.size != null ? `${house.size} M²` : 'No data';
+          }
 
-        const marker = new google.maps.Marker({
-          position: { lat, lng },
-          map,
-          icon: {
-            url: '/marker.svg',
-            scaledSize: new google.maps.Size(40, 40),
-            anchor: new google.maps.Point(20, 40),
-          },
-        });
-
-        marker.addListener('click', () => setSelectedHouse(house));
-        return marker;
-      })
-      .filter((m): m is google.maps.Marker => m !== null);
-
-    markersRef.current = markers;
-
-    // custom renderer: circle + count label
-    const renderer = {
-      render({ count, position }: { count: number; position: google.maps.LatLng }) {
-        return new google.maps.Marker({
-          position,
-          label: {
-            text: String(count),
+          // Create styled div for marker
+           const markerDiv = document.createElement('div');
+          Object.assign(markerDiv.style, {
+            backgroundColor: '#333',
             color: 'white',
+            width: '120px',
+            height: '30px',
+            borderRadius: '15px',
+            border: '2px solid #fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px',
+            fontWeight: 'bold',
+          });
+          markerDiv.textContent = text;
+
+          const marker = new google.maps.marker.AdvancedMarkerElement({
+            map,
+            position: { lat, lng },
+            content: markerDiv,
+            gmpClickable: true,
+            title: house.title || '',
+          });
+
+          marker.addListener('gmp-click', () => {
+            setSelectedHouse(house);
+          });
+
+          return marker;
+        })
+        .filter(
+          (m): m is google.maps.marker.AdvancedMarkerElement => m !== null
+        );
+
+      markersRef.current = markers;
+      clustererRef.current = new MarkerClusterer({ map, markers, renderer: {
+        render({ count, position }) {
+          const c = document.createElement('div');
+          Object.assign(c.style, {
+            backgroundColor: '#333',
+            color: 'white',
+            width: `${20 + count.toString().length * 8}px`,
+            height: `${20 + count.toString().length * 8}px`,
+            borderRadius: '50%',
+            border: '2px solid #fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             fontSize: '14px',
             fontWeight: 'bold',
-          },
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: '#333',
-            fillOpacity: 0.75,
-            strokeColor: '#fff',
-            strokeWeight: 2,
-            scale: 20 + (count.toString().length - 1) * 8, // size up for >9
-          },
-        });
-      },
-    };
-
-    // create the clusterer
-    clustererRef.current = new MarkerClusterer({
-      map,
-      markers,
-      renderer,
-      // optional: gridSize, minimumClusterSize, etc.
-    });
-  }, [houses, setSelectedHouse]);
+          });
+          c.textContent = String(count);
+          return new google.maps.marker.AdvancedMarkerElement({
+            position,
+            content: c,
+          });
+        },
+      }});
+    },
+    [houses, setSelectedHouse]
+  );
 
   const onMapUnmount = useCallback(() => {
-    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current.forEach(m => (m.map = null));
     clustererRef.current?.clearMarkers();
     clustererRef.current = null;
     mapRef.current = null;
     markersRef.current = [];
   }, []);
 
-  // pan to selected house
   useEffect(() => {
     if (selectedHouse && mapRef.current) {
       const lat = Number(selectedHouse.location.latitude),
-            lng = Number(selectedHouse.location.longitude);
+        lng = Number(selectedHouse.location.longitude);
       if (!isNaN(lat) && !isNaN(lng)) {
         mapRef.current.panTo({ lat, lng });
       }
     }
   }, [selectedHouse]);
 
-  // sync view state
   const onIdle = useCallback(() => {
     if (!mapRef.current) return;
-    const center = mapRef.current.getCenter(),
-          zoom = mapRef.current.getZoom();
+    const center = mapRef.current.getCenter();
+    const zoom = mapRef.current.getZoom();
     if (center && typeof zoom === 'number') {
       setViewState({
         latitude: center.lat(),
@@ -151,68 +171,81 @@ export default function MapComponent({
           mapTypeControl: false,
           fullscreenControl: false,
           zoomControl: true,
+          mapId: 'DEMO_MAP_ID',
+         // maximum zoom level to prevent over-zooming
+         maxZoom: 16,
         }}
         onLoad={onMapLoad}
         onUnmount={onMapUnmount}
         onIdle={onIdle}
-      />
+      >
+        {selectedHouse &&
+          !isNaN(Number(selectedHouse.location.latitude)) &&
+          !isNaN(Number(selectedHouse.location.longitude)) && (
+            <InfoWindow
+              position={{
+                lat: Number(selectedHouse.location.latitude),
+                lng: Number(selectedHouse.location.longitude),
+              }}
+              onCloseClick={() => setSelectedHouse(null)}
+              options={{
+                      pixelOffset: new window.google.maps.Size(0, -30),
+                      }}
+                
+            >
+              <HousePopupCard house={selectedHouse} />
+            </InfoWindow>
+          )}
+      </GoogleMap>
 
-      {selectedHouse && (() => {
-        const lat = Number(selectedHouse.location.latitude),
-              lng = Number(selectedHouse.location.longitude);
-        if (isNaN(lat) || isNaN(lng)) return null;
+      {/* GLOBAL CSS OVERRIDES TO REMOVE DEFAULT WHITE INFOWINDOW */}
+      <style jsx global>{`
+  /* 1) Collapse the middle slice wrapper so it doesn't generate a box */
+  .gm-style .gm-style-iw-d {
+    display: contents !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
 
-        return (
-          <InfoWindow position={{ lat, lng }} onCloseClick={() => setSelectedHouse(null)}>
-            <div className="w-64 fade-in-popup">
-              <div className="relative w-full h-40">
-                <Image
-                  src={selectedHouse.images[0]?.src || '/placeholder.jpg'}
-                  alt={selectedHouse.title}
-                  fill
-                  className="object-cover rounded-t-xl"
-                />
-              </div>
-              <div className="p-4 bg-white rounded-b-xl shadow-md">
-                <h3 className="text-xl font-semibold text-gray-800 truncate">
-                  {selectedHouse.title}
-                </h3>
-                <p className="mt-1 text-lg font-bold text-green-600">
-                  {selectedHouse.price}
-                </p>
-                {selectedHouse.bedrooms != null &&
-                  selectedHouse.bathrooms != null && (
-                    <p className="mt-2 text-sm text-gray-600">
-                      {selectedHouse.bedrooms} bd • {selectedHouse.bathrooms} ba •{' '}
-                      {selectedHouse.size} sqft
-                    </p>
-                  )}
-                <button
-                  onClick={() => window.open(`/houses/${selectedHouse.id}`, '_blank')}
-                  className="mt-4 w-full py-2 text-center bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  View Details
-                </button>
-              </div>
-              <style jsx>{`
-                .fade-in-popup {
-                  animation: fadeIn 1s ease-out;
-                }
-                @keyframes fadeIn {
-                  from {
-                    opacity: 0;
-                    transform: scale(0.95);
-                  }
-                  to {
-                    opacity: 1;
-                    transform: scale(1);
-                  }
-                }
-              `}</style>
-            </div>
-          </InfoWindow>
-        );
-      })()}
+  /* 2) Hide all of the other 9-slice pieces (left/right/bottom and arrow bits) */
+  .gm-style .gm-style-iw-l,
+  .gm-style .gm-style-iw-r,
+  .gm-style .gm-style-iw-b,
+  .gm-style .gm-style-iw-t::before,
+  .gm-style .gm-style-iw-t::after {
+    display: none !important;
+  }
+
+  /* 3) Remove any default bg/shadow/padding on the outer container */
+  .gm-style .gm-style-iw,
+  .gm-style .gm-style-iw-c {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 4) Force your React card (the first child inside the InfoWindow) to fill 100% */
+  .gm-style .gm-style-iw-c > * {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+      /* Move the default close button into the top-right of the card */
+  .gm-style .gm-ui-hover-effect {
+    /* Make sure it’s visible and on top */
+    opacity: 1 !important;
+    z-index: 10 !important;
+
+    /* Position inside the popup container */
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+
+`}</style>
+
     </div>
   );
 }

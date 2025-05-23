@@ -1,7 +1,6 @@
-// app/api/getHouses/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getFirebaseAdminDB, verifySessionCookie } from '@/app/lib/firebaseAdmin';
-import { applyRateLimit } from '@/app/lib/LargeRateLimiter'; // Adjusted import for large rate limiter
+import { applyRateLimit } from '@/app/lib/LargeRateLimiter';
 
 export async function GET(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
@@ -47,10 +46,10 @@ export async function GET(req: NextRequest) {
   
     return NextResponse.json({ houses });
   } catch (error: any) {
-    console.error('[getHouses] Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch houses.' },
-      { status: 500 }
-    );
+    console.error('[getHouses] Error:', error.code, error.message);
+    if (error.code && error.code.includes('auth/')) {
+      return NextResponse.json({ error: 'Authentication error: Invalid or expired session.' }, { status: 401 });
+    }
+    return NextResponse.json({ error: 'Failed to fetch houses.' }, { status: 500 });
   }
 }

@@ -666,7 +666,7 @@ export default function HouseForm({ house, users, onSave, onCancel }: HouseFormP
         {/* Size */}
         <div className="flex items-center space-x-4">
           <label className="flex-1 space-y-1">
-            <span className="font-bold">Size:</span>
+            <span className="font-bold">Size in M^2:</span>
             <input
               type="text"
               name="size"
