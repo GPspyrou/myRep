@@ -142,7 +142,7 @@ export default function NavBar() {
 
   <div className="max-w-7xl mx-auto flex items-center justify-center sm:justify-start h-24 px-4 sm:px-6 lg:px-8">
     {/* Logo */}
-    <Link href="/" className="mr-10 flex flex-col items-center justify-center">
+    <Link href="/" className="mr-13 flex flex-col items-center justify-center">
       <Image
         src="/LOGOTEST.png"
         alt="Logo"
