@@ -109,13 +109,13 @@ export default function HomeHeroSection({ houses }: Props) {
 
         {/* Search Property overlay at bottom of carousel */}
         {inView && (
-          <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-xs sm:max-w-sm md:max-w-md p-4 pointer-events-none z-20">
-            <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-2 px-3 sm:py-3 sm:px-6 text-sm sm:text-base max-w-[90%] sm:max-w-md mx-auto pointer-events-auto">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl text-white font-serif text-center">
-                Search Property
-              </h2>
-            </div>
+          <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-lg sm:max-w-2xl md:max-w-3xl p-4 pointer-events-none z-20">
+          <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-2 px-3 sm:py-3 sm:px-6 text-sm sm:text-base max-w-full sm:max-w-2xl mx-auto pointer-events-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl text-white font-serif text-center">
+              Search Property
+            </h2>
           </div>
+        </div>        
         )}
       </div>
 
