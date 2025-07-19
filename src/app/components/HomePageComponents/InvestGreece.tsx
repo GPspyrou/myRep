@@ -1,7 +1,7 @@
 // Updated InvestGreece.tsx with responsive media queries
 'use client';
 
-import Footer from '@/app/lib/Footer';
+
 import { FC } from 'react';
 
 const features = [
@@ -73,7 +73,7 @@ const InvestGreece: FC = () => {
           ))}
         </ul>
       </div>
-      <Footer />
+      
     </div>
     
   );

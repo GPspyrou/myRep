@@ -71,101 +71,123 @@ export default function ContactForm() {
 
   return (
     <form
-   onSubmit={handleSubmit}
-   className="
-     w-full            /* full width on tiniest screens */
-     sm:w-80           /* 20rem (≈320px) on small screens and up */
-     md:w-96           /* 24rem (≈384px) on medium screens and up */
-     lg:w-[28rem]      /* 28rem (≈448px) on large screens and up */
-     xl:w-[32rem]      /* 32rem (≈512px) on extra-large screens and up */
-     mx-auto
-     space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4">
-        <input
-        type="text" 
-        name="firstName"
-        placeholder="First Name"
-        value={formData.firstName}
-        onChange={handleChange}
-        required
-        className="flex-1 p-2 border rounded text-black"
-        />
-        <input
-        type="text"
-        name="lastName"
-        placeholder="Last Name"
-        value={formData.lastName}
-        onChange={handleChange}
-        required
-        className="flex-1 p-2 border rounded text-black"
-        />
+  onSubmit={handleSubmit}
+  className="
+    w-full
+    max-w-[900px] 
+    mx-auto
+    bg-white
+   
+    rounded-md 
+    shadow-lg 
+    flex 
+    flex-col 
+    gap-4
+    
+  "
+>
+  {/* Row 1: Name + Email */}
+  <div className="flex flex-col bg-white  md:flex-row gap-4">
+    <input
+      type="text"
+      name="firstName"
+      placeholder="Name *"
+      value={formData.firstName}
+      onChange={handleChange}
+      required
+      className="flex-1 p-3 border border-gray-300 text-black bg-[#e6e2d8] placeholder-gray-500"
+    />
 
-      </div>
-
-      <input
+    <input
       type="email"
       name="email"
-      placeholder="Email"
+      placeholder="Email *"
       value={formData.email}
       onChange={handleChange}
       required
-      className="w-full p-2 border rounded text-black"
-      />
+      className="flex-1 p-3 border border-gray-300 text-black bg-[#e6e2d8] placeholder-gray-500"
+    />
+  </div>
 
-      <input
-        type="tel"
-        name="number"
-        placeholder="Phone Number"
-        value={formData.number}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded text-black"
-      />
+  {/* Row 2: Surname + Phone */}
+  <div className="flex flex-col md:flex-row gap-4">
+    <input
+      type="text"
+      name="lastName"
+      placeholder="Surname *"
+      value={formData.lastName}
+      onChange={handleChange}
+      required
+      className="flex-1 p-3 border border-gray-300 text-black bg-[#e6e2d8] placeholder-gray-500"
+    />
 
+    <input
+      type="tel"
+      name="number"
+      placeholder="Phone *"
+      value={formData.number}
+      onChange={handleChange}
+      required
+      className="flex-1 p-3 border border-gray-300 text-black bg-[#e6e2d8] placeholder-gray-500"
+    />
+  </div>
 
-      <textarea
-        name="message"
-        placeholder="Your message"
-        value={formData.message}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded h-32 text-black"
-      />
+  {/* Message (full width) */}
+  <textarea
+    name="message"
+    placeholder="Your Message"
+    value={formData.message}
+    onChange={handleChange}
+    required
+    className="p-3 border border-gray-300 text-black bg-[#e6e2d8] placeholder-gray-500 h-36 resize-none"
+  />
 
-
-      <div className="flex items-center">
-        <input
-          id="privacyConsent"
-          type="checkbox"
-          name="privacyConsent"
-          checked={formData.privacyConsent}
-          onChange={handleChange}
-          required
-          className="mr-2"
-        />
-        <label htmlFor="privacyConsent" className="text-sm">
-          I have read and agree to the{' '}
-          <a
-            href="/privacy-policy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            Privacy Policy
-          </a>
-        </label>
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-black hover:bg-black-700 text-white font-semibold py-2 px-4 rounded"
+  {/* Consent */}
+  <div className="flex items-start gap-2">
+    <input
+      id="privacyConsent"
+      type="checkbox"
+      name="privacyConsent"
+      checked={formData.privacyConsent}
+      onChange={handleChange}
+      required
+      className="mt-1"
+    />
+    <label htmlFor="privacyConsent" className="text-sm text-black">
+      I have read and agree with the{' '}
+      <a
+        href="/privacy-policy"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline"
       >
-        {loading ? 'Sending...' : 'Send Message'}
-      </button>
+        Privacy Policy
+      </a>{' '}
+      *
+    </label>
+  </div>
 
-      {success && <p className="text-green-600 text-center">Message sent successfully!</p>}
-      {error && <p className="text-red-600 text-center">Error: {error}</p>}
-    </form>
+  {/* Submit */}
+  <button
+    type="submit"
+    disabled={loading}
+    className="bg-black hover:bg-neutral-800 text-white font-semibold py-3 px-6 rounded transition-all"
+  >
+    {loading ? 'Sending...' : 'Submit'}
+  </button>
+
+  {/* Feedback */}
+  {success && (
+    <p className="text-green-600 text-center">
+      Message sent successfully!
+    </p>
+  )}
+  {error && (
+    <p className="text-red-600 text-center">
+      Error: {error}
+    </p>
+  )}
+</form>
+
   );
 }

@@ -202,7 +202,8 @@ export default async function HomePage() {
                 Sell Your Property with Confidence
               </h2>
               <p className="text-3xl text-[#361e1a] mb-6">
-                Selling your home doesn’t have to be stressful. With our expert guidance, you’ll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price.
+              Selling your home shouldn't be stressful.
+              Our expert team offers valuations, styling advice, marketing, and negotiation to help you sell at the best price.
               </p>
               <p className="text-2xl text-[#361e1a] mb-6">
                 We don’t just list your property—we craft a story that resonates with the right audience. Through premium visuals, elevated branding, and strategic exposure across digital and global real estate channels, we ensure your listing stands out in a competitive market.

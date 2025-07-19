@@ -79,16 +79,16 @@ export default function PropertyHeader({
     <div className="w-full mx-auto text-gray-900">
 
       {/* Title / Price */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-6">
+      <div className="flex flex-col font-cormorant lg:flex-row lg:items-center  justify-between mb-10 gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl tracking-tight mb-1">
+          <h1 className="text-6xl md:text-4xl tracking-tight mb-1">
             {title}
           </h1>
           <p className="text-sm text-gray-500">{locationLabel}</p>
         </div>
 
         <div className="mt-2 lg:mt-0">
-          <span className="text-3xl font-semibold text-primary">
+          <span className="text-6xl font-cormorant font-semibold text-primary">
             €{price}
           </span>
         </div>
@@ -99,8 +99,9 @@ export default function PropertyHeader({
         {summaryItems.map((item) => (
           <div
             key={item.key}
-            className="flex items-start gap-3 p-4 rounded-md bg-gray-50 border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-200"
+            className="flex items-start gap-3 p-0 sm:p-4 sm:rounded-md sm:bg-gray-50 sm:border sm:border-gray-200 sm:hover:border-gray-300 sm:hover:shadow-sm transition-all duration-200"
           >
+            {/* Icon + Text */}
             <div className="w-6 h-6 flex items-center justify-center">
               {item.icon}
             </div>

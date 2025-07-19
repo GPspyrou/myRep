@@ -88,7 +88,7 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
           {entries.map(([key, value], idx) => (
             <motion.li
               key={idx}
-              variants={listItemVariants}
+             
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -103,7 +103,7 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
                 </span>
                 <motion.span
                   className="absolute bottom-0 left-0 h-[2px] bg-neutral-400 dark:bg-neutral-600 group-hover:bg-black dark:group-hover:bg-white"
-                  variants={underlineVariants}
+                 
                 />
               </div>
             </motion.li>
@@ -111,12 +111,14 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
         </motion.ul>
 
         {showToggle && (
-          <button
-            onClick={toggle}
-            className="mt-4 block mx-auto text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline transition-colors"
-          >
-            {expanded ? 'Read less' : 'Read more'}
-          </button>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={toggle}
+              className="font-roboto font-light text-md text-black-600 dark:text-blue-400 hover:underline transition-colors"
+            >
+              {expanded ? 'Read less' : 'Read more'}
+            </button>
+          </div>
         )}
       </div>
     );

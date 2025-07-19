@@ -1,3 +1,5 @@
+const { Playfair } = require('next/font/google');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -19,6 +21,9 @@ module.exports = {
       fontFamily: {
         montserrat: ['var(--font-montserrat)'],
         cormorant: ['var(--font-cormorant)'],
+        fira: ['var(--font-fira-code)', 'monospace'],
+        roboto: ['var(--font-roboto)', 'sans-serif'],
+        playfair: ['var(--font-playfair)', 'sans-serif']
       },
     },
   },

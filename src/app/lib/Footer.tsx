@@ -39,14 +39,14 @@ export default function Footer() {
         </div>
 
         <p>
-          Privacy Policy | Designed & Developed by{' '}
+           Designed & Developed by{' '}
           <a
-            href="https://rulerdigital.agency"
+            href=""
             className="font-semibold hover:underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Ruler Digital Agency
+            G. Spyrou
           </a>
         </p>
       </div>

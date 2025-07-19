@@ -21,21 +21,10 @@ interface ThumbnailCarouselProps {
   swiperRef: React.MutableRefObject<any>;
 }
 
-const thumbVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.05, duration: 0.4, ease: 'easeOut' },
-  }),
-};
-
 const ThumbnailCarousel = forwardRef(function ThumbnailCarousel(
   { images, selectedIndex, onSelect, swiperRef }: ThumbnailCarouselProps,
   _ref
 ) {
-  const thumbsPerView = Math.min(3);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(selectedIndex);
 
@@ -44,66 +33,61 @@ const ThumbnailCarousel = forwardRef(function ThumbnailCarousel(
   }, [selectedIndex, swiperRef]);
 
   return (
-    <div className="w-full h-full bg-[#D6D2C4]/50 py-4 px-2 overflow-hidden">
-    {/* Arrow Controls */}
-    <div className="flex justify-end items-center px-2 mb-2 gap-2">
+    <div className="w-full h-full bg-white py-4 px-4 sm:px-6 rounded">
+      {/* Arrow Controls */}
+      <div className="flex justify-end items-center mb-4 gap-2">
       <button
         onClick={() => swiperRef.current?.slidePrev()}
-        className="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-100"
+        className="px-3 py-1 text-sm text-black lg:text-inherit bg-white border border-gray-300 rounded hover:bg-gray-100 transition"
       >
         ← Prev
       </button>
+
       <button
         onClick={() => swiperRef.current?.slideNext()}
-        className="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-100"
+        className="px-3 py-1 text-sm text-black lg:text-inherit bg-white border border-gray-300 rounded hover:bg-gray-100 transition"
       >
         Next →
       </button>
-    </div>
+      </div>
 
-    <div className="w-full h-full bg-[#D6D2C4]/50 py-4 px-2">
+      {/* Swiper */}
       <Swiper
         onSwiper={(s) => (swiperRef.current = s)}
         freeMode
-        spaceBetween={35}
+        spaceBetween={16}
         loop={images.length > 1}
         breakpoints={{
-          320: { slidesPerView: thumbsPerView - 1 },
-          640: { slidesPerView: thumbsPerView - 1 },
-          1024: { slidesPerView: thumbsPerView },
+          320: { slidesPerView: 1 },
+          640: { slidesPerView: 1 },
+          1024: { slidesPerView: 4 },
         }}
         modules={[FreeMode]}
-        className="h-[1000%]"
+        className="w-full"
       >
         {images.map((img, idx) => {
-          const isSelected = idx === selectedIndex;
           return (
             <SwiperSlide key={idx}>
               <motion.div
                 custom={idx}
-                initial="hidden"
-                whileInView="visible"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.3, root: swiperRef.current?.el }}
-                variants={thumbVariants}
                 onClick={() => {
-                    setModalIndex(idx);
-                    setIsModalOpen(true);
-                    onSelect(idx);
+                  setModalIndex(idx);
+                  setIsModalOpen(true);
+                  onSelect(idx);
                 }}
-                className={`
-                    relative aspect-square w-full cursor-pointer overflow-hidden
-                    transition-transform duration-300 ease-in-out
-                    
-                `}
-                >
+                className="relative w-full aspect-square cursor-pointer overflow-hidden rounded shadow hover:scale-105 transition-transform duration-300 ease-in-out"
+              >
                 <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    loading="eager"
-                    className="object-cover"
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  loading="eager"
+                  className="object-cover"
                 />
-                </motion.div>
+              </motion.div>
             </SwiperSlide>
           );
         })}
@@ -117,7 +101,6 @@ const ThumbnailCarousel = forwardRef(function ThumbnailCarousel(
         onPrev={() => setModalIndex((prev) => (prev - 1 + images.length) % images.length)}
         onNext={() => setModalIndex((prev) => (prev + 1) % images.length)}
       />
-    </div>
     </div>
   );
 });

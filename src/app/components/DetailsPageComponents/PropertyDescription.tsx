@@ -37,7 +37,6 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
 
     const containerRef = useRef<HTMLDivElement>(null);
     const remainingContentRef = useRef<HTMLDivElement>(null);
-
     const [shouldShowToggle, setShouldShowToggle] = useState(false);
 
     useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
@@ -79,17 +78,19 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
     };
 
     return (
-      <div ref={containerRef} className="w-full">
+      <div ref={containerRef} className="w-full px-4 sm:px-6 md:px-12">
+        {/* Heading */}
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           viewport={{ once: false }}
-          className="font-cormorant font-light uppercase text-4xl pt-36 pl-36 lg:text-7xl md:text-4xl text-[#361e1a] mb-5"
+          className="font-cormorant font-light uppercase text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-[#361e1a] pt-12 sm:pt-20 mb-5"
         >
           {heading}
         </motion.h2>
 
+        {/* First Paragraph */}
         {firstParagraph && (
           <motion.p
             key="first-paragraph"
@@ -97,19 +98,20 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             viewport={{ once: false }}
-            className="mb-8 text-[16px] p-12 pl-36 pb-24 leading-relaxed text-gray-700 whitespace-pre-line"
+            className="mb-8 text-base md:text-lg leading-relaxed text-gray-700 whitespace-pre-line"
           >
             {firstParagraph}
           </motion.p>
         )}
 
+        {/* Image */}
         {image && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: false }}
-            className="relative w-full min-h-[500px] md:min-h-[700px] overflow-hidden mb-12"
+            className="relative w-full min-h-[200px] md:min-h-[400px] overflow-hidden mb-12 rounded"
           >
             <Image
               src={image.src}
@@ -121,6 +123,7 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
           </motion.div>
         )}
 
+        {/* Remaining Paragraphs */}
         {remainingParagraphs.length > 0 && (
           <div>
             <motion.div
@@ -156,7 +159,7 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
                       visible: { opacity: 1, y: 0 },
                     }}
                     transition={{ duration: 0.4 }}
-                    className="mb-4 p-12 pl-36 text-[16px] leading-relaxed text-gray-700 whitespace-pre-line"
+                    className="mb-4 text-base md:text-lg leading-relaxed text-gray-700 whitespace-pre-line"
                   >
                     {p}
                   </motion.p>
@@ -164,15 +167,18 @@ const PropertyDescription = forwardRef<HTMLDivElement, PropertyDescriptionProps>
               </motion.div>
             </motion.div>
 
+            {/* Toggle Button */}
             {shouldShowToggle && (
-              <button
-                onClick={toggle}
-                className="mt-3 text-sm font-medium text-blue-600 hover:underline transition-all"
-                type="button"
-                aria-controls="additional-description"
-              >
-                {expanded ? 'Read Less' : 'Read More'}
-              </button>
+              <div className="mt-3 flex justify-end">
+                <button
+                  onClick={toggle}
+                  className="text-sm font-light text-black hover:underline transition-all"
+                  type="button"
+                  aria-controls="additional-description"
+                >
+                  {expanded ? 'Read Less' : 'Read More'}
+                </button>
+              </div>
             )}
           </div>
         )}
