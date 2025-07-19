@@ -179,23 +179,21 @@ export default function MapComponent({
         onUnmount={onMapUnmount}
         onIdle={onIdle}
       >
-        {selectedHouse &&
-          !isNaN(Number(selectedHouse.location.latitude)) &&
-          !isNaN(Number(selectedHouse.location.longitude)) && (
-            <InfoWindow
-              position={{
-                lat: Number(selectedHouse.location.latitude),
-                lng: Number(selectedHouse.location.longitude),
-              }}
-              onCloseClick={() => setSelectedHouse(null)}
-              options={{
-                      pixelOffset: new window.google.maps.Size(0, -30),
-                      }}
-                
-            >
-              <HousePopupCard house={selectedHouse} />
-            </InfoWindow>
-          )}
+        {selectedHouse && (
+          <InfoWindow
+            key={selectedHouse.id}             // ← this forces a full remount
+            position={{
+              lat: Number(selectedHouse.location.latitude),
+              lng: Number(selectedHouse.location.longitude),
+            }}
+            onCloseClick={() => setSelectedHouse(null)}
+            options={{
+              pixelOffset: new window.google.maps.Size(0, -30),
+            }}
+          >
+            <HousePopupCard house={selectedHouse} />
+          </InfoWindow>
+        )}
       </GoogleMap>
 
       {/* GLOBAL CSS OVERRIDES TO REMOVE DEFAULT WHITE INFOWINDOW */}

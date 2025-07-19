@@ -156,13 +156,13 @@ export default async function HomePage() {
         <div className="w-full bg-white shadow-lg py-16 px-4 sm:px-6 lg:px-12">
           <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 p-6">
-              <h2 className="text-5xl font-medium text-[#361e1a] mb-4">
+              <h2 className="text-5xl font-medium font-cormorant font-bold text-[#361e1a] mb-4">
                 Discover Your Ideal Property
               </h2>
-              <h2 className="text-2xl font-bold text-[#361e1a] mb-4">
+              <h2 className="text-3xl  text-[#361e1a] mb-4">
                 Whether you're searching for your dream home or the perfect investment, we're here every step of the way.
               </h2>
-              <p className="text-[26px] text-[#361e1a] mb-6">
+              <p className="text-2xl text-[#361e1a] mb-6">
                 Our dedicated team provides expert guidance on current market trends, property valuations, and strategic negotiation techniques to help you secure the ideal property at the best possible value. Let us simplify your buying experience and make your property dreams a reality.
               </p>
               <Link href="/listings">
@@ -198,12 +198,16 @@ export default async function HomePage() {
               />
             </div>
             <div className="md:w-1/2 p-6">
-              <h2 className="text-5xl font-medium text-[#361e1a] mb-4">
+              <h2 className="text-5xl font-cormorant font-medium font-bold text-[#361e1a] mb-4">
                 Sell Your Property with Confidence
               </h2>
-              <p className="text-[26px] text-[#361e1a] mb-6">
-                Selling your home doesn’t have to be stressful. With our expert guidance, you’ll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price. Let us handle the complexities while you experience a smooth, rewarding selling journey.
+              <p className="text-3xl text-[#361e1a] mb-6">
+                Selling your home doesn’t have to be stressful. With our expert guidance, you’ll enjoy comprehensive support including accurate market analysis, precise property valuations, professional styling tips, tailored marketing strategies, and skilled negotiations designed to secure the best possible price.
               </p>
+              <p className="text-2xl text-[#361e1a] mb-6">
+                We don’t just list your property—we craft a story that resonates with the right audience. Through premium visuals, elevated branding, and strategic exposure across digital and global real estate channels, we ensure your listing stands out in a competitive market.
+              </p>
+              
               <Link href="/sell-with-us">
                 <span className="inline-block px-6 py-3 border border-[#361e1a] text-[#361e1a] font-medium rounded-md hover:bg-[#361e1a] hover:text-white transition cursor-pointer">
                   View Pricing Options
@@ -215,7 +219,7 @@ export default async function HomePage() {
         
         <InvestGreece />
         <FAQ items={faqItems} />
-        
+        <Footer />
       </div>
      
     </>

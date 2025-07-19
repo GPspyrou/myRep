@@ -1,44 +1,57 @@
+'use client';
+
+import Link from 'next/link';
 import ContactForm from '@/app/lib/ContactForm';
+import {
+  FaInstagram,
+  FaLinkedin,
+  FaYoutube,
+} from 'react-icons/fa';
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-black to-[#576767] text-white py-16 mt-16">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-3xl font-bold mb-8 text-center">
-          Contact Us
-        </h2>
-
-        {/* add a wrapper here */}
-        <div
-          className="
-            w-full                   /* full width on really small screens */
-            sm:w-80                  /* 20rem (~320px) on ≥640px */
-            md:w-96                  /* 24rem (~384px) on ≥768px */
-            lg:w-[28rem]             /* 28rem (~448px) on ≥1024px */
-            xl:w-[32rem]             /* 32rem (~512px) on ≥1280px */
-            mx-auto                  /* center it horizontally */
-          "
-        >
-          <ContactForm />
+    <footer className="bg-[#e6e2d8] text-black py-16 mt-16 text-sm">
+      <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row justify-between items-start gap-12">
+        
+        {/* Left side: Address block */}
+        <div>
+          <p className="text-gray-600 mb-2">Located At:</p>
+          <p className="text-3xl font-light leading-snug">
+            Real adress 6,<br />
+            Perioxi, TK. 16541
+          </p>
         </div>
 
-        <p className="text-center text-gray-400 mt-12 text-sm">
-          © {new Date().getFullYear()} Your Company Name. All rights reserved.
+        {/* Right side: Navigation links */}
+        <div className="flex flex-col gap-4 text-right lg:text-left">
+          <Link href="/" className="hover:underline">Home</Link>
+          <Link href="/listings" className="hover:underline">Listings</Link>
+          <Link href="/contact" className="hover:underline">Contact</Link>
+        </div>
+      </div>
+
+      {/* Social & Attribution */}
+      <div className="max-w-7xl mx-auto px-6 mt-16 flex flex-col lg:flex-row justify-between items-center text-xs text-gray-500">
+        <div className="flex items-center space-x-4 mb-4 lg:mb-0">
+          <FaInstagram className="hover:opacity-70 cursor-pointer" />
+          <FaLinkedin className="hover:opacity-70 cursor-pointer" />
+          <FaYoutube className="hover:opacity-70 cursor-pointer" />
+        </div>
+
+        <p>
+          Privacy Policy | Designed & Developed by{' '}
+          <a
+            href="https://rulerdigital.agency"
+            className="font-semibold hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ruler Digital Agency
+          </a>
         </p>
       </div>
-      <p className="text-xs text-gray-500 mt-4 text-right px-6">
-        Icon by{' '}
-        <a
-          className="underline"
-          href="https://freeicons.io/city-elements-icon-set-14/bed-city-elements-bedroom-hotel-sleep-icon-769408"
-        >
-          ColourByteDesigns
-        </a>{' '}
-        on{' '}
-        <a className="underline" href="https://freeicons.io">
-          freeicons.io
-        </a>
-      </p>
+
+      
     </footer>
   );
 }

@@ -75,7 +75,7 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
     };
 
     return (
-      <div>
+      <div className="w-full bg-white rounded-lg border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-700 p-4 shadow-sm transition-all">
         <motion.ul
           ref={internalRef}
           layout
@@ -83,7 +83,7 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
           animate={{ height: expanded ? 'auto' : collapsedMaxHeight }}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
           style={{ overflow: 'hidden' }}
-          className="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 gap-4"
+          className="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 gap-6"
         >
           {entries.map(([key, value], idx) => (
             <motion.li
@@ -92,15 +92,17 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="relative py-1 font-medium"
+              className="relative"
             >
-              <div className="flex gap-x-2 items-baseline relative">
-                <strong className="text-[1rem] text-[#361e1a]">
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+              <div className="flex flex-col gap-y-1 relative group">
+                <strong className="text-sm sm:text-base text-neutral-600 dark:text-neutral-300 font-semibold">
+                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                 </strong>
-                <span className="text-[1.05rem] font-medium text-black">{value}</span>
+                <span className="text-[1rem] sm:text-[1.05rem] font-medium text-neutral-900 dark:text-white">
+                  {value}
+                </span>
                 <motion.span
-                  className="absolute bottom-0 left-0 h-[2px] bg-neutral-400"
+                  className="absolute bottom-0 left-0 h-[2px] bg-neutral-400 dark:bg-neutral-600 group-hover:bg-black dark:group-hover:bg-white"
                   variants={underlineVariants}
                 />
               </div>
@@ -111,7 +113,7 @@ const PropertyDetails = forwardRef<HTMLElement, PropertyDetailsProps>(
         {showToggle && (
           <button
             onClick={toggle}
-            className="mt-2 block mx-auto text-sm font-semibold underline hover:no-underline"
+            className="mt-4 block mx-auto text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline transition-colors"
           >
             {expanded ? 'Read less' : 'Read more'}
           </button>

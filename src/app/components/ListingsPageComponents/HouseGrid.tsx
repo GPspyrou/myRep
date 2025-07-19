@@ -44,7 +44,7 @@ const HouseGrid: React.FC<Props> = ({ houses, onHover }) => (
           variants={gridItemVariants}
           custom={index}
           onMouseEnter={() => onHover?.(house)}
-          className={`rounded-lg transition-shadow duration-200 hover:shadow-lg border-[0.5px] border-black ${
+          className={`rounded-lg transition-shadow duration-300 hover:shadow-lg border-[0.5px] border-black ${
             !house.isPublic ? 'border-2 border-yellow-400' : ''
           } h-full`}
         >

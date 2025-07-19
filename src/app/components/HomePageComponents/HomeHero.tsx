@@ -57,11 +57,12 @@ export default function HomeHeroSection({ houses }: Props) {
       <div className="relative w-full h-[60vh] md:h-screen">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={16}
+          spaceBetween={0}
           slidesPerView={1}
           navigation
           pagination={{ clickable: true }}
           autoplay={{ delay: 4000 }}
+          speed={1500}
           loop
           className="w-full h-full"
         >
@@ -111,7 +112,7 @@ export default function HomeHeroSection({ houses }: Props) {
         {inView && (
           <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2 w-full max-w-lg sm:max-w-2xl md:max-w-3xl p-4 pointer-events-none z-20">
           <div className="bg-black/70 backdrop-blur-sm border-2 border-white py-2 px-3 sm:py-3 sm:px-6 text-sm sm:text-base max-w-full sm:max-w-2xl mx-auto pointer-events-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl text-white font-serif text-center">
+            <h2 className="text-6xl sm:text-3xl md:text-5xl text-white font-cormorant font-semibold text-center">
               Search Property
             </h2>
           </div>
@@ -215,7 +216,7 @@ export default function HomeHeroSection({ houses }: Props) {
             <div className="w-full flex justify-center mt-6">
               <button
                 type="submit"
-                className="px-8 sm:px-10 py-3 font-medium rounded-md bg-[rgb(184,161,125)] text-white text-lg tracking-wide hover:bg-white hover:text-black hover:border hover:border-black transition-all duration-200"
+                className="px-8 sm:px-10 py-3 font-medium rounded-md bg-[rgb(184,161,125)] text-white text-lg tracking-wide hover:bg-white hover:text-black hover:border hover:border-black transition-all duration-500"
               >
                 Search
               </button>

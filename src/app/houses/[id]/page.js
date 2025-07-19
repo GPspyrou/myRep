@@ -1,4 +1,5 @@
 // app/houses/[id]/page.js
+
 import { notFound, redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { getFirebaseAdminAuth, getFirebaseAdminDB } from '@/app/lib/firebaseAdmin'
@@ -18,7 +19,6 @@ export default async function PropertyPage({ params }) {
 
   const { id } = params
 
-  // 1. Fetch the house
   let houseSnap
   try {
     houseSnap = await adminDb.collection('houses').doc(id).get()
@@ -34,12 +34,13 @@ export default async function PropertyPage({ params }) {
 
   const houseData = houseSnap.data()
 
-  // Helper to render the page content
   const renderContent = () => (
-    <>
+    <div className="flex flex-col min-h-screen">
       <NavBar />
-      <DetailsContent property={houseData} />
-    </>
+      <div className="flex-1">
+        <DetailsContent property={houseData} />
+      </div>
+    </div>
   )
 
   // 2. Public → show
@@ -60,7 +61,6 @@ export default async function PropertyPage({ params }) {
     throw new Error('Internal server error')
   }
 
-  // Verify the session cookie
   let decoded
   try {
     decoded = await adminAuth.verifySessionCookie(sessionCookie, true)

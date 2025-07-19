@@ -142,7 +142,7 @@ export default function NavBar() {
 
   <div className="max-w-7xl mx-auto flex items-center justify-center sm:justify-start h-24 px-4 sm:px-6 lg:px-8">
     {/* Logo */}
-    <Link href="/" className="mr-13 flex flex-col items-center justify-center">
+    <Link href="/" className="mr-10 flex flex-col items-center justify-center">
       <Image
         src="/LOGOTEST.png"
         alt="Logo"
@@ -191,7 +191,7 @@ export default function NavBar() {
       transition-opacity ease-in-out
       ${mobileMenuOpen 
         ? 'opacity-100 duration-[1000ms] delay-[100ms]'  // fade-in 1s, slight 100ms delay
-        : 'opacity-0 duration-[200ms]'                    // fade-out 0.2s, no delay
+        : 'opacity-0 duration-[300ms]'                    // fade-out 0.2s, no delay
       }
     `}
   >

@@ -18,6 +18,7 @@ module.exports = {
       },
       fontFamily: {
         montserrat: ['var(--font-montserrat)'],
+        cormorant: ['var(--font-cormorant)'],
       },
     },
   },

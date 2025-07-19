@@ -1,6 +1,7 @@
 // Updated InvestGreece.tsx with responsive media queries
 'use client';
 
+import Footer from '@/app/lib/Footer';
 import { FC } from 'react';
 
 const features = [
@@ -38,21 +39,19 @@ const InvestGreece: FC = () => {
   return (
     <div className="bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-16 ">
       <div className="max-w-12xl mx-auto text-center px-2 sm:px-4">
-        <h2 className="text-6xl sm:text-4xl md:text-5xl text-[#361e1a]">
+        <h2 className="text-6xl font-cormorant sm:text-4xl md:text-5xl text-[#361e1a]">
           Investment in Greece
         </h2>
         <p className="mt-6 text-6xl text-base sm:text-lg md:text-xl font-medium text-[#361e1a] leading-relaxed">
-          A cliffside villa in Santorini, a historic apartment in Athens,
-          <br className="block sm:hidden" />
-          or a seaside retreat in Crete – your dream is within reach
+          A cliffside villa in Santorini, a historic apartment in Athens, or a seaside retreat in Crete – your dream is within reach
         </p>
 
         {/* Icons Section */}
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 text-center">
           {features.map((item, index) => (
-            <div key={index} className="flex flex-col items-center space-y-3 sm:space-y-4 md:space-y-6">
+            <div key={index} className="flex flex-col  items-center space-y-3 sm:space-y-4 md:space-y-6">
               <div className="text-3xl sm:text-4xl md:text-5xl">{item.icon}</div>
-              <h3 className=" text-base sm:text-lg md:text-xl text-[#361e1a]">
+              <h3 className=" text-base font-cormorant sm:text-lg md:text-5xl text-[#361e1a]">
                 {item.title}
               </h3>
               <p className="text-xs sm:text-sm md:text-base text-[#361e1a]">
@@ -74,7 +73,9 @@ const InvestGreece: FC = () => {
           ))}
         </ul>
       </div>
+      <Footer />
     </div>
+    
   );
 };
 

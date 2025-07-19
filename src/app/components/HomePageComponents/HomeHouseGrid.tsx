@@ -21,7 +21,7 @@ export default function HomeHouseGrid({ houses }: HouseGridProps) {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
           viewport={{ once: true, amount: 0.3 }}
-          className="overflow-hidden rounded shadow-[0_0px_10px_rgba(0,0,0,0.5)] bg-[#FAF9F6] transition-shadow duration-200 hover:shadow-[0_0px_20px_rgba(0,0,0,0.5)] hover:scale-[1.02] transform ease-in-out"
+          className="overflow-hidden rounded shadow-[0_0px_10px_rgba(0,0,0,0.5)] bg-[#FAF9F6] transition-shadow duration-700 hover:shadow-[0_0px_20px_rgba(0,0,0,0.5)] hover:scale-[1.02] transform ease-in-out"
         >
           <Link href={`/houses/${house.id}`}>  
             <div className="relative w-full h-48 sm:h-56 md:h-64 cursor-pointer">
@@ -71,7 +71,7 @@ export default function HomeHouseGrid({ houses }: HouseGridProps) {
 
             <Link
               href={`/houses/${house.id}`}
-              className="block w-full text-center py-2 text-sm sm:text-base font-medium border border-[rgb(184,161,125)] bg-[rgb(184,161,125)] text-white rounded transition-colors duration-200 hover:bg-white hover:text-black hover:border-black"
+              className="block w-full text-center py-2 text-sm sm:text-base font-medium border border-[rgb(184,161,125)] bg-[rgb(184,161,125)] text-white rounded transition-colors duration-300 hover:bg-white hover:text-black hover:border-black"
             >
               View Property
             </Link>
