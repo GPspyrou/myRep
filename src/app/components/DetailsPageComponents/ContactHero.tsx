@@ -40,7 +40,7 @@ export default function ContactHero() {
           transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
           className="w-full lg:w-1/2"
         >
-          <div className="bg-white w-full  border-gray-100 p-6 sm:p-8 ">
+          <div className="bg-white w-full border-gray-100 p-6 sm:p-8 ">
             <ContactForm />
           </div>
         </motion.div>

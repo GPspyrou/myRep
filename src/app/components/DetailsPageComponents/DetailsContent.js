@@ -55,7 +55,7 @@ export default function DetailsContent({ property }) {
       <PropertyHeader property={property} fields={headerFields} />
     )}
     {detailFields.length > 0 && (
-      <div className="bg-white p-4 shadow rounded">
+      <div className="bg-white p-4 ">
         <PropertyDetails
           ref={detailsRef}
           property={property}
@@ -92,35 +92,42 @@ export default function DetailsContent({ property }) {
     </div>
   </aside>
 
-  {/* 🧱 Main Column */}
-  <section className="w-full lg:w-[70%] bg:white flex flex-col gap-6">
-    {description && (
-      <div className="bg-white ">
-        <PropertyDescription
-          ref={descRef}
-          description={description}
-          collapsedMaxHeight="16rem"
-          expanded={expandedDescription}
-          onToggle={toggleDescription}
-          image={property.images[2]}
-        />
-      </div>
-    )}
+  {/* 🧱 Main Column */} 
+<section className="w-full lg:w-[70%] flex flex-col gap-6">
 
-    <div className="bg-white p-4 sm:p-6   flex flex-col gap-6">
-      <ThumbnailCarousel
-        images={property.images.map((img, i) => ({
-          src: img.src,
-          alt: img.alt ?? `Thumb ${i + 1}`,
-        }))}
-        selectedIndex={selectedIndex}
-        onSelect={setSelectedIndex}
-        swiperRef={swiperRef}
-      />
-    </div>
+{/* Description – full width on mobile */}
+{description && (
+  <div className="bg-white w-full -mx-4 sm:mx-0">
+    <PropertyDescription
+      ref={descRef}
+      description={description}
+      collapsedMaxHeight="16rem"
+      expanded={expandedDescription}
+      onToggle={toggleDescription}
+      image={property.images[2]}
+    />
+  </div>
+)}
 
-    <ContactHero />
-  </section>
+{/* Carousel – full width on mobile */}
+<div className="bg-white w-full -mx-4 sm:mx-0 p-4 sm:p-6 flex flex-col gap-6">
+  <ThumbnailCarousel
+    images={property.images.map((img, i) => ({
+      src: img.src,
+      alt: img.alt ?? `Thumb ${i + 1}`,
+    }))}
+    selectedIndex={selectedIndex}
+    onSelect={setSelectedIndex}
+    swiperRef={swiperRef}
+  />
+</div>
+
+{/* Contact Section – also full width */}
+<div className="w-full -mx-4 sm:mx-0">
+  <ContactHero />
+</div>
+
+</section>
 </div>
 </main>
 
