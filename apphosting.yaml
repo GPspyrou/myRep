@@ -4,8 +4,8 @@ runConfig:
   minInstances: 0
   maxInstances: 4
   concurrency: 100
-  cpu: 2
-  memoryMiB: 256
+  cpu: 0.25
+  memoryMiB: 512
 
 env:
   # Public environment variables (build and runtime)
