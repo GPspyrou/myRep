@@ -10,7 +10,9 @@ runConfig:
 env:
   - variable: NODE_OPTIONS
     value: "--max-old-space-size=256"
-    
+    availability:
+      - BUILD
+      - RUNTIME    
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: "AIzaSyDEyrJlLxl30UXt7--OIRpQdcuYsKZx2Ik"
     availability:
