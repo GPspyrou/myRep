@@ -1,19 +1,10 @@
 # apphosting.yaml
 
-runConfig:
-  minInstances: 0
-  maxInstances: 4
-  concurrency: 100
-  cpu: 1
-  memoryMiB: 512
-# Public environment variables (build and runtime)
-env:
-  - variable: NODE_OPTIONS
-    value: "--max-old-space-size=1024"
-    availability:
-      - BUILD
-      - RUNTIME    
 
+
+env:
+  
+# Public environment variables (build and runtime)
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: "AIzaSyDEyrJlLxl30UXt7--OIRpQdcuYsKZx2Ik"
     availability:
