@@ -1,3 +1,4 @@
+'use client';
 import { useState, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { initializeApp, getApps } from 'firebase/app';
