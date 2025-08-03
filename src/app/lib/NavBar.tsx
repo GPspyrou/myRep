@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { auth } from '@/app/firebase/firebaseConfig';
+import { auth } from '@/app/firebase/firebaseClient';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { Poppins } from 'next/font/google';
 
@@ -229,7 +229,7 @@ export default function NavBar() {
                 )}
               </li>
             )}
-          </ul>
+          </ul> 
         </div>
       </div>
 

@@ -1,58 +1,71 @@
-'use client';
-
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { appCheck } from '@/app/firebase/firebaseConfig';
-import { getToken } from 'firebase/app-check';
+import { initializeApp, getApps } from 'firebase/app';
+import {
+  initializeAppCheck,
+  ReCaptchaV3Provider,
+  getToken,
+  AppCheck
+} from 'firebase/app-check';
 import { login } from '@/app/hooks/useFirebaseLogin';
 import { signInWithGoogle } from '@/app/hooks/useGoogleAuth';
+import firebaseConfig from '@/app/firebase/firebaseConfig';
 
 export default function Login() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
-  const router = useRouter();
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError]       = useState('');
+  const router                  = useRouter();
+
+  // Lazily initialize Firebase App and App Check once
+  const appCheck: AppCheck = useMemo(() => {
+    const app = !getApps().length
+      ? initializeApp(firebaseConfig)
+      : initializeApp(firebaseConfig); // getApp() would also work here
+
+    return initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(
+        process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY!
+      ),
+      isTokenAutoRefreshEnabled: true,
+    });
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
     try {
-       //🔐 Get App Check token before login
-      const appCheckToken = await getToken(appCheck, true);
-      console.log('✅ App Check Token:', appCheckToken.token);
+      // 🔐 Get App Check token
+      const { token } = await getToken(appCheck, /* forceRefresh= */ true);
+      console.log('✅ App Check Token:', token);
 
-      await login(email, password); // You can modify `login` to accept appCheckToken if needed
+      await login(email, password);
       router.push('/listings');
     } catch (err: any) {
       console.error('❌ Login error:', err);
+      let msg = 'Unknown error occurred';
 
-      let friendlyMessage = 'Unknown error occurred';
-
-      if (err.code === 'auth/user-not-found') {
-        friendlyMessage = 'No user found with that email.';
-      } else if (err.code === 'auth/wrong-password') {
-        friendlyMessage = 'Incorrect password.';
-      } else if (err.code === 'auth/invalid-email') {
-        friendlyMessage = 'Invalid email format.';
-      } else if (err.message === 'email-not-verified') {
+      if (err.code === 'auth/user-not-found')       msg = 'No user found with that email.';
+      else if (err.code === 'auth/wrong-password')  msg = 'Incorrect password.';
+      else if (err.code === 'auth/invalid-email')   msg = 'Invalid email format.';
+      else if (err.message === 'email-not-verified') {
         router.push('/verify-email');
         return;
       } else if (err.message?.includes('Token issue')) {
-        friendlyMessage = 'Token issue: server couldn’t verify.';
+        msg = 'Token issue: server couldn’t verify.';
       }
 
-      setError(`❌ ${friendlyMessage}`);
+      setError(`❌ ${msg}`);
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
-      // 🔐 Get App Check token before Google sign-in
-      const appCheckToken = await getToken(appCheck, true);
-      console.log('✅ App Check Token (Google):', appCheckToken.token);
+      const { token } = await getToken(appCheck, true);
+      console.log('✅ App Check Token (Google):', token);
 
-      await signInWithGoogle(); // You can pass the token to your logic if needed
+      await signInWithGoogle();
       router.push('/listings');
     } catch (err) {
       console.error('Google login error:', err);
@@ -77,7 +90,7 @@ export default function Login() {
             type="email"
             className="w-full p-2 border rounded mb-4"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             required
           />
 
@@ -86,7 +99,7 @@ export default function Login() {
             type="password"
             className="w-full p-2 border rounded mb-2"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             required
           />
 
