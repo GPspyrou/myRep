@@ -1,4 +1,3 @@
-// app/page.tsx
 import HomeHouseGrid from '@/app/components/HomePageComponents/HomeHouseGrid';
 import FAQ, { FAQItem } from '@/app/components/HomePageComponents/FAQ';
 import InvestGreece from '@/app/components/HomePageComponents/InvestGreece';
@@ -7,9 +6,7 @@ import Footer from '@/app/lib/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Metadata } from 'next';
-
-import { db } from '@/app/firebase/firebaseServer';
-import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { getFirebaseAdminDB } from '@/app/lib/firebaseAdmin';
 import { House } from '@/app/types/house';
 
 export const dynamic = 'force-dynamic';
@@ -20,7 +17,8 @@ export const metadata: Metadata = {
   description:
     'Browse featured properties for sale and rent in Greece. Expert guidance, transparent pricing, and a seamless experience. Start your search today!',
   openGraph: {
-    title: 'Property Hall – Browse featured properties for sale and rent in Greece. Expert guidance, transparent pricing, and a seamless experience. Start your search today!',
+    title:
+      'Property Hall – Browse featured properties for sale and rent in Greece. Expert guidance, transparent pricing, and a seamless experience. Start your search today!',
     description:
       'Discover beachfront villas, city apartments, and rental opportunities across Greece with Property Hall.',
     url: 'https://propertyhall.example.com/',
@@ -47,47 +45,37 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Build Firestore reference
-  const baseRef = collection(db, 'houses');
+  // Initialize Admin Firestore
+  const db = getFirebaseAdminDB();
 
   // Query 1: featured for sale
-  const saleQ = query(
-    baseRef,
-    where('isPublic', '==', true),
-    where('listingType', '==', 'sale'),
-    where('isFeatured', '==', true),
-    limit(6)
-  );
+  const saleSnap = await db
+    .collection('houses')
+    .where('isPublic', '==', true)
+    .where('listingType', '==', 'sale')
+    .where('isFeatured', '==', true)
+    .limit(6)
+    .get();
 
   // Query 2: featured rentals
-  const rentQ = query(
-    baseRef,
-    where('isPublic', '==', true),
-    where('listingType', '==', 'rental'),
-    where('isFeatured', '==', true),
-    limit(6)
-  );
+  const rentSnap = await db
+    .collection('houses')
+    .where('isPublic', '==', true)
+    .where('listingType', '==', 'rental')
+    .where('isFeatured', '==', true)
+    .limit(6)
+    .get();
 
-  // Run both in parallel
-  const [saleSnap, rentSnap] = await Promise.all([
-    getDocs(saleQ),
-    getDocs(rentQ),
-  ]);
-
-  // Map snapshots to typed House objects without duplicate `id`
-  const housesForSale: House[] = saleSnap.docs.map((doc): House => {
-    const data = doc.data() as Omit<House, 'id'>;
-    return { id: doc.id, ...data };
+  // Map snapshots to typed House objects
+  const housesForSale: House[] = saleSnap.docs.map((doc) => {
+    return { id: doc.id, ...(doc.data() as Omit<House, 'id'>) };
+  });
+  const rentalHouses: House[] = rentSnap.docs.map((doc) => {
+    return { id: doc.id, ...(doc.data() as Omit<House, 'id'>) };
   });
 
-  const rentalHouses: House[] = rentSnap.docs.map((doc): House => {
-    const data = doc.data() as Omit<House, 'id'>;
-    return { id: doc.id, ...data };
-  });
-
-  // Combine for schema and hero/carousel components
+  // Combine for schema and hero
   const featuredHouses = [...housesForSale, ...rentalHouses];
-
   const baseUrl = 'https://propertyhall.example.com';
   const schema = {
     '@context': 'https://schema.org',
@@ -99,6 +87,7 @@ export default async function HomePage() {
     })),
   };
 
+  // FAQ items
   const faqItems: FAQItem[] = [
     {
       question: 'What are the steps involved in buying properties for sale in Greece?',
