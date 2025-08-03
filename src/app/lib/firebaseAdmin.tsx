@@ -1,4 +1,4 @@
-// src/lib/firebaseAdmin.ts
+// src/lib/firebaseAdmin.tsx
 import {
   cert,
   getApps,

@@ -1,4 +1,5 @@
 // app/sitemap.xml/route.ts
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getFirebaseAdminDB } from '@/app/lib/firebaseAdmin';
 
