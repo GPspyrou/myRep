@@ -1,9 +1,5 @@
 # apphosting.yaml
-
-
-
 env:
-  
 # Public environment variables (build and runtime)
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: "AIzaSyDEyrJlLxl30UXt7--OIRpQdcuYsKZx2Ik"
