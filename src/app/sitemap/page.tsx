@@ -1,4 +1,5 @@
 // app/sitemap/page.tsx
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { getFirebaseAdminDB } from '@/app/lib/firebaseAdmin';
@@ -10,7 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function SitemapPage() {
-  const baseUrl = '';
   const now = new Date().toISOString();
 
   // Fetch public house listings via Admin SDK
