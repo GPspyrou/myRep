@@ -61,6 +61,12 @@ env:
       - BUILD
       - RUNTIME  
   
+  - variable: NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY
+    value: "6Lcndy0rAAAAAHupekboItmGs6Ylmy5k4mLhFLGg"
+    availability:
+      - BUILD
+      - RUNTIME        
+  
   # Non-secret server-side values (runtime only)
   - variable: FIREBASE_PROJECT_ID
     value: "propertyhall-31280"
