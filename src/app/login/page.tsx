@@ -1,44 +1,37 @@
+// app/login/page.tsx
 'use client';
-import { useState, FormEvent, useMemo } from 'react';
+
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { initializeApp, getApps } from 'firebase/app';
-import {
-  initializeAppCheck,
-  ReCaptchaV3Provider,
-  getToken,
-  AppCheck
-} from 'firebase/app-check';
 import { login } from '@/app/hooks/useFirebaseLogin';
 import { signInWithGoogle } from '@/app/hooks/useGoogleAuth';
+import { initializeApp, getApps } from 'firebase/app';
 import firebaseConfig from '@/app/firebase/firebaseConfig';
 
-export default function Login() {
+export default function LoginPage() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const router                  = useRouter();
-
-  // Lazily initialize Firebase App and App Check once
-  const appCheck: AppCheck = useMemo(() => {
-    const app = !getApps().length
-      ? initializeApp(firebaseConfig)
-      : initializeApp(firebaseConfig); // getApp() would also work here
-
-    return initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(
-        process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY!
-      ),
-      isTokenAutoRefreshEnabled: true,
-    });
-  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
     try {
-      // 🔐 Get App Check token
-      const { token } = await getToken(appCheck, /* forceRefresh= */ true);
+      // Initialize app & App Check dynamically on client
+      const app = !getApps().length
+        ? initializeApp(firebaseConfig)
+        : initializeApp(firebaseConfig);
+      const { initializeAppCheck, ReCaptchaV3Provider, getToken } = await import('firebase/app-check');
+      const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(
+          process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY!
+        ),
+        isTokenAutoRefreshEnabled: true,
+      });
+
+      const { token } = await getToken(appCheck, true);
       console.log('✅ App Check Token:', token);
 
       await login(email, password);
@@ -63,6 +56,17 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
+      const app = !getApps().length
+        ? initializeApp(firebaseConfig)
+        : initializeApp(firebaseConfig);
+      const { initializeAppCheck, ReCaptchaV3Provider, getToken } = await import('firebase/app-check');
+      const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(
+          process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY!
+        ),
+        isTokenAutoRefreshEnabled: true,
+      });
+
       const { token } = await getToken(appCheck, true);
       console.log('✅ App Check Token (Google):', token);
 
